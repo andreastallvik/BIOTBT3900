@@ -6,6 +6,9 @@
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
             <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
             
+                <link href="lib/tom-select/tom-select.css" rel="stylesheet">
+                <script src="lib/tom-select/tom-select.complete.min.js"></script>
+            
         
 <center>
 <h1></h1>
@@ -52,6 +55,224 @@
     <body>
         <div class="card" style="width: 100%">
             
+                <div id="select-menu" class="card-header">
+                    <div class="row no-gutters">
+                        <div class="col-10 pb-2">
+                            <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="selectNode([value]);"
+                            id="select-node"
+                            placeholder="Select node..."
+                            >
+                                <option selected>Select a Node by ID</option>
+                                
+                                    <option value="Manure compost">Manure compost</option>
+                                
+                                    <option value="SCCA">SCCA</option>
+                                
+                                    <option value="Glutamic acid">Glutamic acid</option>
+                                
+                                    <option value="Lignocellulose">Lignocellulose</option>
+                                
+                                    <option value="P-coumaric acid">P-coumaric acid</option>
+                                
+                                    <option value="Caffeic acid">Caffeic acid</option>
+                                
+                                    <option value="Lactic acid">Lactic acid</option>
+                                
+                                    <option value="Methane">Methane</option>
+                                
+                                    <option value="Glucose">Glucose</option>
+                                
+                                    <option value="Hydrogen">Hydrogen</option>
+                                
+                                    <option value="Butanol">Butanol</option>
+                                
+                                    <option value="SCFA">SCFA</option>
+                                
+                                    <option value="Electricity">Electricity</option>
+                                
+                                    <option value="Butyrate">Butyrate</option>
+                                
+                                    <option value="Ethanol">Ethanol</option>
+                                
+                                    <option value="SCOA">SCOA</option>
+                                
+                                    <option value="Fumaric acid">Fumaric acid</option>
+                                
+                                    <option value="Glycerol">Glycerol</option>
+                                
+                                    <option value="Indigo">Indigo</option>
+                                
+                                    <option value="Antilisterial cimpounds">Antilisterial cimpounds</option>
+                                
+                                    <option value="1,3-Propanediol">1,3-Propanediol</option>
+                                
+                                    <option value="Caproate">Caproate</option>
+                                
+                                    <option value="Biosurfactants">Biosurfactants</option>
+                                
+                                    <option value="Lactate">Lactate</option>
+                                
+                                    <option value="3-hydroxybenzoic acid">3-hydroxybenzoic acid</option>
+                                
+                                    <option value="Resveratrol">Resveratrol</option>
+                                
+                                    <option value="Wastewater sludge">Wastewater sludge</option>
+                                
+                                    <option value="Polyhydroxyalkanoate">Polyhydroxyalkanoate</option>
+                                
+                                    <option value="VFA">VFA</option>
+                                
+                                    <option value="Bioflocculant">Bioflocculant</option>
+                                
+                                    <option value="Casein">Casein</option>
+                                
+                                    <option value="Protease">Protease</option>
+                                
+                                    <option value="Glycerin">Glycerin</option>
+                                
+                                    <option value="Butyl acetate">Butyl acetate</option>
+                                
+                                    <option value="Biomass">Biomass</option>
+                                
+                                    <option value="Recombinant protein">Recombinant protein</option>
+                                
+                                    <option value="Siderophores">Siderophores</option>
+                                
+                                    <option value="Bacterial cellulose">Bacterial cellulose</option>
+                                
+                                    <option value="Hyaluronic acid nanocomposite">Hyaluronic acid nanocomposite</option>
+                                
+                                    <option value="Cercosporin">Cercosporin</option>
+                                
+                                    <option value="Phenol">Phenol</option>
+                                
+                                    <option value="Rosmarinic acid">Rosmarinic acid</option>
+                                
+                                    <option value="Pyranoanthocyanins">Pyranoanthocyanins</option>
+                                
+                                    <option value="Anthocyanins">Anthocyanins</option>
+                                
+                                    <option value="Glycosides">Glycosides</option>
+                                
+                                    <option value="Flavonoids">Flavonoids</option>
+                                
+                                    <option value="caffeyl alcohol">caffeyl alcohol</option>
+                                
+                                    <option value="coniferyl alcohol">coniferyl alcohol</option>
+                                
+                                    <option value="Crude oil">Crude oil</option>
+                                
+                                    <option value="Amino acid medium">Amino acid medium</option>
+                                
+                                    <option value="Vitamins">Vitamins</option>
+                                
+                                    <option value="Antilisterial compounds">Antilisterial compounds</option>
+                                
+                                    <option value="Antibodies">Antibodies</option>
+                                
+                                    <option value="O-methylated phenylpropanoids">O-methylated phenylpropanoids</option>
+                                
+                                    <option value="7-methylxanthine">7-methylxanthine</option>
+                                
+                                    <option value="Starch">Starch</option>
+                                
+                                    <option value="Polysaccharide">Polysaccharide</option>
+                                
+                                    <option value="L-lysine">L-lysine</option>
+                                
+                                    <option value="CO">CO</option>
+                                
+                                    <option value="3-hydroxypropionic acid">3-hydroxypropionic acid</option>
+                                
+                                    <option value="Itaconic acid">Itaconic acid</option>
+                                
+                                    <option value="MCFA">MCFA</option>
+                                
+                                    <option value="Propionate">Propionate</option>
+                                
+                                    <option value="Food waste">Food waste</option>
+                                
+                                    <option value="Organic acids">Organic acids</option>
+                                
+                                    <option value="Lipopeptides">Lipopeptides</option>
+                                
+                                    <option value="Fatty acid">Fatty acid</option>
+                                
+                                    <option value="Microbial proteases">Microbial proteases</option>
+                                
+                                    <option value="Acetate">Acetate</option>
+                                
+                                    <option value="Organic waste">Organic waste</option>
+                                
+                                    <option value="Phenanthrene">Phenanthrene</option>
+                                
+                                    <option value="Amino acids">Amino acids</option>
+                                
+                                    <option value="Sucrose">Sucrose</option>
+                                
+                                    <option value="Glionitrin B">Glionitrin B</option>
+                                
+                                    <option value="Activated sludge">Activated sludge</option>
+                                
+                                    <option value="Saccharides">Saccharides</option>
+                                
+                                    <option value="Fructo-oligosaccharide">Fructo-oligosaccharide</option>
+                                
+                                    <option value="Cellulose">Cellulose</option>
+                                
+                                    <option value="Caproic acid">Caproic acid</option>
+                                
+                                    <option value="Xylose">Xylose</option>
+                                
+                                    <option value="Pharmaceutically active compounds">Pharmaceutically active compounds</option>
+                                
+                                    <option value="Light">Light</option>
+                                
+                                    <option value="PHB">PHB</option>
+                                
+                                    <option value="Tryptophan">Tryptophan</option>
+                                
+                                    <option value="Syngas">Syngas</option>
+                                
+                                    <option value="Methanol">Methanol</option>
+                                
+                                    <option value="Antibiotic fermentation residue">Antibiotic fermentation residue</option>
+                                
+                                    <option value="Sludge compost">Sludge compost</option>
+                                
+                                    <option value="Bovine milk">Bovine milk</option>
+                                
+                                    <option value="Fermented food product">Fermented food product</option>
+                                
+                                    <option value="Lupin flour">Lupin flour</option>
+                                
+                                    <option value="Monacolin">Monacolin</option>
+                                
+                                    <option value="lovastatin">lovastatin</option>
+                                
+                                    <option value="Industrial waste">Industrial waste</option>
+                                
+                                    <option value="Fructose">Fructose</option>
+                                
+                                    <option value="Galactose">Galactose</option>
+                                
+                                    <option value="Arabinose">Arabinose</option>
+                                
+                                    <option value="Meat extract">Meat extract</option>
+                                
+                                    <option value="CO2">CO2</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-2 pb-2">
+                            <button type="button" class="btn btn-primary btn-block" onclick="neighbourhoodHighlight({nodes: []});">Reset Selection</button>
+                        </div>
+                    </div>
+                </div>
+            
             
             <div id="mynetwork" class="card-body"></div>
         </div>
@@ -78,6 +299,14 @@
               };
 
               
+                  new TomSelect("#select-node",{
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      }
+                  });
+              
 
               
 
@@ -88,8 +317,8 @@
                   
 
                   // parsing and collecting nodes and edges from the python
-                  nodes = new vis.DataSet([{"color": "red", "id": "Manure compost", "label": "Manure compost", "shape": "dot", "size": 7}, {"color": "red", "id": "SCCA", "label": "SCCA", "shape": "dot", "size": 7}, {"color": "red", "id": "Glutamic acid", "label": "Glutamic acid", "shape": "dot", "size": 6}, {"color": "yellow", "id": "Lignocellulose", "label": "Lignocellulose", "shape": "dot", "size": 28}, {"color": "blue", "id": "P-coumaric acid", "label": "P-coumaric acid", "shape": "dot", "size": 6}, {"color": "blue", "id": "Caffeic acid", "label": "Caffeic acid", "shape": "dot", "size": 6}, {"color": "red", "id": "Lactic acid", "label": "Lactic acid", "shape": "dot", "size": 7}, {"color": "red", "id": "Methane", "label": "Methane", "shape": "dot", "size": 11}, {"color": "yellow", "id": "Glucose", "label": "Glucose", "shape": "dot", "size": 29}, {"color": "yellow", "id": "Hydrogen", "label": "Hydrogen", "shape": "dot", "size": 33}, {"color": "blue", "id": "Butanol", "label": "Butanol", "shape": "dot", "size": 12}, {"color": "blue", "id": "Isobutanol", "label": "Isobutanol", "shape": "dot", "size": 7}, {"color": "yellow", "id": "SCFA", "label": "SCFA", "shape": "dot", "size": 7}, {"color": "yellow", "id": "Electricity", "label": "Electricity", "shape": "dot", "size": 13}, {"color": "blue", "id": "Butyrate", "label": "Butyrate", "shape": "dot", "size": 7}, {"color": "yellow", "id": "Ethanol", "label": "Ethanol", "shape": "dot", "size": 12}, {"color": "red", "id": "SCOA", "label": "SCOA", "shape": "dot", "size": 6}, {"color": "blue", "id": "Fumaric acid", "label": "Fumaric acid", "shape": "dot", "size": 6}, {"color": "yellow", "id": "Glycerol", "label": "Glycerol", "shape": "dot", "size": 14}, {"color": "blue", "id": "Indigo", "label": "Indigo", "shape": "dot", "size": 7}, {"color": "red", "id": "Antilisterial cimpounds", "label": "Antilisterial cimpounds", "shape": "dot", "size": 6}, {"color": "yellow", "id": "1,3-Propanediol", "label": "1,3-Propanediol", "shape": "dot", "size": 9}, {"color": "blue", "id": "Caproate", "label": "Caproate", "shape": "dot", "size": 6}, {"color": "yellow", "id": "Biosurfactants", "label": "Biosurfactants", "shape": "dot", "size": 8}, {"color": "red", "id": "Lactate", "label": "Lactate", "shape": "dot", "size": 6}, {"color": "blue", "id": "3-hydroxybenzoic acid", "label": "3-hydroxybenzoic acid", "shape": "dot", "size": 6}, {"color": "blue", "id": "Resveratrol", "label": "Resveratrol", "shape": "dot", "size": 7}, {"color": "yellow", "id": "Wastewater sludge", "label": "Wastewater sludge", "shape": "dot", "size": 16}, {"color": "yellow", "id": "Polyhydroxyalkanoate", "label": "Polyhydroxyalkanoate", "shape": "dot", "size": 9}, {"color": "yellow", "id": "VFA", "label": "VFA", "shape": "dot", "size": 11}, {"color": "red", "id": "Bioflocculant", "label": "Bioflocculant", "shape": "dot", "size": 6}, {"color": "blue", "id": "Casein", "label": "Casein", "shape": "dot", "size": 6}, {"color": "blue", "id": "Protease", "label": "Protease", "shape": "dot", "size": 6}, {"color": "red", "id": "Glycerin", "label": "Glycerin", "shape": "dot", "size": 6}, {"color": "blue", "id": "Butyl acetate", "label": "Butyl acetate", "shape": "dot", "size": 6}, {"color": "blue", "id": "Biomass", "label": "Biomass", "shape": "dot", "size": 6}, {"color": "blue", "id": "Recombinant protein", "label": "Recombinant protein", "shape": "dot", "size": 6}, {"color": "red", "id": "Siderophores", "label": "Siderophores", "shape": "dot", "size": 7}, {"color": "blue", "id": "Bacterial cellulose", "label": "Bacterial cellulose", "shape": "dot", "size": 7}, {"color": "blue", "id": "Hyaluronic acid nanocomposite", "label": "Hyaluronic acid nanocomposite", "shape": "dot", "size": 6}, {"color": "blue", "id": "Cercosporin", "label": "Cercosporin", "shape": "dot", "size": 6}, {"color": "blue", "id": "Phenol", "label": "Phenol", "shape": "dot", "size": 6}, {"color": "blue", "id": "Rosmarinic acid", "label": "Rosmarinic acid", "shape": "dot", "size": 8}, {"color": "blue", "id": "Pyranoanthocyanins", "label": "Pyranoanthocyanins", "shape": "dot", "size": 6}, {"color": "blue", "id": "Anthocyanins", "label": "Anthocyanins", "shape": "dot", "size": 6}, {"color": "blue", "id": "Glycosides", "label": "Glycosides", "shape": "dot", "size": 7}, {"color": "blue", "id": "Flavonoids", "label": "Flavonoids", "shape": "dot", "size": 6}, {"color": "blue", "id": "caffeyl alcohol", "label": "caffeyl alcohol", "shape": "dot", "size": 6}, {"color": "blue", "id": "coniferyl alcohol", "label": "coniferyl alcohol", "shape": "dot", "size": 6}, {"color": "red", "id": "Crude oil", "label": "Crude oil", "shape": "dot", "size": 7}, {"color": "blue", "id": "Amino acid medium", "label": "Amino acid medium", "shape": "dot", "size": 10}, {"color": "blue", "id": "Vitamins", "label": "Vitamins", "shape": "dot", "size": 6}, {"color": "blue", "id": "Antilisterial compounds", "label": "Antilisterial compounds", "shape": "dot", "size": 6}, {"color": "blue", "id": "Antibodies", "label": "Antibodies", "shape": "dot", "size": 6}, {"color": "blue", "id": "O-methylated phenylpropanoids", "label": "O-methylated phenylpropanoids", "shape": "dot", "size": 6}, {"color": "blue", "id": "7-methylxanthine", "label": "7-methylxanthine", "shape": "dot", "size": 6}, {"color": "blue", "id": "Starch", "label": "Starch", "shape": "dot", "size": 8}, {"color": "blue", "id": "Polysaccharide", "label": "Polysaccharide", "shape": "dot", "size": 6}, {"color": "blue", "id": "L-lysine", "label": "L-lysine", "shape": "dot", "size": 7}, {"color": "blue", "id": "CO", "label": "CO", "shape": "dot", "size": 9}, {"color": "blue", "id": "3-hydroxypropionic acid", "label": "3-hydroxypropionic acid", "shape": "dot", "size": 6}, {"color": "blue", "id": "Itaconic acid", "label": "Itaconic acid", "shape": "dot", "size": 6}, {"color": "blue", "id": "MCFA", "label": "MCFA", "shape": "dot", "size": 7}, {"color": "blue", "id": "Propionate", "label": "Propionate", "shape": "dot", "size": 7}, {"color": "yellow", "id": "Food waste", "label": "Food waste", "shape": "dot", "size": 13}, {"color": "red", "id": "Organic acids", "label": "Organic acids", "shape": "dot", "size": 6}, {"color": "blue", "id": "Lipopeptides", "label": "Lipopeptides", "shape": "dot", "size": 6}, {"color": "blue", "id": "Fatty acid", "label": "Fatty acid", "shape": "dot", "size": 6}, {"color": "blue", "id": "Microbial proteases", "label": "Microbial proteases", "shape": "dot", "size": 7}, {"color": "red", "id": "Acetate", "label": "Acetate", "shape": "dot", "size": 6}, {"color": "red", "id": "Organic waste", "label": "Organic waste", "shape": "dot", "size": 8}, {"color": "blue", "id": "Phenanthrene", "label": "Phenanthrene", "shape": "dot", "size": 6}, {"color": "red", "id": "Amino acids", "label": "Amino acids", "shape": "dot", "size": 6}, {"color": "yellow", "id": "Sucrose", "label": "Sucrose", "shape": "dot", "size": 11}, {"color": "blue", "id": "Glionitrin B", "label": "Glionitrin B", "shape": "dot", "size": 6}, {"color": "red", "id": "Activated sludge", "label": "Activated sludge", "shape": "dot", "size": 6}, {"color": "blue", "id": "Saccharides", "label": "Saccharides", "shape": "dot", "size": 6}, {"color": "blue", "id": "Fructo-oligosaccharide", "label": "Fructo-oligosaccharide", "shape": "dot", "size": 6}, {"color": "yellow", "id": "Cellulose", "label": "Cellulose", "shape": "dot", "size": 9}, {"color": "red", "id": "Caproic acid", "label": "Caproic acid", "shape": "dot", "size": 7}, {"color": "blue", "id": "Xylose", "label": "Xylose", "shape": "dot", "size": 8}, {"color": "blue", "id": "Pharmaceutically active compounds", "label": "Pharmaceutically active compounds", "shape": "dot", "size": 6}, {"color": "yellow", "id": "Light", "label": "Light", "shape": "dot", "size": 7}, {"color": "blue", "id": "PHB", "label": "PHB", "shape": "dot", "size": 6}, {"color": "blue", "id": "Tryptophan", "label": "Tryptophan", "shape": "dot", "size": 6}, {"color": "blue", "id": "Syngas", "label": "Syngas", "shape": "dot", "size": 8}, {"color": "blue", "id": "Methanol", "label": "Methanol", "shape": "dot", "size": 7}, {"color": "red", "id": "Antibiotic fermentation residue", "label": "Antibiotic fermentation residue", "shape": "dot", "size": 6}, {"color": "red", "id": "Sludge compost", "label": "Sludge compost", "shape": "dot", "size": 6}, {"color": "red", "id": "Bovine milk", "label": "Bovine milk", "shape": "dot", "size": 6}, {"color": "red", "id": "Fermented food product", "label": "Fermented food product", "shape": "dot", "size": 7}, {"color": "red", "id": "Lupin flour", "label": "Lupin flour", "shape": "dot", "size": 6}, {"color": "blue", "id": "Monacolin", "label": "Monacolin", "shape": "dot", "size": 6}, {"color": "blue", "id": "lovastatin", "label": "lovastatin", "shape": "dot", "size": 6}, {"color": "blue", "id": "Industrial waste", "label": "Industrial waste", "shape": "dot", "size": 6}, {"color": "red", "id": "Fructose", "label": "Fructose", "shape": "dot", "size": 6}, {"color": "red", "id": "Galactose", "label": "Galactose", "shape": "dot", "size": 6}, {"color": "red", "id": "Arabinose", "label": "Arabinose", "shape": "dot", "size": 6}, {"color": "blue", "id": "Meat extract", "label": "Meat extract", "shape": "dot", "size": 6}, {"color": "blue", "id": "CO2", "label": "CO2", "shape": "dot", "size": 6}]);
-                  edges = new vis.DataSet([{"arrows": "to", "color": "red", "from": "Manure compost", "to": "SCCA", "width": 1}, {"arrows": "to", "color": "red", "from": "Manure compost", "to": "Glutamic acid", "width": 1}, {"arrows": "to", "color": "red", "from": "Lignocellulose", "to": "SCCA", "width": 1}, {"arrows": "to", "color": "blue", "from": "Lignocellulose", "to": "P-coumaric acid", "width": 1}, {"arrows": "to", "color": "blue", "from": "Lignocellulose", "to": "Caffeic acid", "width": 1}, {"arrows": "to", "color": "red", "from": "Lignocellulose", "to": "Lactic acid", "width": 1}, {"arrows": "to", "color": "red", "from": "Lignocellulose", "to": "Methane", "width": 1}, {"arrows": "to", "color": "blue", "from": "Lignocellulose", "to": "Glucose", "width": 1}, {"arrows": "to", "color": "red", "from": "Lignocellulose", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "blue", "from": "Lignocellulose", "to": "Butanol", "width": 1}, {"arrows": "to", "color": "blue", "from": "Lignocellulose", "to": "Isobutanol", "width": 1}, {"arrows": "to", "color": "blue", "from": "Lignocellulose", "to": "SCFA", "width": 1}, {"arrows": "to", "color": "blue", "from": "Lignocellulose", "to": "Electricity", "width": 1}, {"arrows": "to", "color": "blue", "from": "Lignocellulose", "to": "Butyrate", "width": 1}, {"arrows": "to", "color": "blue", "from": "Lignocellulose", "to": "Ethanol", "width": 1}, {"arrows": "to", "color": "red", "from": "Lignocellulose", "to": "SCOA", "width": 1}, {"arrows": "to", "color": "blue", "from": "Lignocellulose", "to": "Fumaric acid", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glycerol", "to": "Indigo", "width": 1}, {"arrows": "to", "color": "red", "from": "Glycerol", "to": "Antilisterial cimpounds", "width": 1}, {"arrows": "to", "color": "red", "from": "Glycerol", "to": "1,3-Propanediol", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glycerol", "to": "Caproate", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glycerol", "to": "Biosurfactants", "width": 1}, {"arrows": "to", "color": "red", "from": "Glycerol", "to": "Lactic acid", "width": 1}, {"arrows": "to", "color": "red", "from": "Glycerol", "to": "Lactate", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glycerol", "to": "3-hydroxybenzoic acid", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glycerol", "to": "Resveratrol", "width": 1}, {"arrows": "to", "color": "red", "from": "Wastewater sludge", "to": "Polyhydroxyalkanoate", "width": 1}, {"arrows": "to", "color": "red", "from": "Wastewater sludge", "to": "Electricity", "width": 1}, {"arrows": "to", "color": "red", "from": "Wastewater sludge", "to": "VFA", "width": 1}, {"arrows": "to", "color": "red", "from": "Wastewater sludge", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "red", "from": "Wastewater sludge", "to": "Bioflocculant", "width": 1}, {"arrows": "to", "color": "blue", "from": "Casein", "to": "Protease", "width": 1}, {"arrows": "to", "color": "red", "from": "Glycerin", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Butyl acetate", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Biomass", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Recombinant protein", "width": 1}, {"arrows": "to", "color": "red", "from": "Glucose", "to": "Electricity", "width": 1}, {"arrows": "to", "color": "red", "from": "Glucose", "to": "Siderophores", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Bacterial cellulose", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Hyaluronic acid nanocomposite", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Cercosporin", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Polyhydroxyalkanoate", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Phenol", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Rosmarinic acid", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Pyranoanthocyanins", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Anthocyanins", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Glycosides", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Flavonoids", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "caffeyl alcohol", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "coniferyl alcohol", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Resveratrol", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Butanol", "width": 1}, {"arrows": "to", "color": "red", "from": "Crude oil", "to": "Biosurfactants", "width": 1}, {"arrows": "to", "color": "red", "from": "Crude oil", "to": "Methane", "width": 1}, {"arrows": "to", "color": "blue", "from": "Amino acid medium", "to": "Vitamins", "width": 1}, {"arrows": "to", "color": "blue", "from": "Amino acid medium", "to": "Antilisterial compounds", "width": 1}, {"arrows": "to", "color": "blue", "from": "Amino acid medium", "to": "Antibodies", "width": 1}, {"arrows": "to", "color": "blue", "from": "Amino acid medium", "to": "O-methylated phenylpropanoids", "width": 1}, {"arrows": "to", "color": "blue", "from": "Amino acid medium", "to": "7-methylxanthine", "width": 1}, {"arrows": "to", "color": "blue", "from": "Starch", "to": "Polysaccharide", "width": 1}, {"arrows": "to", "color": "blue", "from": "Starch", "to": "L-lysine", "width": 1}, {"arrows": "to", "color": "blue", "from": "Starch", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "blue", "from": "CO", "to": "Butyrate", "width": 1}, {"arrows": "to", "color": "blue", "from": "CO", "to": "3-hydroxypropionic acid", "width": 1}, {"arrows": "to", "color": "blue", "from": "CO", "to": "Itaconic acid", "width": 1}, {"arrows": "to", "color": "blue", "from": "CO", "to": "MCFA", "width": 1}, {"arrows": "to", "color": "blue", "from": "CO", "to": "Propionate", "width": 1}, {"arrows": "to", "color": "red", "from": "Food waste", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "red", "from": "Food waste", "to": "Organic acids", "width": 1}, {"arrows": "to", "color": "red", "from": "Food waste", "to": "VFA", "width": 1}, {"arrows": "to", "color": "blue", "from": "Food waste", "to": "Lipopeptides", "width": 1}, {"arrows": "to", "color": "blue", "from": "Food waste", "to": "Fatty acid", "width": 1}, {"arrows": "to", "color": "blue", "from": "Food waste", "to": "Microbial proteases", "width": 1}, {"arrows": "to", "color": "red", "from": "Food waste", "to": "Methane", "width": 1}, {"arrows": "to", "color": "red", "from": "Acetate", "to": "Electricity", "width": 1}, {"arrows": "to", "color": "red", "from": "Organic waste", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "red", "from": "Organic waste", "to": "Methane", "width": 1}, {"arrows": "to", "color": "blue", "from": "Phenanthrene", "to": "Biosurfactants", "width": 1}, {"arrows": "to", "color": "blue", "from": "VFA", "to": "Polyhydroxyalkanoate", "width": 1}, {"arrows": "to", "color": "red", "from": "Amino acids", "to": "Siderophores", "width": 1}, {"arrows": "to", "color": "blue", "from": "Sucrose", "to": "Polyhydroxyalkanoate", "width": 1}, {"arrows": "to", "color": "blue", "from": "Sucrose", "to": "Rosmarinic acid", "width": 1}, {"arrows": "to", "color": "blue", "from": "Sucrose", "to": "Glionitrin B", "width": 1}, {"arrows": "to", "color": "blue", "from": "Sucrose", "to": "Microbial proteases", "width": 1}, {"arrows": "to", "color": "red", "from": "Sucrose", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "blue", "from": "Sucrose", "to": "L-lysine", "width": 1}, {"arrows": "to", "color": "red", "from": "Activated sludge", "to": "SCFA", "width": 1}, {"arrows": "to", "color": "blue", "from": "Saccharides", "to": "Fructo-oligosaccharide", "width": 1}, {"arrows": "to", "color": "blue", "from": "Cellulose", "to": "Ethanol", "width": 1}, {"arrows": "to", "color": "blue", "from": "Cellulose", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "red", "from": "Cellulose", "to": "Caproic acid", "width": 1}, {"arrows": "to", "color": "red", "from": "Ethanol", "to": "Caproic acid", "width": 1}, {"arrows": "to", "color": "blue", "from": "Xylose", "to": "Pharmaceutically active compounds", "width": 1}, {"arrows": "to", "color": "blue", "from": "Xylose", "to": "Rosmarinic acid", "width": 1}, {"arrows": "to", "color": "blue", "from": "Xylose", "to": "Glycosides", "width": 1}, {"arrows": "to", "color": "blue", "from": "Light", "to": "PHB", "width": 1}, {"arrows": "to", "color": "red", "from": "Light", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "blue", "from": "Tryptophan", "to": "Indigo", "width": 1}, {"arrows": "to", "color": "blue", "from": "Syngas", "to": "MCFA", "width": 1}, {"arrows": "to", "color": "blue", "from": "Syngas", "to": "Propionate", "width": 1}, {"arrows": "to", "color": "blue", "from": "Syngas", "to": "Methanol", "width": 1}, {"arrows": "to", "color": "red", "from": "Antibiotic fermentation residue", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "red", "from": "Sludge compost", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "red", "from": "Bovine milk", "to": "Fermented food product", "width": 1}, {"arrows": "to", "color": "red", "from": "Lupin flour", "to": "Fermented food product", "width": 1}, {"arrows": "to", "color": "blue", "from": "Methanol", "to": "Monacolin", "width": 1}, {"arrows": "to", "color": "blue", "from": "Methanol", "to": "lovastatin", "width": 1}, {"arrows": "to", "color": "blue", "from": "Industrial waste", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "red", "from": "Fructose", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "red", "from": "Galactose", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "red", "from": "Arabinose", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "blue", "from": "Meat extract", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "blue", "from": "CO2", "to": "Electricity", "width": 1}]);
+                  nodes = new vis.DataSet([{"color": "red", "id": "Manure compost", "label": "Manure compost", "shape": "dot", "size": 7}, {"color": "red", "id": "SCCA", "label": "SCCA", "shape": "dot", "size": 7}, {"color": "red", "id": "Glutamic acid", "label": "Glutamic acid", "shape": "dot", "size": 6}, {"color": "yellow", "id": "Lignocellulose", "label": "Lignocellulose", "shape": "dot", "size": 28}, {"color": "blue", "id": "P-coumaric acid", "label": "P-coumaric acid", "shape": "dot", "size": 6}, {"color": "blue", "id": "Caffeic acid", "label": "Caffeic acid", "shape": "dot", "size": 6}, {"color": "red", "id": "Lactic acid", "label": "Lactic acid", "shape": "dot", "size": 7}, {"color": "red", "id": "Methane", "label": "Methane", "shape": "dot", "size": 11}, {"color": "yellow", "id": "Glucose", "label": "Glucose", "shape": "dot", "size": 29}, {"color": "yellow", "id": "Hydrogen", "label": "Hydrogen", "shape": "dot", "size": 33}, {"color": "blue", "id": "Butanol", "label": "Butanol", "shape": "dot", "size": 14}, {"color": "yellow", "id": "SCFA", "label": "SCFA", "shape": "dot", "size": 7}, {"color": "yellow", "id": "Electricity", "label": "Electricity", "shape": "dot", "size": 13}, {"color": "blue", "id": "Butyrate", "label": "Butyrate", "shape": "dot", "size": 7}, {"color": "yellow", "id": "Ethanol", "label": "Ethanol", "shape": "dot", "size": 12}, {"color": "red", "id": "SCOA", "label": "SCOA", "shape": "dot", "size": 6}, {"color": "blue", "id": "Fumaric acid", "label": "Fumaric acid", "shape": "dot", "size": 6}, {"color": "yellow", "id": "Glycerol", "label": "Glycerol", "shape": "dot", "size": 14}, {"color": "blue", "id": "Indigo", "label": "Indigo", "shape": "dot", "size": 7}, {"color": "red", "id": "Antilisterial cimpounds", "label": "Antilisterial cimpounds", "shape": "dot", "size": 6}, {"color": "yellow", "id": "1,3-Propanediol", "label": "1,3-Propanediol", "shape": "dot", "size": 9}, {"color": "blue", "id": "Caproate", "label": "Caproate", "shape": "dot", "size": 6}, {"color": "yellow", "id": "Biosurfactants", "label": "Biosurfactants", "shape": "dot", "size": 8}, {"color": "red", "id": "Lactate", "label": "Lactate", "shape": "dot", "size": 6}, {"color": "blue", "id": "3-hydroxybenzoic acid", "label": "3-hydroxybenzoic acid", "shape": "dot", "size": 6}, {"color": "blue", "id": "Resveratrol", "label": "Resveratrol", "shape": "dot", "size": 7}, {"color": "yellow", "id": "Wastewater sludge", "label": "Wastewater sludge", "shape": "dot", "size": 16}, {"color": "yellow", "id": "Polyhydroxyalkanoate", "label": "Polyhydroxyalkanoate", "shape": "dot", "size": 9}, {"color": "yellow", "id": "VFA", "label": "VFA", "shape": "dot", "size": 11}, {"color": "red", "id": "Bioflocculant", "label": "Bioflocculant", "shape": "dot", "size": 6}, {"color": "blue", "id": "Casein", "label": "Casein", "shape": "dot", "size": 6}, {"color": "blue", "id": "Protease", "label": "Protease", "shape": "dot", "size": 6}, {"color": "red", "id": "Glycerin", "label": "Glycerin", "shape": "dot", "size": 6}, {"color": "blue", "id": "Butyl acetate", "label": "Butyl acetate", "shape": "dot", "size": 6}, {"color": "blue", "id": "Biomass", "label": "Biomass", "shape": "dot", "size": 6}, {"color": "blue", "id": "Recombinant protein", "label": "Recombinant protein", "shape": "dot", "size": 6}, {"color": "red", "id": "Siderophores", "label": "Siderophores", "shape": "dot", "size": 7}, {"color": "blue", "id": "Bacterial cellulose", "label": "Bacterial cellulose", "shape": "dot", "size": 7}, {"color": "blue", "id": "Hyaluronic acid nanocomposite", "label": "Hyaluronic acid nanocomposite", "shape": "dot", "size": 6}, {"color": "blue", "id": "Cercosporin", "label": "Cercosporin", "shape": "dot", "size": 6}, {"color": "blue", "id": "Phenol", "label": "Phenol", "shape": "dot", "size": 6}, {"color": "blue", "id": "Rosmarinic acid", "label": "Rosmarinic acid", "shape": "dot", "size": 8}, {"color": "blue", "id": "Pyranoanthocyanins", "label": "Pyranoanthocyanins", "shape": "dot", "size": 6}, {"color": "blue", "id": "Anthocyanins", "label": "Anthocyanins", "shape": "dot", "size": 6}, {"color": "blue", "id": "Glycosides", "label": "Glycosides", "shape": "dot", "size": 7}, {"color": "blue", "id": "Flavonoids", "label": "Flavonoids", "shape": "dot", "size": 6}, {"color": "blue", "id": "caffeyl alcohol", "label": "caffeyl alcohol", "shape": "dot", "size": 6}, {"color": "blue", "id": "coniferyl alcohol", "label": "coniferyl alcohol", "shape": "dot", "size": 6}, {"color": "red", "id": "Crude oil", "label": "Crude oil", "shape": "dot", "size": 7}, {"color": "blue", "id": "Amino acid medium", "label": "Amino acid medium", "shape": "dot", "size": 10}, {"color": "blue", "id": "Vitamins", "label": "Vitamins", "shape": "dot", "size": 6}, {"color": "blue", "id": "Antilisterial compounds", "label": "Antilisterial compounds", "shape": "dot", "size": 6}, {"color": "blue", "id": "Antibodies", "label": "Antibodies", "shape": "dot", "size": 6}, {"color": "blue", "id": "O-methylated phenylpropanoids", "label": "O-methylated phenylpropanoids", "shape": "dot", "size": 6}, {"color": "blue", "id": "7-methylxanthine", "label": "7-methylxanthine", "shape": "dot", "size": 6}, {"color": "blue", "id": "Starch", "label": "Starch", "shape": "dot", "size": 8}, {"color": "blue", "id": "Polysaccharide", "label": "Polysaccharide", "shape": "dot", "size": 6}, {"color": "blue", "id": "L-lysine", "label": "L-lysine", "shape": "dot", "size": 7}, {"color": "blue", "id": "CO", "label": "CO", "shape": "dot", "size": 9}, {"color": "blue", "id": "3-hydroxypropionic acid", "label": "3-hydroxypropionic acid", "shape": "dot", "size": 6}, {"color": "blue", "id": "Itaconic acid", "label": "Itaconic acid", "shape": "dot", "size": 6}, {"color": "blue", "id": "MCFA", "label": "MCFA", "shape": "dot", "size": 7}, {"color": "blue", "id": "Propionate", "label": "Propionate", "shape": "dot", "size": 7}, {"color": "yellow", "id": "Food waste", "label": "Food waste", "shape": "dot", "size": 13}, {"color": "red", "id": "Organic acids", "label": "Organic acids", "shape": "dot", "size": 6}, {"color": "blue", "id": "Lipopeptides", "label": "Lipopeptides", "shape": "dot", "size": 6}, {"color": "blue", "id": "Fatty acid", "label": "Fatty acid", "shape": "dot", "size": 6}, {"color": "blue", "id": "Microbial proteases", "label": "Microbial proteases", "shape": "dot", "size": 7}, {"color": "red", "id": "Acetate", "label": "Acetate", "shape": "dot", "size": 6}, {"color": "red", "id": "Organic waste", "label": "Organic waste", "shape": "dot", "size": 8}, {"color": "blue", "id": "Phenanthrene", "label": "Phenanthrene", "shape": "dot", "size": 6}, {"color": "red", "id": "Amino acids", "label": "Amino acids", "shape": "dot", "size": 6}, {"color": "yellow", "id": "Sucrose", "label": "Sucrose", "shape": "dot", "size": 11}, {"color": "blue", "id": "Glionitrin B", "label": "Glionitrin B", "shape": "dot", "size": 6}, {"color": "red", "id": "Activated sludge", "label": "Activated sludge", "shape": "dot", "size": 6}, {"color": "blue", "id": "Saccharides", "label": "Saccharides", "shape": "dot", "size": 6}, {"color": "blue", "id": "Fructo-oligosaccharide", "label": "Fructo-oligosaccharide", "shape": "dot", "size": 6}, {"color": "yellow", "id": "Cellulose", "label": "Cellulose", "shape": "dot", "size": 9}, {"color": "red", "id": "Caproic acid", "label": "Caproic acid", "shape": "dot", "size": 7}, {"color": "blue", "id": "Xylose", "label": "Xylose", "shape": "dot", "size": 8}, {"color": "blue", "id": "Pharmaceutically active compounds", "label": "Pharmaceutically active compounds", "shape": "dot", "size": 6}, {"color": "yellow", "id": "Light", "label": "Light", "shape": "dot", "size": 7}, {"color": "blue", "id": "PHB", "label": "PHB", "shape": "dot", "size": 6}, {"color": "blue", "id": "Tryptophan", "label": "Tryptophan", "shape": "dot", "size": 6}, {"color": "blue", "id": "Syngas", "label": "Syngas", "shape": "dot", "size": 8}, {"color": "blue", "id": "Methanol", "label": "Methanol", "shape": "dot", "size": 7}, {"color": "red", "id": "Antibiotic fermentation residue", "label": "Antibiotic fermentation residue", "shape": "dot", "size": 6}, {"color": "red", "id": "Sludge compost", "label": "Sludge compost", "shape": "dot", "size": 6}, {"color": "red", "id": "Bovine milk", "label": "Bovine milk", "shape": "dot", "size": 6}, {"color": "red", "id": "Fermented food product", "label": "Fermented food product", "shape": "dot", "size": 7}, {"color": "red", "id": "Lupin flour", "label": "Lupin flour", "shape": "dot", "size": 6}, {"color": "blue", "id": "Monacolin", "label": "Monacolin", "shape": "dot", "size": 6}, {"color": "blue", "id": "lovastatin", "label": "lovastatin", "shape": "dot", "size": 6}, {"color": "blue", "id": "Industrial waste", "label": "Industrial waste", "shape": "dot", "size": 6}, {"color": "red", "id": "Fructose", "label": "Fructose", "shape": "dot", "size": 6}, {"color": "red", "id": "Galactose", "label": "Galactose", "shape": "dot", "size": 6}, {"color": "red", "id": "Arabinose", "label": "Arabinose", "shape": "dot", "size": 6}, {"color": "blue", "id": "Meat extract", "label": "Meat extract", "shape": "dot", "size": 6}, {"color": "blue", "id": "CO2", "label": "CO2", "shape": "dot", "size": 6}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "red", "from": "Manure compost", "to": "SCCA", "width": 1}, {"arrows": "to", "color": "red", "from": "Manure compost", "to": "Glutamic acid", "width": 1}, {"arrows": "to", "color": "red", "from": "Lignocellulose", "to": "SCCA", "width": 1}, {"arrows": "to", "color": "blue", "from": "Lignocellulose", "to": "P-coumaric acid", "width": 1}, {"arrows": "to", "color": "blue", "from": "Lignocellulose", "to": "Caffeic acid", "width": 1}, {"arrows": "to", "color": "red", "from": "Lignocellulose", "to": "Lactic acid", "width": 1}, {"arrows": "to", "color": "red", "from": "Lignocellulose", "to": "Methane", "width": 1}, {"arrows": "to", "color": "blue", "from": "Lignocellulose", "to": "Glucose", "width": 1}, {"arrows": "to", "color": "red", "from": "Lignocellulose", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "blue", "from": "Lignocellulose", "to": "Butanol", "width": 1}, {"arrows": "to", "color": "blue", "from": "Lignocellulose", "to": "SCFA", "width": 1}, {"arrows": "to", "color": "blue", "from": "Lignocellulose", "to": "Electricity", "width": 1}, {"arrows": "to", "color": "blue", "from": "Lignocellulose", "to": "Butyrate", "width": 1}, {"arrows": "to", "color": "blue", "from": "Lignocellulose", "to": "Ethanol", "width": 1}, {"arrows": "to", "color": "red", "from": "Lignocellulose", "to": "SCOA", "width": 1}, {"arrows": "to", "color": "blue", "from": "Lignocellulose", "to": "Fumaric acid", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glycerol", "to": "Indigo", "width": 1}, {"arrows": "to", "color": "red", "from": "Glycerol", "to": "Antilisterial cimpounds", "width": 1}, {"arrows": "to", "color": "red", "from": "Glycerol", "to": "1,3-Propanediol", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glycerol", "to": "Caproate", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glycerol", "to": "Biosurfactants", "width": 1}, {"arrows": "to", "color": "red", "from": "Glycerol", "to": "Lactic acid", "width": 1}, {"arrows": "to", "color": "red", "from": "Glycerol", "to": "Lactate", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glycerol", "to": "3-hydroxybenzoic acid", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glycerol", "to": "Resveratrol", "width": 1}, {"arrows": "to", "color": "red", "from": "Wastewater sludge", "to": "Polyhydroxyalkanoate", "width": 1}, {"arrows": "to", "color": "red", "from": "Wastewater sludge", "to": "Electricity", "width": 1}, {"arrows": "to", "color": "red", "from": "Wastewater sludge", "to": "VFA", "width": 1}, {"arrows": "to", "color": "red", "from": "Wastewater sludge", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "red", "from": "Wastewater sludge", "to": "Bioflocculant", "width": 1}, {"arrows": "to", "color": "blue", "from": "Casein", "to": "Protease", "width": 1}, {"arrows": "to", "color": "red", "from": "Glycerin", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Butyl acetate", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Biomass", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Recombinant protein", "width": 1}, {"arrows": "to", "color": "red", "from": "Glucose", "to": "Electricity", "width": 1}, {"arrows": "to", "color": "red", "from": "Glucose", "to": "Siderophores", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Bacterial cellulose", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Hyaluronic acid nanocomposite", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Cercosporin", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Polyhydroxyalkanoate", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Phenol", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Rosmarinic acid", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Pyranoanthocyanins", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Anthocyanins", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Glycosides", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Flavonoids", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "caffeyl alcohol", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "coniferyl alcohol", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Resveratrol", "width": 1}, {"arrows": "to", "color": "blue", "from": "Glucose", "to": "Butanol", "width": 1}, {"arrows": "to", "color": "red", "from": "Crude oil", "to": "Biosurfactants", "width": 1}, {"arrows": "to", "color": "red", "from": "Crude oil", "to": "Methane", "width": 1}, {"arrows": "to", "color": "blue", "from": "Amino acid medium", "to": "Vitamins", "width": 1}, {"arrows": "to", "color": "blue", "from": "Amino acid medium", "to": "Antilisterial compounds", "width": 1}, {"arrows": "to", "color": "blue", "from": "Amino acid medium", "to": "Antibodies", "width": 1}, {"arrows": "to", "color": "blue", "from": "Amino acid medium", "to": "O-methylated phenylpropanoids", "width": 1}, {"arrows": "to", "color": "blue", "from": "Amino acid medium", "to": "7-methylxanthine", "width": 1}, {"arrows": "to", "color": "blue", "from": "Starch", "to": "Polysaccharide", "width": 1}, {"arrows": "to", "color": "blue", "from": "Starch", "to": "L-lysine", "width": 1}, {"arrows": "to", "color": "blue", "from": "Starch", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "blue", "from": "CO", "to": "Butyrate", "width": 1}, {"arrows": "to", "color": "blue", "from": "CO", "to": "3-hydroxypropionic acid", "width": 1}, {"arrows": "to", "color": "blue", "from": "CO", "to": "Itaconic acid", "width": 1}, {"arrows": "to", "color": "blue", "from": "CO", "to": "MCFA", "width": 1}, {"arrows": "to", "color": "blue", "from": "CO", "to": "Propionate", "width": 1}, {"arrows": "to", "color": "red", "from": "Food waste", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "red", "from": "Food waste", "to": "Organic acids", "width": 1}, {"arrows": "to", "color": "red", "from": "Food waste", "to": "VFA", "width": 1}, {"arrows": "to", "color": "blue", "from": "Food waste", "to": "Lipopeptides", "width": 1}, {"arrows": "to", "color": "blue", "from": "Food waste", "to": "Fatty acid", "width": 1}, {"arrows": "to", "color": "blue", "from": "Food waste", "to": "Microbial proteases", "width": 1}, {"arrows": "to", "color": "red", "from": "Food waste", "to": "Methane", "width": 1}, {"arrows": "to", "color": "red", "from": "Acetate", "to": "Electricity", "width": 1}, {"arrows": "to", "color": "red", "from": "Organic waste", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "red", "from": "Organic waste", "to": "Methane", "width": 1}, {"arrows": "to", "color": "blue", "from": "Phenanthrene", "to": "Biosurfactants", "width": 1}, {"arrows": "to", "color": "blue", "from": "VFA", "to": "Polyhydroxyalkanoate", "width": 1}, {"arrows": "to", "color": "red", "from": "Amino acids", "to": "Siderophores", "width": 1}, {"arrows": "to", "color": "blue", "from": "Sucrose", "to": "Polyhydroxyalkanoate", "width": 1}, {"arrows": "to", "color": "blue", "from": "Sucrose", "to": "Rosmarinic acid", "width": 1}, {"arrows": "to", "color": "blue", "from": "Sucrose", "to": "Glionitrin B", "width": 1}, {"arrows": "to", "color": "blue", "from": "Sucrose", "to": "Microbial proteases", "width": 1}, {"arrows": "to", "color": "red", "from": "Sucrose", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "blue", "from": "Sucrose", "to": "L-lysine", "width": 1}, {"arrows": "to", "color": "red", "from": "Activated sludge", "to": "SCFA", "width": 1}, {"arrows": "to", "color": "blue", "from": "Saccharides", "to": "Fructo-oligosaccharide", "width": 1}, {"arrows": "to", "color": "blue", "from": "Cellulose", "to": "Ethanol", "width": 1}, {"arrows": "to", "color": "blue", "from": "Cellulose", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "red", "from": "Cellulose", "to": "Caproic acid", "width": 1}, {"arrows": "to", "color": "red", "from": "Ethanol", "to": "Caproic acid", "width": 1}, {"arrows": "to", "color": "blue", "from": "Xylose", "to": "Pharmaceutically active compounds", "width": 1}, {"arrows": "to", "color": "blue", "from": "Xylose", "to": "Rosmarinic acid", "width": 1}, {"arrows": "to", "color": "blue", "from": "Xylose", "to": "Glycosides", "width": 1}, {"arrows": "to", "color": "blue", "from": "Light", "to": "PHB", "width": 1}, {"arrows": "to", "color": "red", "from": "Light", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "blue", "from": "Tryptophan", "to": "Indigo", "width": 1}, {"arrows": "to", "color": "blue", "from": "Syngas", "to": "MCFA", "width": 1}, {"arrows": "to", "color": "blue", "from": "Syngas", "to": "Propionate", "width": 1}, {"arrows": "to", "color": "blue", "from": "Syngas", "to": "Methanol", "width": 1}, {"arrows": "to", "color": "red", "from": "Antibiotic fermentation residue", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "red", "from": "Sludge compost", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "red", "from": "Bovine milk", "to": "Fermented food product", "width": 1}, {"arrows": "to", "color": "red", "from": "Lupin flour", "to": "Fermented food product", "width": 1}, {"arrows": "to", "color": "blue", "from": "Methanol", "to": "Monacolin", "width": 1}, {"arrows": "to", "color": "blue", "from": "Methanol", "to": "lovastatin", "width": 1}, {"arrows": "to", "color": "blue", "from": "Industrial waste", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "red", "from": "Fructose", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "red", "from": "Galactose", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "red", "from": "Arabinose", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "blue", "from": "Meat extract", "to": "Hydrogen", "width": 1}, {"arrows": "to", "color": "blue", "from": "CO2", "to": "Electricity", "width": 1}]);
 
                   nodeColors = {};
                   allNodes = nodes.get({ returnType: "Object" });
@@ -139,6 +368,8 @@
 
                   
 
+                  
+                    network.on("selectNode", neighbourhoodHighlight);
                   
 
                   
