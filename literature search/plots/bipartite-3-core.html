@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 1800px;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"bipartite": 1, "color": "#97c2fc", "id": "Bacillus", "label": "Bacillus", "shape": "square", "size": 11}, {"bipartite": 0, "color": "red", "id": "Hydrogen", "label": "Hydrogen", "shape": "dot", "size": 23}, {"bipartite": 0, "color": "red", "id": "Glycerol", "label": "Glycerol", "shape": "dot", "size": 10}, {"bipartite": 1, "color": "#97c2fc", "id": "Escherichia", "label": "Escherichia", "shape": "square", "size": 35}, {"bipartite": 1, "color": "#97c2fc", "id": "Eubacterium", "label": "Eubacterium", "shape": "square", "size": 8}, {"bipartite": 1, "color": "#97c2fc", "id": "Clostridium", "label": "Clostridium", "shape": "square", "size": 33}, {"bipartite": 1, "color": "#97c2fc", "id": "Massilibacterium", "label": "Massilibacterium", "shape": "square", "size": 6}, {"bipartite": 1, "color": "#97c2fc", "id": "Anaerotignum", "label": "Anaerotignum", "shape": "square", "size": 7}, {"bipartite": 0, "color": "red", "id": "Propionate", "label": "Propionate", "shape": "dot", "size": 11}, {"bipartite": 1, "color": "#97c2fc", "id": "Anaeromyces", "label": "Anaeromyces", "shape": "square", "size": 6}, {"bipartite": 0, "color": "red", "id": "Butyrate", "label": "Butyrate", "shape": "dot", "size": 12}, {"bipartite": 0, "color": "red", "id": "Butanol", "label": "Butanol", "shape": "dot", "size": 26}, {"bipartite": 0, "color": "red", "id": "Syngas", "label": "Syngas", "shape": "dot", "size": 8}, {"bipartite": 1, "color": "#97c2fc", "id": "Acetobacterium", "label": "Acetobacterium", "shape": "square", "size": 8}, {"bipartite": 1, "color": "#97c2fc", "id": "Pelobacter", "label": "Pelobacter", "shape": "square", "size": 7}, {"bipartite": 1, "color": "#97c2fc", "id": "Saccharomyces", "label": "Saccharomyces", "shape": "square", "size": 11}, {"bipartite": 0, "color": "red", "id": "Ethanol", "label": "Ethanol", "shape": "dot", "size": 12}, {"bipartite": 1, "color": "#97c2fc", "id": "Caecomyces", "label": "Caecomyces", "shape": "square", "size": 6}, {"bipartite": 1, "color": "#97c2fc", "id": "Aeribacillus", "label": "Aeribacillus", "shape": "square", "size": 7}, {"bipartite": 0, "color": "red", "id": "Microbial proteases", "label": "Microbial proteases", "shape": "dot", "size": 11}, {"bipartite": 1, "color": "#97c2fc", "id": "Trichoderma", "label": "Trichoderma", "shape": "square", "size": 10}, {"bipartite": 0, "color": "red", "id": "Glucose", "label": "Glucose", "shape": "dot", "size": 27}, {"bipartite": 0, "color": "red", "id": "1,3-Propanediol", "label": "1,3-Propanediol", "shape": "dot", "size": 8}, {"bipartite": 0, "color": "red", "id": "Caproate", "label": "Caproate", "shape": "dot", "size": 8}, {"bipartite": 1, "color": "#97c2fc", "id": "Aspergillus", "label": "Aspergillus", "shape": "square", "size": 8}, {"bipartite": 1, "color": "#97c2fc", "id": "Neocallimastix", "label": "Neocallimastix", "shape": "square", "size": 6}, {"bipartite": 1, "color": "#97c2fc", "id": "Enterococcus", "label": "Enterococcus", "shape": "square", "size": 7}, {"bipartite": 0, "color": "red", "id": "CO", "label": "CO", "shape": "dot", "size": 9}, {"bipartite": 1, "color": "#97c2fc", "id": "Anoxybacillus", "label": "Anoxybacillus", "shape": "square", "size": 7}, {"bipartite": 0, "color": "red", "id": "Lignocellulose", "label": "Lignocellulose", "shape": "dot", "size": 20}, {"bipartite": 0, "color": "red", "id": "Food waste", "label": "Food waste", "shape": "dot", "size": 8}, {"bipartite": 1, "color": "#97c2fc", "id": "Lysinibacillus", "label": "Lysinibacillus", "shape": "square", "size": 8}, {"bipartite": 0, "color": "red", "id": "Sucrose", "label": "Sucrose", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "Bacillus", "to": "Hydrogen", "width": 1}, {"arrows": "to", "from": "Glycerol", "to": "Escherichia", "width": 1}, {"arrows": "to", "from": "Glycerol", "to": "Eubacterium", "width": 1}, {"arrows": "to", "from": "Glycerol", "to": "Clostridium", "width": 1}, {"arrows": "to", "from": "Glycerol", "to": "Massilibacterium", "width": 1}, {"arrows": "to", "from": "Anaerotignum", "to": "Propionate", "width": 1}, {"arrows": "to", "from": "Anaeromyces", "to": "Butyrate", "width": 1}, {"arrows": "to", "from": "Anaeromyces", "to": "Butanol", "width": 1}, {"arrows": "to", "from": "Syngas", "to": "Clostridium", "width": 1}, {"arrows": "to", "from": "Syngas", "to": "Acetobacterium", "width": 1}, {"arrows": "to", "from": "Syngas", "to": "Pelobacter", "width": 1}, {"arrows": "to", "from": "Syngas", "to": "Anaerotignum", "width": 1}, {"arrows": "to", "from": "Saccharomyces", "to": "Ethanol", "width": 1}, {"arrows": "to", "from": "Saccharomyces", "to": "Butanol", "width": 1}, {"arrows": "to", "from": "Caecomyces", "to": "Butyrate", "width": 1}, {"arrows": "to", "from": "Caecomyces", "to": "Butanol", "width": 1}, {"arrows": "to", "from": "Acetobacterium", "to": "Propionate", "width": 1}, {"arrows": "to", "from": "Aeribacillus", "to": "Microbial proteases", "width": 1}, {"arrows": "to", "from": "Trichoderma", "to": "Glucose", "width": 1}, {"arrows": "to", "from": "Trichoderma", "to": "Butanol", "width": 1}, {"arrows": "to", "from": "Eubacterium", "to": "Butyrate", "width": 1}, {"arrows": "to", "from": "Eubacterium", "to": "1,3-Propanediol", "width": 1}, {"arrows": "to", "from": "Eubacterium", "to": "Caproate", "width": 1}, {"arrows": "to", "from": "Massilibacterium", "to": "1,3-Propanediol", "width": 1}, {"arrows": "to", "from": "Massilibacterium", "to": "Caproate", "width": 1}, {"arrows": "to", "from": "Aspergillus", "to": "Glucose", "width": 1}, {"arrows": "to", "from": "Clostridium", "to": "Butyrate", "width": 1}, {"arrows": "to", "from": "Clostridium", "to": "1,3-Propanediol", "width": 1}, {"arrows": "to", "from": "Clostridium", "to": "Caproate", "width": 1}, {"arrows": "to", "from": "Clostridium", "to": "Ethanol", "width": 1}, {"arrows": "to", "from": "Clostridium", "to": "Hydrogen", "width": 1}, {"arrows": "to", "from": "Clostridium", "to": "Butanol", "width": 1}, {"arrows": "to", "from": "Neocallimastix", "to": "Butyrate", "width": 1}, {"arrows": "to", "from": "Neocallimastix", "to": "Butanol", "width": 1}, {"arrows": "to", "from": "Enterococcus", "to": "Hydrogen", "width": 1}, {"arrows": "to", "from": "Enterococcus", "to": "Butanol", "width": 1}, {"arrows": "to", "from": "CO", "to": "Clostridium", "width": 1}, {"arrows": "to", "from": "CO", "to": "Eubacterium", "width": 1}, {"arrows": "to", "from": "CO", "to": "Escherichia", "width": 1}, {"arrows": "to", "from": "CO", "to": "Acetobacterium", "width": 1}, {"arrows": "to", "from": "CO", "to": "Pelobacter", "width": 1}, {"arrows": "to", "from": "CO", "to": "Anaerotignum", "width": 1}, {"arrows": "to", "from": "Anoxybacillus", "to": "Microbial proteases", "width": 1}, {"arrows": "to", "from": "Lignocellulose", "to": "Saccharomyces", "width": 1}, {"arrows": "to", "from": "Lignocellulose", "to": "Trichoderma", "width": 1}, {"arrows": "to", "from": "Lignocellulose", "to": "Aspergillus", "width": 1}, {"arrows": "to", "from": "Lignocellulose", "to": "Enterococcus", "width": 1}, {"arrows": "to", "from": "Lignocellulose", "to": "Clostridium", "width": 1}, {"arrows": "to", "from": "Lignocellulose", "to": "Escherichia", "width": 1}, {"arrows": "to", "from": "Lignocellulose", "to": "Anaeromyces", "width": 1}, {"arrows": "to", "from": "Lignocellulose", "to": "Neocallimastix", "width": 1}, {"arrows": "to", "from": "Lignocellulose", "to": "Caecomyces", "width": 1}, {"arrows": "to", "from": "Food waste", "to": "Bacillus", "width": 1}, {"arrows": "to", "from": "Food waste", "to": "Aeribacillus", "width": 1}, {"arrows": "to", "from": "Food waste", "to": "Lysinibacillus", "width": 1}, {"arrows": "to", "from": "Food waste", "to": "Anoxybacillus", "width": 1}, {"arrows": "to", "from": "Lysinibacillus", "to": "Microbial proteases", "width": 1}, {"arrows": "to", "from": "Sucrose", "to": "Bacillus", "width": 1}, {"arrows": "to", "from": "Sucrose", "to": "Escherichia", "width": 1}, {"arrows": "to", "from": "Sucrose", "to": "Aspergillus", "width": 1}, {"arrows": "to", "from": "Sucrose", "to": "Aeribacillus", "width": 1}, {"arrows": "to", "from": "Sucrose", "to": "Lysinibacillus", "width": 1}, {"arrows": "to", "from": "Sucrose", "to": "Anoxybacillus", "width": 1}, {"arrows": "to", "from": "Escherichia", "to": "Butanol", "width": 1}, {"arrows": "to", "from": "Escherichia", "to": "Ethanol", "width": 1}, {"arrows": "to", "from": "Escherichia", "to": "Hydrogen", "width": 1}, {"arrows": "to", "from": "Glucose", "to": "Clostridium", "width": 1}, {"arrows": "to", "from": "Glucose", "to": "Escherichia", "width": 1}, {"arrows": "to", "from": "Glucose", "to": "Bacillus", "width": 1}, {"arrows": "to", "from": "Glucose", "to": "Lysinibacillus", "width": 1}, {"arrows": "to", "from": "Glucose", "to": "Saccharomyces", "width": 1}, {"arrows": "to", "from": "Pelobacter", "to": "Propionate", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
