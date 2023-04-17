@@ -1,6 +1,8 @@
 
+#own defined
 literature search/archive/
-.DS_Store
+*.DS_Store
+genomes/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
