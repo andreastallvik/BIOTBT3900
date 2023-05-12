@@ -6,6 +6,9 @@ def energy_generating_cycle_test(model):
 
     test_model = model.copy()
 
+    #set lower bound of ATMP function to 0
+    test_model.reactions.ATPM.lower_bound = 0
+
     #Set the objective function to max ATP maintance
     test_model.objective = "ATPM"
 
