@@ -6,7 +6,7 @@ from cobra import Model, Reaction, Metabolite
 from cobra.io import read_sbml_model, write_sbml_model
 from cobra.flux_analysis import flux_variability_analysis
 from cobra.manipulation import knock_out_model_genes
-from energy_cycle import energy_generating_cycle_test
+from GEM_eval import energy_generating_cycle_test
 from config import ROOT_DIR
 from multiprocessing import freeze_support
 
@@ -294,16 +294,16 @@ def sal9():
     
     #3,4-dihydroxyphenylpyruvate -> salvianic acid A
     DHPPSA = Reaction('DHPPSA')
-    DHPPSA.name = '(R)-3-(4-hydroxyphenyl)lactate:NADP+ oxidoreductase'
+    DHPPSA.name = '4-hydroxyphenyllactate:NAD+ oxidoreductase'
     DHPPSA.subsystem = 'SAA module'
     DHPPSA.lower_bound = -1000  # This is the default
     DHPPSA.upper_bound = 1000  # This is the default
-    #3,4-Dihydroxyphenyllactate + NADP+ <=> 3,4-Dihydroxyphenylpyruvate + NADPH + H+
+    #3,4-Dihydroxyphenyllactate + NAD+ <=> 3,4-Dihydroxyphenylpyruvate + NADH + H+
     DHPPSA.add_metabolites({
         saa_c: 1.0,
-        nadp_c: 1.0,
+        nad_c: 1.0,
         dhpp34_c: -1.0,
-        nadph_c: -1.0,
+        nadh_c: -1.0,
         h_c: -1.0
     })
     #DHPPSA.gene_reaction_rule = 'ldh' #synthetic ldh gene
@@ -501,5 +501,5 @@ def cal2():
 if __name__ == '__main__':
     freeze_support()
     # mam2()
-    # sal9()
+    sal9()
     # cal2()
