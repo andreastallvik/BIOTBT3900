@@ -3,6 +3,7 @@
 literature search/archive/
 *.DS_Store
 genomes/
+large_input/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
