@@ -498,8 +498,165 @@ def cal2():
     print("Writing model to file as", str(file_path))
     write_sbml_model(CAL2, file_path)
 
+
+def mam1():
+
+    print("loading GEMs...")
+
+    print("... bl21 model")
+    # read model for E. coli BL21
+    bl21 = read_sbml_model(str(ROOT_DIR / "community_modelling" / "GEMs" / "iHK1487.xml"))
+
+    print("... universal model")
+    #read the universal model
+    uni = read_sbml_model(str(ROOT_DIR / "community_modelling" / "GEMs" / "bigg_universe.xml"))
+
+    MAM1 = bl21.copy()
+
+    ############### Metabolites ###############
+
+    print("adding metabolites")
+
+    #caffeic acid
+    caffeic_acid_c = uni.metabolites.get_by_id("34dhcinm_c")
+    caffeic_acid_c.compartment = 'c'
+
+    #external caffeic acid
+    caffeic_acid_e = uni.metabolites.get_by_id("34dhcinm_e")
+    caffeic_acid_e.compartment = 'e'
+
+    #caffeoyl CoA
+    caffcoa_c = uni.metabolites.get_by_id("caffcoa_c")
+    caffcoa_c.compartment = 'c'
+
+    #3,4-Dihydroxyphenyllactic acid | Salvianic acid A | SAA
+    saa_c = Metabolite(
+        'saa_c',
+        formula='C9H10O5',
+        name='3,4-Dihydroxyphenyllactic acid',
+        compartment='c')
+
+    #external 3,4-Dihydroxyphenyllactic acid | Salvianic acid A | SAA
+    saa_e = Metabolite(
+        'saa_e',
+        formula='C9H10O5',
+        name='3,4-Dihydroxyphenyllactic acid',
+        compartment='e')
+
+    #rosmarinic acid
+    rosma_c = Metabolite(
+        'rosma_c',
+        formula='C18H16O8',
+        name='Rosmarinic acid',
+        compartment='c')
+
+    #external rosmarinic acid
+    rosma_e = Metabolite(
+        'rosma_e',
+        formula='C18H16O8',
+        name='Rosmarinic acid',
+        compartment='e')
+
+    #ATP
+    atp_c = bl21.metabolites.get_by_id("atp_c")
+
+    #AMP
+    amp_c = bl21.metabolites.get_by_id("amp_c")
+
+    #Diphosphate
+    ppi_c = bl21.metabolites.get_by_id("ppi_c")
+
+    #CoA
+    coa_c = bl21.metabolites.get_by_id("coa_c")
+
+    ############### Reactions ###############
+
+    print("adding reactions")
+
+    #caffeic acid transport reaction
+    CAFFAt = Reaction('CAFFAt')
+    CAFFAt.name = 'caffa transport'
+    CAFFAt.subsystem = 'RA module'
+    CAFFAt.lower_bound = -1000  # This is the default
+    CAFFAt.upper_bound = 1000  # This is the default
+    CAFFAt.add_metabolites({
+        caffeic_acid_c: -1.0,
+        caffeic_acid_e: 1.0
+    })
+
+    CAFFCOA = uni.reactions.get_by_id("CAFFCOA")
+
+
+    #SAA transport reaction
+    SAAt = Reaction('SAAt')
+    SAAt.name = 'caffa transport'
+    SAAt.subsystem = 'RA module'
+    SAAt.lower_bound = -1000  # This is the default
+    SAAt.upper_bound = 1000  # This is the default
+    SAAt.add_metabolites({
+        saa_c: -1.0,
+        saa_e: 1.0
+    })
+
+
+    #salvianic acid A + caffeoyl CoA -> Rosmarinic acid
+    RAS = Reaction('RAS')
+    RAS.name = 'rosmarinic acid synthase'
+    RAS.subsystem = 'RA module'
+    RAS.lower_bound = -1000  # This is the default
+    RAS.upper_bound = 1000  # This is the default
+    #Caffeoyl-CoA + 3-(3,4-Dihydroxyphenyl)lactate <=> CoA + Rosmarinate
+    RAS.add_metabolites({
+        caffcoa_c: -1.0,
+        saa_c: -1.0,
+        coa_c: 1.0,
+        rosma_c: 1.0
+    })
+    #RAS.gene_reaction_rule = '(ras)' #synthetic 4CL gene
+
+
+    #RA transport reaction
+    RAt = Reaction('RAt')
+    RAt.name = 'caffa transport'
+    RAt.subsystem = 'RA module'
+    RAt.lower_bound = -1000  # This is the default
+    RAt.upper_bound = 1000  # This is the default
+    RAt.add_metabolites({
+        rosma_c: -1.0,
+        rosma_e: 1.0
+    })
+
+    # add reactions to model
+    MAM1.add_reactions([CAFFAt, CAFFCOA, SAAt, RAS, RAt])
+
+    #exhange reactions for SA, caffa, and RA
+
+    #MAM1.metabolites.get_by_id("34dhcinm_e").compartment = 'e' #set compartment to be 'e' rather than 'C_e'
+
+    MAM1.add_boundary(MAM1.metabolites.get_by_id("34dhcinm_e"), type="exchange")
+    MAM1.add_boundary(MAM1.metabolites.get_by_id("saa_e"), type="exchange")
+    MAM1.add_boundary(MAM1.metabolites.get_by_id("rosma_e"), type="exchange")
+
+    #so that cell cannot eat rosmarinic acid
+    MAM1.reactions.EX_rosma_e.lower_bound = 0
+
+    print("Testing model")
+
+    # # run tests to see that the model functions as it should
+    assert no_energy_gen_cycles(MAM1), "Energy generation cycle detected"
+    assert production_possible(MAM1, "EX_rosma_e"), "RA production not possible"
+
+    #updtate the model ID
+    MAM1.id = 'MAM1'
+
+    # write model to file
+    file_path = ROOT_DIR / "community_modelling" / "GEMs" / "MAM1.xml"
+    print("Writing model to file as", str(file_path))
+    write_sbml_model(MAM1, file_path)
+
 if __name__ == '__main__':
     freeze_support()
     # mam2()
-    sal9()
+    # sal9()
     # cal2()
+    mam1()
