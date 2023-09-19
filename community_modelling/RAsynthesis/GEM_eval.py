@@ -30,11 +30,14 @@ def energy_generating_cycle_test(model):
     except Infeasible:
         print("Infesible solution")
 
-def saa_loop(sol, community = True):
+def saa_loop(sol, community = True, mra = False):
     """Tests that the split patway in SAA module is not behaving like a loop"""
 
     if community:
         reactions = ["R_HPPHD_SAL9", "R_DHPPSA_SAL9", "R_DLDH_SAL9", "R_HPLSA_SAL9"]
+
+    elif mra:
+        reactions = ["R_HPPHD_MRA", "R_DHPPSA_MRA", "R_DLDH_MRA", "R_HPLSA_MRA"]
 
     else:
         reactions = ["R_HPPHD", "R_DHPPSA", "R_DLDH", "R_HPLSA"]
@@ -42,7 +45,7 @@ def saa_loop(sol, community = True):
     is_loop = False
 
     for reaction in reactions:
-        if (reaction == "R_DLDH_SAL9") or (reaction == "R_DLDH"):
+        if (reaction == "R_DLDH_SAL9") or (reaction == "R_DLDH") or (reaction == "R_DLDH_MRA"):
             if sol.values[reaction] > 0:
                 warn(reaction + " has flux value of " +str(sol.values[reaction]))
                 is_loop = True
