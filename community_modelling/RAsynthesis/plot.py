@@ -5,6 +5,7 @@ For dynamic sim results.
 
 import seaborn as sns
 import pandas as pd
+import matplotlib.pyplot as plt
 
 def plot_relative_abundance(biomass_df: pd.DataFrame):
 
@@ -19,4 +20,12 @@ def plot_relative_abundance(biomass_df: pd.DataFrame):
 
     sns.lineplot(plot_df, x="cycles", y="relative_abundance", hue="strain", hue_order=["CAL11", "SAL11", "MAM3"])
     plt.ylabel("Subpopulation fraction")
+    return plt
+
+
+def plot_metabolites(metabolites_df: pd.DataFrame):
+    products = ["saa_e", "34dhcinm_e", "rosma_e", "cycle"]
+    media = metabolites_df[products]
+    media.plot(x = "cycle")
+    plt.ylabel("mmol")
     return plt
