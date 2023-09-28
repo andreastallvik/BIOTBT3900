@@ -29,3 +29,8 @@ def plot_metabolites(metabolites_df: pd.DataFrame):
     media.plot(x = "cycle")
     plt.ylabel("mmol")
     return plt
+
+def plot_biomass(biomass_df: pd.DataFrame):
+    biomass_df.plot(x = "cycle")
+    plt.ylabel("biomass (gDW)")
+    return plt
