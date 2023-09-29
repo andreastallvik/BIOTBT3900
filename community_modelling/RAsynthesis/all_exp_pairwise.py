@@ -1,3 +1,7 @@
+"""
+Script for running 36 experiments with all inoculation ratio / glucose:xylose ratio combinations, 
+in order to re-create fig. 6 from the RA paper.
+"""
 
 import itertools
 from dfba_comets import run_dfba
@@ -11,16 +15,16 @@ inocculation_ratios = [
     (1,1,1),
     (1,2,1),
     (2,2,1),
-    (2,1,1), #
-    (3,1,1), #
-    (3,2,1) #
+    (2,1,1),
+    (3,1,1),
+    (3,2,1)
 ]
 
 glucose_xylose_ratios = [
     (1, 4),
     (2, 3),
-    (3, 2), #
-    (4, 1) #
+    (3, 2),
+    (4, 1)
 ]
 
 def convert_to_mmol(glc_xyl_ratio):
@@ -56,7 +60,7 @@ for experiment in tqdm(all_experiment_combinations):
     glucose_xylose_ratio = convert_to_mmol(experiment[1])
 
     try:
-        sim = run_dfba(initial_pop_ratio=inocculation_ratio, glc_xyl_mmol=glucose_xylose_ratio)
+        sim = run_dfba(initial_pop_ratio=inocculation_ratio, glc_xyl_mmol=glucose_xylose_ratio, RA_lb=0.5)
 
         tot_BM = sum(sim.total_biomass.drop(columns=["cycle"], inplace=False).iloc[-1])
         tot_RA = sim.get_metabolite_time_series()["rosma_e"].iloc[-1]
@@ -65,10 +69,11 @@ for experiment in tqdm(all_experiment_combinations):
         tot_RAs.append(tot_RA)
         inoc_ratio_list.append(inocculation_ratio)
         glc_xyl_ratio_list.append(experiment[1])
+
     except Exception as e:
         print("not able to process combination:", experiment)
         print(f"An exception occurred: {e}")
 
 results_df = pd.DataFrame({'inoculation_ratio': inoc_ratio_list, 'glc_xyl_ratio': glc_xyl_ratio_list, 'total_biomass': tot_BM_list, 'total_RA': tot_RAs})
 
-results_df.to_csv("all_exp_results_full", index=False)
+results_df.to_csv("all_exp_results_hLB", index=False)
