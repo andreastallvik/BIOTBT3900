@@ -33,6 +33,10 @@ def run_dfba(initial_pop_ratio: tuple[int] =(2, 1, 1), adjust_atp_requirements: 
     mam3.reactions.RAt.bounds = (RA_lb, 1000.0)
     sal11.reactions.SAAt.bounds = (RA_lb, 1000.0)
     cal11.reactions.get_by_id("34DHCINMt").bounds = (RA_lb, 1000.0)
+    # updated, using individual organisms gDW and not communty
+    # mam3.reactions.RAt.bounds = (0.89, 1000.0)
+    # sal11.reactions.SAAt.bounds = (0.001, 1000.0)
+    # cal11.reactions.get_by_id("34DHCINMt").bounds = (0.15, 1000.0)
 
     # update ids
     cal11.id = "CAL11"
