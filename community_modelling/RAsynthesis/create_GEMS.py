@@ -929,6 +929,7 @@ def mra():
 
 
 def cal11():
+    """GEM for CA module with knocked out glucose transport"""
 
     print("loading GEMs...")
 
@@ -941,21 +942,6 @@ def cal11():
     uni = read_sbml_model(str(ROOT_DIR / "community_modelling" / "GEMs" / "bigg_universe.xml"))
 
     CAL11 = k12.copy()
-
-    ############### Knock-outs ###############
-
-    # pheA | gene b2599
-    knock_out_model_genes(CAL11, ["b2599"])
-    # ptsH | b2415
-    knock_out_model_genes(CAL11, ["b2415"])
-    # ptsI | b2416
-    knock_out_model_genes(CAL11, ["b2416"])
-    # crr | b2417
-    knock_out_model_genes(CAL11, ["b2417"])
-    # ydiB | b1692
-    knock_out_model_genes(CAL11, ["b1692"])
-
-    #NOTE: might need to knock out more to fully disable glucose uptake / just set glucose transport to 0 or something
 
     ############### Metabolites ###############
 
@@ -1057,6 +1043,23 @@ def cal11():
 
     # allow uptake of xylose
     CAL11.reactions.EX_xyl__D_e.lower_bound = -10
+
+    ############### Knock-outs ###############
+
+    # glucose transport reactions
+    CAL11.reactions.GLCtex_copy1.bounds = (0.0, 0.0)
+    CAL11.reactions.GLCtex_copy2.bounds = (0.0, 0.0)
+
+    # # pheA | gene b2599
+    # knock_out_model_genes(CAL11, ["b2599"])
+    # # ptsH | b2415
+    # knock_out_model_genes(CAL11, ["b2415"])
+    # # ptsI | b2416
+    # knock_out_model_genes(CAL11, ["b2416"])
+    # # crr | b2417
+    # knock_out_model_genes(CAL11, ["b2417"])
+    # # ydiB | b1692
+    # knock_out_model_genes(CAL11, ["b1692"])
     
     print("Testing model")
 
@@ -1068,12 +1071,13 @@ def cal11():
     CAL11.id = 'CAL11'
 
     # write model to file
-    file_path = ROOT_DIR / "community_modelling" / "GEMs" / "CAL11.xml"
+    file_path = ROOT_DIR / "community_modelling" / "RAsynthesis" / "GEMs" / "CAL11.xml"
     print("Writing model to file as", str(file_path))
     write_sbml_model(CAL11, file_path)
 
 
 def mam3():
+    """GEM for RA module with knocked out glucose transport"""
 
     print("loading GEMs...")
 
@@ -1086,23 +1090,6 @@ def mam3():
     uni = read_sbml_model(str(ROOT_DIR / "community_modelling" / "GEMs" / "bigg_universe.xml"))
 
     MAM3 = k12.copy()
-
-    ############### Knock-outs ###############
-
-    # pheA | gene b2599
-    knock_out_model_genes(MAM3, ["b2599"])
-    # ptsH | b2415
-    knock_out_model_genes(MAM3, ["b2415"])
-    # ptsI | b2416
-    knock_out_model_genes(MAM3, ["b2416"])
-    # crr | b2417
-    knock_out_model_genes(MAM3, ["b2417"])
-    # ydiB | b1692
-    knock_out_model_genes(MAM3, ["b1692"])
-    # aroE | b3281
-    knock_out_model_genes(MAM3, ["b3281"])
-
-    #NOTE: might need to knock out more to fully disable glucose uptake / just set glucose transport to 0 or something
 
     ############### Metabolites ###############
 
@@ -1231,6 +1218,26 @@ def mam3():
     #so that cell cannot eat rosmarinic acid
     MAM3.reactions.EX_rosma_e.lower_bound = 0
 
+    # allow uptake of xylose
+    MAM3.reactions.EX_xyl__D_e.lower_bound = -10
+
+    ############### Knock-outs ###############
+
+    # glucose transport reactions
+    MAM3.reactions.GLCtex_copy1.bounds = (0.0, 0.0)
+    MAM3.reactions.GLCtex_copy2.bounds = (0.0, 0.0)
+
+    # # pheA | gene b2599
+    # knock_out_model_genes(CAL11, ["b2599"])
+    # # ptsH | b2415
+    # knock_out_model_genes(CAL11, ["b2415"])
+    # # ptsI | b2416
+    # knock_out_model_genes(CAL11, ["b2416"])
+    # # crr | b2417
+    # knock_out_model_genes(CAL11, ["b2417"])
+    # # ydiB | b1692
+    # knock_out_model_genes(CAL11, ["b1692"])
+
     print("Testing model")
 
     # # run tests to see that the model functions as it should
@@ -1241,12 +1248,13 @@ def mam3():
     MAM3.id = 'MAM3'
 
     # write model to file
-    file_path = ROOT_DIR / "community_modelling" / "GEMs" / "MAM3.xml"
+    file_path = ROOT_DIR / "community_modelling" / "RAsynthesis" / "GEMs" / "MAM3.xml"
     print("Writing model to file as", str(file_path))
     write_sbml_model(MAM3, file_path)
 
 
 def sal11():
+    """ GEM for SAA module with knocked out xylose transport"""
 
     print("loading GEMs...")
 
@@ -1259,11 +1267,6 @@ def sal11():
     uni = read_sbml_model(str(ROOT_DIR / "community_modelling" / "GEMs" / "bigg_universe.xml"))
 
     SAL11 = bl21.copy()
-
-    ############### Knock-outs ###############
-
-    # xylA (b3565) | ECD_03417
-    knock_out_model_genes(SAL11, ["ECD_03417"])
 
     ############### Metabolites ###############
 
@@ -1421,8 +1424,17 @@ def sal11():
     # exhange reactions for SA
     SAL11.add_boundary(SAL11.metabolites.get_by_id("saa_e"), type="exchange")
 
+    # ############### Knock-outs ###############
+
+    # xylose uptake
+    SAL11.reactions.XYLtex.bounds = (0.0, 0.0)
+
+    # # xylA (b3565) | ECD_03417
+    # knock_out_model_genes(SAL11, ["ECD_03417"])
+
     # so that the cell cannot eat SA
     SAL11.reactions.EX_saa_e.lower_bound = 0
+
     
     print("Testing model")
 
@@ -1434,7 +1446,7 @@ def sal11():
     SAL11.id = 'SAL11'
 
     # write model to file
-    file_path = ROOT_DIR / "community_modelling" / "GEMs" / "SAL11.xml"
+    file_path = ROOT_DIR / "community_modelling" / "RAsynthesis" / "GEMs" / "SAL11.xml"
     print("Writing model to file as", str(file_path))
     write_sbml_model(SAL11, file_path)
     
@@ -1447,5 +1459,5 @@ if __name__ == '__main__':
     # mam1()
     # mra()
     # cal11()
-    # mam3()
-    sal11()
+    mam3()
+    # sal11()
