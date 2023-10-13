@@ -999,7 +999,7 @@ def cal11():
         p_coumaric_acid_c: 1.0,
         nh4_c: 1.0
     })
-    #TAL.gene_reaction_rule = 'tal' #synthetic rgTAL gene
+    TAL.gene_reaction_rule = 'tal' #synthetic rgTAL gene
 
     #p-coumaric acid -> caffeic acid
     COURCA = Reaction('COURCA')
@@ -1015,7 +1015,7 @@ def cal11():
         nad_c: 1.0,
         h_c: 1.0
     })
-    #COURCA.gene_reaction_rule = '(hpaB and hpaC)' #synthetic hpaC gene
+    COURCA.gene_reaction_rule = '(hpaB and hpaC)' #synthetic hpaC gene
 
     #caffeic acid transport reaction
     CAFFAt = Reaction('34DHCINMt')
@@ -1162,8 +1162,9 @@ def mam3():
         caffeic_acid_e: 1.0
     })
 
+    # 4CL reaction CA -> caffeoyl-CoA
     CAFFCOA = uni.reactions.get_by_id("CAFFCOA")
-
+    CAFFCOA.gene_reaction_rule = '(4CL)' #synthetic 4CL gene
 
     #SAA transport reaction
     SAAt = Reaction('SAAt')
@@ -1190,7 +1191,7 @@ def mam3():
         coa_c: 1.0,
         rosma_c: 1.0
     })
-    #RAS.gene_reaction_rule = '(ras)' #synthetic 4CL gene
+    RAS.gene_reaction_rule = '(ras)' #synthetic moRAS gene
 
 
     #RA transport reaction
@@ -1343,7 +1344,7 @@ def sal11():
         nadh_c: 1.0,
         h_c: 1.0
     })
-    #DLDH.gene_reaction_rule = 'ldh' #synthetic ldh gene
+    DLDH.gene_reaction_rule = 'ldh' #synthetic ldh gene
 
     #HPP -> 3,4-dihydroxyphenylpyruvate
     HPPHD = Reaction('HPPHD')
@@ -1366,7 +1367,7 @@ def sal11():
         dhpp34_c: 1.0,
         nad_c: 1.0,
     })
-    #HPPHD.gene_reaction_rule = '(hpaB and hpaC)' #synthetic hpaBC gene
+    HPPHD.gene_reaction_rule = '(hpaB and hpaC)' #synthetic hpaBC gene
     
     #3,4-dihydroxyphenylpyruvate -> salvianic acid A
     DHPPSA = Reaction('DHPPSA')
@@ -1382,7 +1383,7 @@ def sal11():
         nadh_c: -1.0,
         h_c: -1.0
     })
-    #DHPPSA.gene_reaction_rule = 'ldh' #synthetic ldh gene
+    DHPPSA.gene_reaction_rule = 'ldh' #synthetic ldh gene
 
     #4-hydroxyphenyllactate -> salvianic acid A
     HPLSA = Reaction('HPLSA')
@@ -1405,7 +1406,7 @@ def sal11():
         saa_c: 1.0,
         nad_c: 1.0,
     })
-    #HPLSA.gene_reaction_rule = '(hpaB and hpaC)' #synthetic ldh gene
+    HPLSA.gene_reaction_rule = '(hpaB and hpaC)' #synthetic hpaBC gene
 
     #SAA transport reaction
     SAAt = Reaction('SAAt')
@@ -1459,5 +1460,5 @@ if __name__ == '__main__':
     # mam1()
     # mra()
     # cal11()
-    mam3()
-    # sal11()
+    # mam3()
+    sal11()
