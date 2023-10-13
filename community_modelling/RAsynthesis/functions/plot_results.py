@@ -21,12 +21,15 @@ def plot_relative_abundance_glc_xyl(results_df, cal11_ra, sal11_ra, mam3_ra):
     plt.xlabel("fraction of optimal solution")
 
 
-def plot_relative_abundance_RA_prod_glc_xyl(results_df, cal11_ra, sal11_ra, mam3_ra):
+def plot_relative_abundance_RA_prod_glc_xyl(results_df, cal11_ra, sal11_ra, mam3_ra, scatter=False):
     
     plot_df = results_df.explode(["CAL11", "SAL11", "MAM3"])
     df_melt = plot_df.drop(columns=["RA_prod_rate"]).melt('RA_percentage', var_name='strain', value_name='species abundance')
 
-    sns.lineplot(data=df_melt, x="RA_percentage", y="species abundance", hue="strain",orient="y")
+    if scatter:
+        sns.scatterplot(data=df_melt, x="RA_percentage", y="species abundance", hue="strain")    
+    else:
+        sns.lineplot(data=df_melt, x="RA_percentage", y="species abundance", hue="strain",orient="y")
 
     #stipled lines with exp. steady-state species abundance
     plt.axhline(y=cal11_ra, linestyle='--', color='blue')
@@ -116,6 +119,28 @@ def plot_production_time_course(sim_results, exp_data):
     ax2.set_ylabel("measured concentration (mmol/L)")
 
     plt.show()
+
+
+def plot_production_flux_values(sim):
+    """Plot the flux values for the strains."""
+
+    CAL11_flux = sim.get_species_exchange_fluxes("CAL11")
+    SAL11_flux = sim.get_species_exchange_fluxes("SAL11")
+    MAM3_flux = sim.get_species_exchange_fluxes("MAM3")
+
+    production_fluxes = pd.concat([CAL11_flux["EX_34dhcinm_e"], SAL11_flux["EX_saa_e"], MAM3_flux["EX_rosma_e"]], axis=1)
+    production_fluxes["time"] = production_fluxes.index *0.1
+    plot_df = production_fluxes.melt(id_vars="time", value_vars=["EX_34dhcinm_e", "EX_saa_e", "EX_rosma_e"], value_name="flux_value", var_name="reaction")
+
+    sns.lineplot(data=plot_df, x="time", y="flux_value", hue="reaction")
+
+
+def plot_metabolites(sim):
+    """Plot metabolite amounts."""
+    
+    sim_results = sim.get_metabolite_time_series(upper_threshold = 900.)
+    sim_results.plot(x = "cycle")
+    plt.ylabel("mmol")
 
 
 def plot_inoculum_substrate():

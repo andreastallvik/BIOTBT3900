@@ -86,14 +86,33 @@ def get_yields_glc_xyl(products_df):
     SAA_c = products_df[products_df["product"] == "SAA"]["concentration"].iloc[-1]
     RA_c = products_df[products_df["product"] == "RA"]["concentration"].iloc[-1]
 
-    # convert mg/L to g/L (same units as substrate)
-    CA_c = CA_c * 0.0001
-    SAA_c = SAA_c * 0.0001
-    RA_c = RA_c * 0.0001
+    # molar masses taken from KEGG
+    MM_CA = 180.1574
+    MM_SAA = 198.1727
+    MM_RA = 360.3148
 
-    CA_yield = CA_c / 2
-    SAA_yield = SAA_c / 3
-    RA_yield = RA_c / 2
+    # convert to mmol
+    CA_mmol = CA_c * 0.1 / MM_CA
+    SAA_mmol = SAA_c * 0.1 / MM_SAA
+    RA_mmol = RA_c * 0.1 / MM_RA
+
+    # calculate the TOTAL CA and SAA amount produced (since they are converted to RA, there is more produced than is accumelated at exp. end)
+    tot_CA_mmol = CA_mmol + RA_mmol
+    tot_SAA_mmol = SAA_mmol + RA_mmol
+
+    # covert to g/L to get the same units as substrate | sequentially: mmol -> mol -> g -> g/L
+    tot_CA_c = tot_CA_mmol * 0.0001 * MM_CA / 0.1
+    tot_SAA_c = tot_SAA_mmol * 0.0001 * MM_SAA / 0.1
+    tot_RA_c = RA_mmol * 0.0001 * MM_RA / 0.1
+
+    # # convert mg/L to g/L (same units as substrate)
+    # CA_c = CA_c * 0.0001
+    # SAA_c = SAA_c * 0.0001
+    # RA_c = RA_c * 0.0001
+
+    CA_yield = tot_CA_c / 2
+    SAA_yield = tot_SAA_c / 3
+    RA_yield = tot_RA_c / 2
 
     print("CA yield", CA_yield, "g CA per g xylose")
     print("SAA yield", SAA_yield, "g SAA per g glucose")

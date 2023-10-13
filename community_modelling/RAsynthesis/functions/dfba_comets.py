@@ -15,7 +15,7 @@ import warnings
 
 def simulate_xyl_glc_triculture(cal11, sal11, mam3, initial_pop_ratio: tuple[int] =(2, 1, 1), 
                                 adjust_atp_requirements: bool=False, RA_lb: float = 0.00104, 
-                                glc_xyl_mmol: tuple[float] = (1.66, 1.33)) -> c.comets:
+                                glc_xyl_mmol: tuple[float] = (1.66, 1.33), initial_pop: float = None) -> c.comets:
 
     if adjust_atp_requirements:
         # in order to equal the playing field between BL21 and K12 derived models:
@@ -36,7 +36,8 @@ def simulate_xyl_glc_triculture(cal11, sal11, mam3, initial_pop_ratio: tuple[int
     mam3_c = c.model(mam3)
 
     # set initial population
-    initial_pop = 1.e-3
+    if not initial_pop:
+        initial_pop = 1.e-3
 
     cal11_c.initial_pop = [0,0,initial_pop*initial_pop_ratio[0]]
     sal11_c.initial_pop = [0,0,initial_pop*initial_pop_ratio[1]]
@@ -131,7 +132,10 @@ def simulate_xyl_glc_triculture(cal11, sal11, mam3, initial_pop_ratio: tuple[int
 
 
 def run_dfba(initial_pop_ratio: tuple[int] =(2, 1, 1), adjust_atp_requirements: bool=False, 
-             RA_lb: float = 0.00104, glc_xyl_mmol: tuple[float] = (1.66, 1.33)) -> c.comets:
+             RA_lb: float = 0.00104, production_lbs: tuple[float] = (0.00104, 0.00104, 0.00104), 
+             glc_xyl_mmol: tuple[float] = (1.66, 1.33)) -> c.comets:
+    
+    """production_lbs should be in order cal, sal, mam"""
 
     # load models
     cal11 = read_sbml_model("../GEMs/CAL2.xml")
@@ -146,9 +150,9 @@ def run_dfba(initial_pop_ratio: tuple[int] =(2, 1, 1), adjust_atp_requirements: 
     sal11.reactions.XYLtex.bounds = (0.0, 0.0)
 
     # force RA/CA/SAA production at 80% of SteadyCom optimum
-    mam3.reactions.RAt.bounds = (RA_lb, 1000.0)
-    sal11.reactions.SAAt.bounds = (RA_lb, 1000.0)
-    cal11.reactions.get_by_id("34DHCINMt").bounds = (RA_lb, 1000.0)
+    mam3.reactions.RAt.bounds = (production_lbs[2], 1000.0)
+    sal11.reactions.SAAt.bounds = (production_lbs[1], 1000.0)
+    cal11.reactions.get_by_id("34DHCINMt").bounds = (production_lbs[0], 1000.0)
     # updated, using individual organisms gDW and not communty
     # mam3.reactions.RAt.bounds = (0.89, 1000.0)
     # sal11.reactions.SAAt.bounds = (0.001, 1000.0)
