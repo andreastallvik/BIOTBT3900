@@ -15,7 +15,7 @@ import warnings
 
 def simulate_xyl_glc_triculture(cal11, sal11, mam3, initial_pop_ratio: tuple[int] =(2, 1, 1), 
                                 adjust_atp_requirements: bool=False, RA_lb: float = 0.00104, 
-                                glc_xyl_mmol: tuple[float] = (1.66, 1.33), initial_pop: float = None) -> c.comets:
+                                glc_xyl_mmol: tuple[float] = (1.67, 1.33), initial_pop: float = None) -> c.comets:
 
     if adjust_atp_requirements:
         # in order to equal the playing field between BL21 and K12 derived models:
@@ -133,7 +133,7 @@ def simulate_xyl_glc_triculture(cal11, sal11, mam3, initial_pop_ratio: tuple[int
 
 def run_dfba(initial_pop_ratio: tuple[int] =(2, 1, 1), adjust_atp_requirements: bool=False, 
              RA_lb: float = 0.00104, production_lbs: tuple[float] = (0.00104, 0.00104, 0.00104), 
-             glc_xyl_mmol: tuple[float] = (1.66, 1.33)) -> c.comets:
+             glc_xyl_mmol: tuple[float] = (1.67, 1.33)) -> c.comets:
     
     """production_lbs should be in order cal, sal, mam"""
 
