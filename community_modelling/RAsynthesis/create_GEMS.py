@@ -494,9 +494,10 @@ def cal2():
     CAL2.id = 'CAL2'
 
     # write model to file
-    file_path = ROOT_DIR / "community_modelling" / "GEMs" / "RAsynthesis" / "CAL2.xml"
+    file_path = ROOT_DIR / "community_modelling" / "RAsynthesis" / "GEMs" / "CAL2.xml"
     print("Writing model to file as", str(file_path))
     write_sbml_model(CAL2, file_path)
+    print("done")
 
 
 def mam1():
@@ -1580,7 +1581,7 @@ def rau2():
     RAU2.id = 'RAU2'
 
     # write model to file
-    file_path = ROOT_DIR / "community_modelling" / "GEMs" / "RAsynthesis" / "RAU2.xml"
+    file_path = ROOT_DIR / "community_modelling" / "RAsynthesis" / "GEMs" / "RAU2.xml"
     print("Writing model to file as", str(file_path))
     write_sbml_model(RAU2, file_path)
 
@@ -1877,4 +1878,4 @@ if __name__ == '__main__':
     # mam3()
     # sal11()
     # rau2()
-    # rad4()
+    rad4()
