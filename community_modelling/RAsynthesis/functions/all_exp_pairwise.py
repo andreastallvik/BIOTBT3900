@@ -102,7 +102,8 @@ for experiment in tqdm(all_experiment_combinations):
         #sim = run_dfba(initial_pop_ratio=inocculation_ratio, glc_xyl_mmol=glucose_xylose_ratio, RA_lb=0.5)
 
         sim = simulate_xyl_glc_triculture(CAL11_cobra, SAL11_cobra, MAM3_cobra, 
-                                          initial_pop=2.e-3, initial_pop_ratio=inocculation_ratio, glc_xyl_mmol=glucose_xylose_ratio)
+                                          initial_pop=2.e-3, initial_pop_ratio=inocculation_ratio, 
+                                          glc_xyl_mmol=glucose_xylose_ratio, adjust_atp_requirements=False)
 
         tot_BM = sum(sim.total_biomass.drop(columns=["cycle"], inplace=False).iloc[-1])
         tot_RA = sim.get_metabolite_time_series()["rosma_e"].iloc[-1]

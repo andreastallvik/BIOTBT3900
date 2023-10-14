@@ -6,13 +6,16 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 
-def plot_relative_abundance_glc_xyl(results_df, cal11_ra, sal11_ra, mam3_ra):
+def plot_relative_abundance_glc_xyl(results_df, cal11_ra, sal11_ra, mam3_ra, scatter=False):
     """Make relative abundance plot for CAL11:SAL11:MAM11 tri-culture"""
 
     plot_df = results_df.explode(["CAL11", "SAL11", "MAM3"])
     df_melt = plot_df.melt('frac', var_name='strain', value_name='species abundance')
 
-    sns.lineplot(data=df_melt, x="frac", y="species abundance", hue="strain",orient="y")
+    if scatter:
+        sns.scatterplot(data=df_melt, x="frac", y="species abundance", hue="strain")
+    else:
+        sns.lineplot(data=df_melt, x="frac", y="species abundance", hue="strain",orient="y")
 
     #stipled lines with exp. steady-state species abundance
     plt.axhline(y=cal11_ra, linestyle='--', color='blue')
@@ -22,13 +25,16 @@ def plot_relative_abundance_glc_xyl(results_df, cal11_ra, sal11_ra, mam3_ra):
     plt.xlabel("fraction of optimal solution")
 
 
-def plot_relative_abundance_glc(results_df, cal2_ra, sal9_ra, mam2_ra):
+def plot_relative_abundance_glc(results_df, cal2_ra, sal9_ra, mam2_ra, scatter=False):
     """Make relative abundance plot for CAL2:SAL9:MAM2 tri-culture"""
 
     plot_df = results_df.explode(["CAL2", "SAL9", "MAM2"])
     df_melt = plot_df.melt('frac', var_name='strain', value_name='species abundance')
 
-    sns.lineplot(data=df_melt, x="frac", y="species abundance", hue="strain",orient="y")
+    if scatter:
+        sns.scatterplot(data=df_melt, x="frac", y="species abundance", hue="strain")
+    else:
+        sns.lineplot(data=df_melt, x="frac", y="species abundance", hue="strain",orient="y")
 
     #stipled lines with exp. steady-state species abundance
     plt.axhline(y=cal2_ra, linestyle='--', color='blue')
@@ -163,17 +169,17 @@ def plot_relative_abundance_time_course_glc(sim_results, exp_data):
     
     biomass_df = sim_results.copy()
 
-    total_BM = biomass_df["CAL2"] + biomass_df["SAL9"] + biomass_df["MAM9"]
+    total_BM = biomass_df["CAL2"] + biomass_df["SAL9"] + biomass_df["MAM2"]
     CAL2_frac = biomass_df["CAL2"] / total_BM
     SAL9_frac = biomass_df["SAL9"] / total_BM
-    MAM9_frac = biomass_df["MAM9"] / total_BM
+    MAM2_frac = biomass_df["MAM2"] / total_BM
 
-    df = pd.concat([total_BM, CAL2_frac, SAL9_frac, MAM9_frac], axis=1, keys=["total_BM", "CAL2", "SAL9", "MAM9"])
+    df = pd.concat([total_BM, CAL2_frac, SAL9_frac, MAM2_frac], axis=1, keys=["total_BM", "CAL2", "SAL9", "MAM2"])
     df["time"] = df.index * 0.1
-    plot_df = df.melt(id_vars="time", value_vars=["CAL2", "SAL9", "MAM9"], value_name="relative_abundance", var_name="strain")
+    plot_df = df.melt(id_vars="time", value_vars=["CAL2", "SAL9", "MAM2"], value_name="relative_abundance", var_name="strain")
 
-    sns.lineplot(plot_df, x="time", y="relative_abundance", hue="strain", hue_order=["CAL2", "SAL9", "MAM9"])
-    sns.scatterplot(data=exp_data, x='time', y='subpopulation_percentage', hue='strain', hue_order=["CAL2", "SAL9", "MAM9"], markers=".")
+    sns.lineplot(plot_df, x="time", y="relative_abundance", hue="strain", hue_order=["CAL2", "SAL9", "MAM2"])
+    sns.scatterplot(data=exp_data, x='time', y='subpopulation_percentage', hue='strain', hue_order=["CAL11", "SAL11", "MAM3"], markers=".")
     
     plt.ylabel("Subpopulation fraction")
     plt.xlabel("Time (h)")
