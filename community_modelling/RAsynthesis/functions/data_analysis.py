@@ -59,6 +59,7 @@ def mg_per_L_to_mmol(row):
     mmol = mg / molar_mass
     return mmol
 
+
 def mg_per_L_to_mmol_per_L(row):
 
     # molar masses taken from KEGG
@@ -78,6 +79,7 @@ def mg_per_L_to_mmol_per_L(row):
 
     mmol_per_L = mg_per_L / molar_mass
     return mmol_per_L
+
 
 def get_yields_glc_xyl(products_df):
 
@@ -121,6 +123,75 @@ def get_yields_glc_xyl(products_df):
     return CA_yield, SAA_yield, RA_yield
 
 
+def get_yields_glc(products_df):
+
+    # get final concentrations (in mg/L)
+    CA_c = products_df[products_df["product"] == "CA"]["concentration"].iloc[-1]
+    SAA_c = products_df[products_df["product"] == "SAA"]["concentration"].iloc[-1]
+    RA_c = products_df[products_df["product"] == "RA"]["concentration"].iloc[-1]
+
+    # molar masses taken from KEGG
+    MM_CA = 180.1574
+    MM_SAA = 198.1727
+    MM_RA = 360.3148
+
+    # convert to mmol
+    CA_mmol = CA_c * 0.1 / MM_CA
+    SAA_mmol = SAA_c * 0.1 / MM_SAA
+    RA_mmol = RA_c * 0.1 / MM_RA
+
+    # calculate the TOTAL CA and SAA amount produced (since they are converted to RA, there is more produced than is accumelated at exp. end)
+    tot_CA_mmol = CA_mmol + RA_mmol
+    tot_SAA_mmol = SAA_mmol + RA_mmol
+
+    # covert to g/L to get the same units as substrate | sequentially: mmol -> mol -> g -> g/L
+    tot_CA_c = tot_CA_mmol * 0.0001 * MM_CA / 0.1
+    tot_SAA_c = tot_SAA_mmol * 0.0001 * MM_SAA / 0.1
+    tot_RA_c = RA_mmol * 0.0001 * MM_RA / 0.1
+
+    CA_yield = tot_CA_c / 5
+    SAA_yield = tot_SAA_c / 5
+    RA_yield = tot_RA_c / 5
+
+    print("CA yield", CA_yield, "g CA per g glucose")
+    print("SAA yield", SAA_yield, "g SAA per g glucose")
+    print("RA yield", RA_yield, "g RA per g glucose")
+
+    return CA_yield, SAA_yield, RA_yield
+
+
+def get_yields_coculture(CA_c = 60, SAA_c = 73, RA_c = 32):
+
+    # molar masses taken from KEGG
+    MM_CA = 180.1574
+    MM_SAA = 198.1727
+    MM_RA = 360.3148
+
+    # convert to mmol
+    CA_mmol = CA_c * 0.1 / MM_CA
+    SAA_mmol = SAA_c * 0.1 / MM_SAA
+    RA_mmol = RA_c * 0.1 / MM_RA
+
+    # calculate the TOTAL CA and SAA amount produced (since they are converted to RA, there is more produced than is accumelated at exp. end)
+    tot_CA_mmol = CA_mmol + RA_mmol
+    tot_SAA_mmol = SAA_mmol + RA_mmol
+
+    # covert to g/L to get the same units as substrate | sequentially: mmol -> mol -> g -> g/L
+    tot_CA_c = tot_CA_mmol * 0.0001 * MM_CA / 0.1
+    tot_SAA_c = tot_SAA_mmol * 0.0001 * MM_SAA / 0.1
+    tot_RA_c = RA_mmol * 0.0001 * MM_RA / 0.1
+
+    CA_yield = tot_CA_c / 5
+    SAA_yield = tot_SAA_c / 5
+    RA_yield = tot_RA_c / 5
+
+    print("CA yield", CA_yield, "g CA per g glucose")
+    print("SAA yield", SAA_yield, "g SAA per g glucose")
+    print("RA yield", RA_yield, "g RA per g glucose")
+
+    return CA_yield, SAA_yield, RA_yield
+
+
 def print_production_stats_triculture(products_df):
     print("Final RA concentration (mg/L):", products_df[products_df["product"] == "RA"]["concentration"].iloc[-1])
     print("Final RA amount (mmol):", products_df[products_df["product"] == "RA"]["mmol"].iloc[-1])
@@ -144,3 +215,17 @@ def get_relative_abundance_stats_triculture(subpop_df):
     print("Relative MAM3 abundance at steady-state:", mam3_ra)    
 
     return cal11_ra, sal11_ra, mam3_ra
+
+
+def get_relative_abundance_stats_triculture_glc(subpop_df):
+    """Get relative abundance at steady-state, and print out. Returns relative abundance in order CAL, SAL, MAM. For CAL2:SAL9:MAM2."""
+
+    sal9_ra = subpop_df[subpop_df["strain"] == "SAL9"]["subpopulation_percentage"].iloc[-1]
+    cal2_ra = subpop_df[subpop_df["strain"] == "CAL2"]["subpopulation_percentage"].iloc[-1]
+    mam2_ra = subpop_df[subpop_df["strain"] == "MAM2"]["subpopulation_percentage"].iloc[-1]
+
+    print("Relative SAl9 abundance at steady-state:", sal9_ra)
+    print("Relative CAL2 abundance at steady-state:", cal2_ra)
+    print("Relative MAM2 abundance at steady-state:", mam2_ra)    
+
+    return cal2_ra, sal9_ra, mam2_ra
