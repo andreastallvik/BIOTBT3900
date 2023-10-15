@@ -286,7 +286,7 @@ def plot_production_time_course(sim_results, exp_data = None):
     ax1.set_xlabel("Time (h)")
     ax1.set_ylabel("simulated concentration (mmol/L)")
 
-    if exp_data:
+    if exp_data is not None:
         # create a second y-axis (ax2) and plot scatterplot on it
         ax2 = ax1.twinx()
         sns.scatterplot(data=exp_data, x="time", y="mmol_per_L", hue="product", hue_order=["CA", "SAA", "RA"], ax=ax2, markers=".")
