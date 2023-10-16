@@ -139,7 +139,7 @@ def plot_biomass_time_course(sim_results, exp_data):
     # plot
     sns.lineplot(data=plot_df, x="time", y="biomass", hue="variable")
 
-    plt.scatter(x='time', y='biomass', data=exp_data, color = "red", marker=".", label="measured total biomass")
+    sns.lineplot(x='time', y='biomass', data=exp_data, color = "red", label="measured total biomass", linestyle ="-.", legend=False)
     plt.legend()
     plt.xlabel("time (h)")
     plt.ylabel("biomass (gDW)")
@@ -165,7 +165,7 @@ def plot_biomass_time_course_glc(sim_results, exp_data):
     # plot
     sns.lineplot(data=plot_df, x="time", y="biomass", hue="variable")
 
-    plt.scatter(x='time', y='biomass', data=exp_data, color = "red", marker=".", label="measured total biomass")
+    plt.lineplot(x='time', y='biomass', data=exp_data, color = "red", linestyle ="-.", label="measured total biomass", legend=False)
     plt.legend()
     plt.xlabel("time (h)")
     plt.ylabel("biomass (gDW)")
@@ -212,7 +212,7 @@ def plot_relative_abundance_time_course(sim_results, exp_data):
     plot_df = df.melt(id_vars="time", value_vars=["CAL11", "SAL11", "MAM3"], value_name="relative_abundance", var_name="strain")
 
     sns.lineplot(plot_df, x="time", y="relative_abundance", hue="strain", hue_order=["CAL11", "SAL11", "MAM3"])
-    sns.scatterplot(data=exp_data, x='time', y='subpopulation_percentage', hue='strain', hue_order=["CAL11", "SAL11", "MAM3"], markers=".")
+    sns.lineplot(data=exp_data, x='time', y='subpopulation_percentage', hue='strain', hue_order=["CAL11", "SAL11", "MAM3"], linestyle ="-.", legend=False)
     
     plt.ylabel("Subpopulation fraction")
     plt.xlabel("Time (h)")
@@ -256,7 +256,7 @@ def plot_relative_abundance_time_course_glc(sim_results, exp_data):
     plot_df = df.melt(id_vars="time", value_vars=["CAL2", "SAL9", "MAM2"], value_name="relative_abundance", var_name="strain")
 
     sns.lineplot(plot_df, x="time", y="relative_abundance", hue="strain", hue_order=["CAL2", "SAL9", "MAM2"])
-    sns.scatterplot(data=exp_data, x='time', y='subpopulation_percentage', hue='strain', hue_order=["CAL2", "SAL9", "MAM2"], markers=".")
+    sns.lineplot(data=exp_data, x='time', y='subpopulation_percentage', hue='strain', hue_order=["CAL2", "SAL9", "MAM2"], linestyle="-.", legend=False)
     
     plt.ylabel("Subpopulation fraction")
     plt.xlabel("Time (h)")
@@ -289,7 +289,7 @@ def plot_production_time_course(sim_results, exp_data = None):
     if exp_data is not None:
         # create a second y-axis (ax2) and plot scatterplot on it
         ax2 = ax1.twinx()
-        sns.scatterplot(data=exp_data, x="time", y="mmol_per_L", hue="product", hue_order=["CA", "SAA", "RA"], ax=ax2, markers=".")
+        sns.lineplot(data=exp_data, x="time", y="mmol_per_L", hue="product", hue_order=["CA", "SAA", "RA"], ax=ax2, linestyle ="-.")
         ax2.set_ylabel("measured concentration (mmol/L)")
 
     plt.show()
