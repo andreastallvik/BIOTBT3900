@@ -23,9 +23,9 @@ products_df = pd.read_csv("../exp_data/conc_data_glc.csv")
 od600_df = pd.read_csv("../exp_data/od600_glc.csv")
 subpop_df, conc_df, OD_df = data_analysis.process_data(relative_abundance_df, products_df, od600_df)
 CA_yield, SAA_yield, RA_yield = data_analysis.get_yields_glc_xyl(conc_df)
-CA_yield = CA_yield * 10
-SAA_yield = SAA_yield * 10
-RA_yield = RA_yield * 10
+# CA_yield = CA_yield * 10
+# SAA_yield = SAA_yield * 10
+# RA_yield = RA_yield * 10
 
 print("loading and preparing GEMs")
 

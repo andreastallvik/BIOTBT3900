@@ -103,9 +103,9 @@ def get_yields_glc_xyl(products_df):
     tot_SAA_mmol = SAA_mmol + RA_mmol
 
     # covert to g/L to get the same units as substrate | sequentially: mmol -> mol -> g -> g/L
-    tot_CA_c = tot_CA_mmol * 0.0001 * MM_CA / 0.1
-    tot_SAA_c = tot_SAA_mmol * 0.0001 * MM_SAA / 0.1
-    tot_RA_c = RA_mmol * 0.0001 * MM_RA / 0.1
+    tot_CA_c = tot_CA_mmol * 0.001 * MM_CA / 0.1
+    tot_SAA_c = tot_SAA_mmol * 0.001 * MM_SAA / 0.1
+    tot_RA_c = RA_mmol * 0.001 * MM_RA / 0.1
 
     # # convert mg/L to g/L (same units as substrate)
     # CA_c = CA_c * 0.0001
@@ -145,9 +145,9 @@ def get_yields_glc(products_df):
     tot_SAA_mmol = SAA_mmol + RA_mmol
 
     # covert to g/L to get the same units as substrate | sequentially: mmol -> mol -> g -> g/L
-    tot_CA_c = tot_CA_mmol * 0.0001 * MM_CA / 0.1
-    tot_SAA_c = tot_SAA_mmol * 0.0001 * MM_SAA / 0.1
-    tot_RA_c = RA_mmol * 0.0001 * MM_RA / 0.1
+    tot_CA_c = tot_CA_mmol * 0.001 * MM_CA / 0.1
+    tot_SAA_c = tot_SAA_mmol * 0.001 * MM_SAA / 0.1
+    tot_RA_c = RA_mmol * 0.001 * MM_RA / 0.1
 
     CA_yield = tot_CA_c / 5
     SAA_yield = tot_SAA_c / 5

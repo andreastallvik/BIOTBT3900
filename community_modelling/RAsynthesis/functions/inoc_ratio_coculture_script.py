@@ -19,9 +19,9 @@ print("loading exp. data")
 
 # load exp. data yields, but magnified
 CA_yield, SAA_yield, RA_yield = data_analysis.get_yields_coculture()
-CA_yield = CA_yield * 10
-SAA_yield = SAA_yield * 10
-RA_yield = RA_yield * 10
+# CA_yield = CA_yield * 10
+# SAA_yield = SAA_yield * 10
+# RA_yield = RA_yield * 10
 
 print("loading and preparing GEMs")
 
