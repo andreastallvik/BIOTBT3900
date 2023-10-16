@@ -2,6 +2,7 @@
 Running dFBA using COMETSpy.
 
 TODO: create a better soluton for the MM kinetic paramerers
+TODO: find out how to change MM kinetic parameters!
 """
 
 import cometspy as c
@@ -52,13 +53,13 @@ def simulate_xyl_glc_triculture(cal11, sal11, mam3, initial_pop_ratio: tuple[int
     mam3_c.obj_style="MAX_OBJECTIVE_MIN_TOTAL"
 
     # set MM kinetic parameters for glucose, oxygen, and xylose uptake reactions
-
-    O2Vmax = 15
-    O2Km = 0.024
-    GlcVmax = 10.5 * 0.1 #NOTE: halved to see what will happen
-    GlcKm = 0.0027 * 0.1
-    XylVmax = 6 * 0.1 #NOTE: halved to see what will happen
-    XylKm = 0.0165 * 0.1
+    #NOTE: changing up these params to see what happens - if this does not have an effect, try changing after params are set? (move params up)
+    O2Vmax = 15 
+    O2Km = 0.024 #mmol/L
+    GlcVmax = 10.5 
+    GlcKm = 0.015 # mmol/L #0.0027 g/L
+    XylVmax = 6 
+    XylKm = 0.11 # mmol/L #0.0165 g/L
 
     cal11_c.change_vmax("EX_o2_e", O2Vmax)
     cal11_c.change_km("EX_o2_e", O2Km)

@@ -112,9 +112,10 @@ def get_yields_glc_xyl(products_df):
     # SAA_c = SAA_c * 0.0001
     # RA_c = RA_c * 0.0001
 
-    CA_yield = tot_CA_c / 2
+    #NOTE: assuming that CA and RA module consume glucose in proportion with their steady-state relative abundance
+    CA_yield = tot_CA_c / 1.23
     SAA_yield = tot_SAA_c / 3
-    RA_yield = tot_RA_c / 2
+    RA_yield = tot_RA_c / 0.77
 
     print("CA yield", CA_yield, "g CA per g xylose")
     print("SAA yield", SAA_yield, "g SAA per g glucose")
@@ -149,9 +150,10 @@ def get_yields_glc(products_df):
     tot_SAA_c = tot_SAA_mmol * 0.001 * MM_SAA / 0.1
     tot_RA_c = RA_mmol * 0.001 * MM_RA / 0.1
 
-    CA_yield = tot_CA_c / 5
-    SAA_yield = tot_SAA_c / 5
-    RA_yield = tot_RA_c / 5
+    # NOTE: assuming glucose in consumed in proportion with steady-state relative abundance
+    CA_yield = tot_CA_c / 2.5
+    SAA_yield = tot_SAA_c / 0.8
+    RA_yield = tot_RA_c / 1.7
 
     print("CA yield", CA_yield, "g CA per g glucose")
     print("SAA yield", SAA_yield, "g SAA per g glucose")
@@ -181,9 +183,10 @@ def get_yields_coculture(CA_c = 60, SAA_c = 73, RA_c = 32):
     tot_SAA_c = tot_SAA_mmol * 0.0001 * MM_SAA / 0.1
     tot_RA_c = RA_mmol * 0.0001 * MM_RA / 0.1
 
-    CA_yield = tot_CA_c / 5
-    SAA_yield = tot_SAA_c / 5
-    RA_yield = tot_RA_c / 5
+    #NOTE: making the (likely incorrect) assumption that each strain consumes 2.5 g/L glucose each
+    CA_yield = tot_CA_c / 2.5
+    SAA_yield = tot_SAA_c / 2.5
+    RA_yield = tot_RA_c / 2.5
 
     print("CA yield", CA_yield, "g CA per g glucose")
     print("SAA yield", SAA_yield, "g SAA per g glucose")
