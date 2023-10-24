@@ -5,6 +5,7 @@ Functions for processing the experimental data, adding useful columns, and print
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np
 
 
 def process_data(subpop_df, conc_df, OD_df):
@@ -232,3 +233,19 @@ def get_relative_abundance_stats_triculture_glc(subpop_df):
     print("Relative MAM2 abundance at steady-state:", mam2_ra)    
 
     return cal2_ra, sal9_ra, mam2_ra
+
+
+def get_growth_curves(od_df, subpop_df, strains):
+    """Calculates individual strain biomass measurements using total OD and relative abundance. 
+    Assumes "time" and "strain" columns in inputs are ordered (accending time, clustered by strain)."""
+    
+    strain_bm = []
+
+    for strain in strains:
+        bm = od_df["biomass"].values * subpop_df[subpop_df["strain"] == strain]["subpopulation_percentage"].values
+        strain_bm.append(bm.transpose())
+
+    bm_df = pd.DataFrame(np.array(strain_bm).T, columns=strains)
+    bm_df["time"] = od_df["time"]
+
+    return bm_df.melt(id_vars="time", value_name="biomass", var_name="strain")

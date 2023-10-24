@@ -119,7 +119,7 @@ def plot_relative_abundance_RA_prod_coculture(results_df, scatter=False):
     #plt.gca().invert_yaxis()
 
 
-def plot_biomass_time_course(sim_results, exp_data):
+def plot_biomass_time_course(sim_results, exp_data, growth_curves = None):
     """Make biomass time-course plot for CAL11:SAL11:MAM3 triculture"""
 
     """ sim_results should be a dataframe outputted from sim.total_biomass """
@@ -138,8 +138,11 @@ def plot_biomass_time_course(sim_results, exp_data):
 
     # plot
     sns.lineplot(data=plot_df, x="time", y="biomass", hue="variable")
-
     sns.lineplot(x='time', y='biomass', data=exp_data, color = "red", label="measured total biomass", linestyle ="-.", legend=False)
+
+    if growth_curves is not None:
+        sns.lineplot(x='time', y='biomass', hue="strain", data=growth_curves, linestyle ="-.", hue_order=["CAL11", "SAL11", "MAM3"], legend=False)
+
     plt.legend()
     plt.xlabel("time (h)")
     plt.ylabel("biomass (gDW)")
