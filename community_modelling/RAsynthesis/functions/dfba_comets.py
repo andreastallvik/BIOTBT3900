@@ -2,7 +2,6 @@
 Running dFBA using COMETSpy.
 
 TODO: create a better soluton for the MM kinetic paramerers
-TODO: find out how to change MM kinetic parameters!
 """
 
 import cometspy as c
@@ -54,27 +53,31 @@ def simulate_xyl_glc_triculture(cal11, sal11, mam3, initial_pop_ratio: tuple[int
 
     # set MM kinetic parameters for glucose, oxygen, and xylose uptake reactions
     #NOTE: changing up these params to see what happens - if this does not have an effect, try changing after params are set? (move params up)
-    O2Vmax = 15 
+
+    vmax_adjustment_factor = 1
+    km_adjustment_factor = 1
+
+    O2Vmax = 15
     O2Km = 0.024 #mmol/L
-    GlcVmax = 10.5 
-    GlcKm = 0.015 # mmol/L #0.0027 g/L
-    XylVmax = 6 
-    XylKm = 0.11 # mmol/L #0.0165 g/L
+    GlcVmax = 10.5 * vmax_adjustment_factor
+    GlcKm = 0.015 * km_adjustment_factor # mmol/L #0.0027 g/L
+    XylVmax = 6 * vmax_adjustment_factor
+    XylKm = 0.11 * km_adjustment_factor # mmol/L #0.0165 g/L
 
     cal11_c.change_vmax("EX_o2_e", O2Vmax)
     cal11_c.change_km("EX_o2_e", O2Km)
-    cal11_c.change_vmax("EX_glc__D_e", GlcVmax)
-    cal11_c.change_km("EX_glc__D_e", GlcKm)
+    cal11_c.change_vmax("EX_xyl__D_e", XylVmax)
+    cal11_c.change_km("EX_xyl__D_e", XylKm)
 
     sal11_c.change_vmax("EX_o2_e", O2Vmax)
     sal11_c.change_km("EX_o2_e", O2Km)
-    sal11_c.change_vmax("EX_xyl__D_e", XylVmax)
-    sal11_c.change_km("EX_xyl__D_e", XylKm)
+    sal11_c.change_vmax("EX_glc__D_e", GlcVmax)
+    sal11_c.change_km("EX_glc__D_e", GlcKm)
 
     mam3_c.change_vmax("EX_o2_e", O2Vmax)
     mam3_c.change_km("EX_o2_e", O2Km)
-    mam3_c.change_vmax("EX_glc__D_e", GlcVmax)
-    mam3_c.change_km("EX_glc__D_e", GlcKm)
+    mam3_c.change_vmax("EX_xyl__D_e", XylVmax)
+    mam3_c.change_km("EX_xyl__D_e", XylKm)
 
     # create a 1x1 layout
 
