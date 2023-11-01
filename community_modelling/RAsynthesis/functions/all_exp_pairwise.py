@@ -102,7 +102,7 @@ for experiment in tqdm(all_experiment_combinations):
         #sim = run_dfba(initial_pop_ratio=inocculation_ratio, glc_xyl_mmol=glucose_xylose_ratio, RA_lb=0.5)
 
         sim = simulate_xyl_glc_triculture(CAL11_cobra, SAL11_cobra, MAM3_cobra, 
-                                          initial_pop=2.e-3, initial_pop_ratio=inocculation_ratio, 
+                                          initial_pop=3.9e-3, initial_pop_ratio=inocculation_ratio, 
                                           glc_xyl_mmol=glucose_xylose_ratio, adjust_atp_requirements=True)
 
         tot_BM = sum(sim.total_biomass.drop(columns=["cycle"], inplace=False).iloc[-1])
@@ -119,4 +119,4 @@ for experiment in tqdm(all_experiment_combinations):
 
 results_df = pd.DataFrame({'inoculation_ratio': inoc_ratio_list, 'glc_xyl_ratio': glc_xyl_ratio_list, 'total_biomass': tot_BM_list, 'total_RA': tot_RAs})
 
-results_df.to_csv("../results/fig_6_16oct2", index=False)
+results_df.to_csv("../results/fig_6_new_params", index=False)

@@ -54,17 +54,17 @@ def simulate_xyl_glc_triculture(cal11, sal11, mam3, initial_pop_ratio: tuple[int
     # set MM kinetic parameters for glucose, oxygen, and xylose uptake reactions
     #NOTE: changing up these params to see what happens - if this does not have an effect, try changing after params are set? (move params up)
 
-    vmax_adjustment_factor = 1
-    km_adjustment_factor = 100
-    km_xyl_adj = 1
-    km_glc_adj = 15
+    glc_vmax_adjustment = 3
+    xyl_vmax_adjustment = 0.55
+    km_xyl_adj = 75
+    km_glc_adj = 5500
 
     O2Vmax = 15
     O2Km = 0.024 #mmol/L
-    GlcVmax = 10.5 * vmax_adjustment_factor
-    GlcKm = 0.000015 * km_adjustment_factor * km_glc_adj # mmol/ml #0.0027 g/L
-    XylVmax = 6 * vmax_adjustment_factor
-    XylKm = 0.00011 * km_adjustment_factor * km_xyl_adj # mmol/ml #0.0165 g/L
+    GlcVmax = 10.5 * glc_vmax_adjustment
+    GlcKm = 0.000015  * km_glc_adj # mmol/ml #0.0027 g/L
+    XylVmax = 6 * xyl_vmax_adjustment
+    XylKm = 0.00011 * km_xyl_adj # mmol/ml #0.0165 g/L
 
     cal11_c.change_vmax("EX_o2_e", O2Vmax)
     cal11_c.change_km("EX_o2_e", O2Km)
