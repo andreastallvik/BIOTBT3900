@@ -143,7 +143,7 @@ def simulate_xyl_glc_triculture(cal11, sal11, mam3, initial_pop_ratio: tuple[int
 
 def simulate_glc_triculture(cal2, sal9, mam2, initial_pop_ratio: tuple[int] =(2, 3, 1), 
                                 adjust_atp_requirements: bool=False, RA_lb: float = 0.00104, 
-                                glc_mmol: float = 2.78, initial_pop: float = 1.e-3) -> c.comets:
+                                glc_mmol: float = 2.78, initial_pop: float = 1.e-3, glc_vmax_adjustment = 1, km_glc_adj = 1) -> c.comets:
 
     if adjust_atp_requirements:
         # in order to equal the playing field between BL21 and K12 derived models:
@@ -179,20 +179,29 @@ def simulate_glc_triculture(cal2, sal9, mam2, initial_pop_ratio: tuple[int] =(2,
 
     # set MM kinetic parameters for glucose, oxygen, and xylose uptake reactions
 
-    cal2_c.change_vmax("EX_o2_e", 15)
-    cal2_c.change_km("EX_o2_e", 0.024)
-    cal2_c.change_vmax("EX_glc__D_e", 10.5)
-    cal2_c.change_km("EX_glc__D_e", 0.0027)
+    # glc_vmax_adjustment = 4
+    # km_glc_adj = 10000
 
-    sal9_c.change_vmax("EX_o2_e", 15)
-    sal9_c.change_km("EX_o2_e", 0.024)
-    sal9_c.change_vmax("EX_glc__D_e", 6)
-    sal9_c.change_km("EX_glc__D_e", 0.0165)
+    O2Vmax = 15
+    O2Km = 0.024 #mmol/L
+    GlcVmax = 10.5 * glc_vmax_adjustment
+    GlcKm = 0.000015  * km_glc_adj # mmol/ml #0.0027 g/L
 
-    mam2_c.change_vmax("EX_o2_e", 15)
-    mam2_c.change_km("EX_o2_e", 0.024)
-    mam2_c.change_vmax("EX_glc__D_e", 10.5)
-    mam2_c.change_km("EX_glc__D_e", 0.0027)
+
+    cal2_c.change_vmax("EX_o2_e", O2Vmax)
+    cal2_c.change_km("EX_o2_e", O2Km)
+    cal2_c.change_vmax("EX_glc__D_e", GlcVmax)
+    cal2_c.change_km("EX_glc__D_e", GlcKm)
+
+    sal9_c.change_vmax("EX_o2_e", O2Vmax)
+    sal9_c.change_km("EX_o2_e", O2Km)
+    sal9_c.change_vmax("EX_glc__D_e", GlcVmax)
+    sal9_c.change_km("EX_glc__D_e", GlcKm)
+
+    mam2_c.change_vmax("EX_o2_e", O2Vmax)
+    mam2_c.change_km("EX_o2_e", O2Km)
+    mam2_c.change_vmax("EX_glc__D_e", GlcVmax)
+    mam2_c.change_km("EX_glc__D_e", GlcKm)
 
     # create a 1x1 layout
 

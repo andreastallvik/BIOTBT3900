@@ -180,9 +180,9 @@ def get_yields_coculture(CA_c = 60, SAA_c = 73, RA_c = 32):
     tot_SAA_mmol = SAA_mmol + RA_mmol
 
     # covert to g/L to get the same units as substrate | sequentially: mmol -> mol -> g -> g/L
-    tot_CA_c = tot_CA_mmol * 0.0001 * MM_CA / 0.1
-    tot_SAA_c = tot_SAA_mmol * 0.0001 * MM_SAA / 0.1
-    tot_RA_c = RA_mmol * 0.0001 * MM_RA / 0.1
+    tot_CA_c = tot_CA_mmol * 0.001 * MM_CA / 0.1
+    tot_SAA_c = tot_SAA_mmol * 0.001 * MM_SAA / 0.1
+    tot_RA_c = RA_mmol * 0.001 * MM_RA / 0.1
 
     #NOTE: making the (likely incorrect) assumption that each strain consumes 2.5 g/L glucose each
     CA_yield = tot_CA_c / 2.5
