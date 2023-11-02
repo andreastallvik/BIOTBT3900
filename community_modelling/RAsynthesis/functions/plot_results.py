@@ -58,16 +58,26 @@ def plot_relative_abundance_coculture(results_df, scatter=False):
     plt.xlabel("fraction of optimal solution")
 
 
-def plot_relative_abundance_RA_prod_glc_xyl(results_df, cal11_ra, sal11_ra, mam3_ra, scatter=False):
+def plot_relative_abundance_RA_prod_glc_xyl(results_df, cal11_ra, sal11_ra, mam3_ra):
     """Make relative abundance plot different production-rates of RA, for CAL11:SAL11:MAM3 tri-culture"""
-    
-    plot_df = results_df.explode(["CAL11", "SAL11", "MAM3"])
-    df_melt = plot_df.drop(columns=["RA_prod_rate"]).melt('RA_percentage', var_name='strain', value_name='species abundance')
 
-    if scatter:
-        sns.scatterplot(data=df_melt, x="RA_percentage", y="species abundance", hue="strain")    
-    else:
-        sns.lineplot(data=df_melt, x="RA_percentage", y="species abundance", hue="strain",orient="y")
+    # sorting and re-concating the results df so that it is first max values for increasing RA_percentage, 
+    # then min values for decreasing RA_percentage. 
+    # this to ensure that the plot is drawn correctly
+    cal_df = pd.DataFrame(results_df['CAL11'].tolist(), columns=['CAL11_min', 'CAL11_max'])
+    sal_df = pd.DataFrame(results_df['SAL11'].tolist(), columns=['SAL11_min', 'SAL11_max'])
+    mam_df = pd.DataFrame(results_df['MAM3'].tolist(), columns=['MAM3_min', 'MAM3_max'])
+
+    exploded_df = pd.concat([cal_df, sal_df, mam_df, results_df[['RA_prod_rate', 'RA_percentage']]], axis=1)
+
+    min_df = exploded_df[["CAL11_min", "SAL11_min", "MAM3_min", "RA_percentage"]].rename(columns={"CAL11_min":"CAL11","SAL11_min":"SAL11","MAM3_min":"MAM3"})
+    max_df = exploded_df[["CAL11_max", "SAL11_max", "MAM3_max", "RA_percentage"]].rename(columns={"CAL11_max":"CAL11","SAL11_max":"SAL11","MAM3_max":"MAM3"})
+    min_df.sort_values("RA_percentage", ascending=False, inplace=True)
+    max_df.sort_values("RA_percentage", ascending=True, inplace=True)
+    sorted_df = pd.concat([max_df, min_df])
+    df_melt = sorted_df.melt('RA_percentage', var_name='strain', value_name='species abundance')
+
+    sns.lineplot(data=df_melt, x="RA_percentage", y="species abundance", hue="strain",orient="y", sort=False)
 
     #stipled lines with exp. steady-state species abundance
     plt.axhline(y=cal11_ra, linestyle='--', color='blue')
@@ -75,7 +85,6 @@ def plot_relative_abundance_RA_prod_glc_xyl(results_df, cal11_ra, sal11_ra, mam3
     plt.axhline(y=mam3_ra, linestyle='--', color='green')
 
     plt.xlabel("Percentage of maximal RA production")
-
     plt.gca().invert_xaxis()
     #plt.gca().invert_yaxis()
 
@@ -265,7 +274,7 @@ def plot_relative_abundance_time_course_glc(sim_results, exp_data):
     plt.xlabel("Time (h)")
 
 
-def plot_production_time_course(sim_results, exp_data = None):
+def plot_production_time_course(sim_results, exp_data = None, double_axis=True):
 
     """ sim_results should be a dataframe outputted from sim.get_metabolite_time_series() """
 
@@ -280,6 +289,9 @@ def plot_production_time_course(sim_results, exp_data = None):
 
     products_df.rename(columns={"saa_e": "SAA", "34dhcinm_e": "CA", "rosma_e": "RA"}, inplace=True)
 
+    #NOTE: double check this - to convert from mmol to mmol/L
+    products_df[['SAA', 'CA', 'RA']] = products_df[['SAA', 'CA', 'RA']] / 0.1
+
     plot_df = products_df.melt(id_vars="time", value_vars=["SAA", "CA", "RA"], value_name="concentration", var_name="product")
 
     fig, ax1 = plt.subplots()
@@ -290,12 +302,18 @@ def plot_production_time_course(sim_results, exp_data = None):
     ax1.set_ylabel("simulated concentration (mmol/L)")
 
     if exp_data is not None:
-        # create a second y-axis (ax2) and plot scatterplot on it
-        ax2 = ax1.twinx()
-        sns.lineplot(data=exp_data, x="time", y="mmol_per_L", hue="product", hue_order=["CA", "SAA", "RA"], ax=ax2, linestyle ="-.")
-        ax2.set_ylabel("measured concentration (mmol/L)")
+        
+        if double_axis:
+            # create a second y-axis (ax2) and plot exp. data on it
+            ax2 = ax1.twinx()
+            sns.lineplot(data=exp_data, x="time", y="mmol_per_L", hue="product", hue_order=["CA", "SAA", "RA"], ax=ax2, linestyle ="-.")
+            ax2.set_ylabel("measured concentration (mmol/L)")
+        else:
+            # plot on the same axis
+            sns.lineplot(data=exp_data, x="time", y="mmol_per_L", hue="product", hue_order=["CA", "SAA", "RA"], ax=ax1, linestyle ="-.", legend=False)
+            ax1.set_ylabel("concentration (mmol/L)")
 
-    plt.show()
+    #plt.show()
 
 
 def plot_production_flux_values(sim):
@@ -404,7 +422,7 @@ def plot_inoculum_substrate(results_df):
 
     plt.tight_layout()
 
-    plt.show()      
+    #plt.show()      
 
     
 def plot_inoculum_4D(results_df):
