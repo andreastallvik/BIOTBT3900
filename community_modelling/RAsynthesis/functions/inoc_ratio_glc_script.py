@@ -23,9 +23,6 @@ products_df = pd.read_csv("../exp_data/conc_data_glc.csv")
 od600_df = pd.read_csv("../exp_data/od600_glc.csv")
 subpop_df, conc_df, OD_df = data_analysis.process_data(relative_abundance_df, products_df, od600_df)
 CA_yield, SAA_yield, RA_yield = data_analysis.get_yields_glc_xyl(conc_df)
-# CA_yield = CA_yield * 10
-# SAA_yield = SAA_yield * 10
-# RA_yield = RA_yield * 10
 
 print("loading and preparing GEMs")
 
@@ -79,8 +76,8 @@ for inocculation_ratio in tqdm(inocculation_ratios):
     try:
 
         sim = simulate_glc_triculture(CAL2_cobra, SAL9_cobra, MAM2_cobra, 
-                                          initial_pop=2.e-3, initial_pop_ratio=inocculation_ratio, 
-                                          adjust_atp_requirements=True)
+                                          initial_pop=2.7e-3, initial_pop_ratio=inocculation_ratio, 
+                                          adjust_atp_requirements=True, km_glc_adj=1300, glc_vmax_adjustment=0.7)
 
         tot_BM = sum(sim.total_biomass.drop(columns=["cycle"], inplace=False).iloc[-1])
         tot_RA = sim.get_metabolite_time_series()["rosma_e"].iloc[-1]
@@ -95,4 +92,4 @@ for inocculation_ratio in tqdm(inocculation_ratios):
 
 results_df = pd.DataFrame({'inoculation_ratio': inoc_ratio_list, 'total_biomass': tot_BM_list, 'total_RA': tot_RAs})
 
-results_df.to_csv("../results/fig_4D", index=False)
+results_df.to_csv("../results/fig_4D_new_params", index=False)
