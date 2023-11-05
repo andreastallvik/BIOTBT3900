@@ -77,7 +77,7 @@ for inocculation_ratio in tqdm(inocculation_ratios):
 
         sim = simulate_glc_triculture(CAL2_cobra, SAL9_cobra, MAM2_cobra, 
                                           initial_pop=2.7e-3, initial_pop_ratio=inocculation_ratio, 
-                                          adjust_atp_requirements=True, km_glc_adj=1300, glc_vmax_adjustment=0.7)
+                                          adjust_atp_requirements=True, km_glc_adj=1000, glc_vmax_adjustment=0.45)
 
         tot_BM = sum(sim.total_biomass.drop(columns=["cycle"], inplace=False).iloc[-1])
         tot_RA = sim.get_metabolite_time_series()["rosma_e"].iloc[-1]
@@ -92,4 +92,4 @@ for inocculation_ratio in tqdm(inocculation_ratios):
 
 results_df = pd.DataFrame({'inoculation_ratio': inoc_ratio_list, 'total_biomass': tot_BM_list, 'total_RA': tot_RAs})
 
-results_df.to_csv("../results/fig_4D_new_params", index=False)
+results_df.to_csv("../results/fig_4D_5nov", index=False)

@@ -120,17 +120,25 @@ def plot_relative_abundance_RA_prod_glc(results_df, cal2_ra, sal9_ra, mam2_ra):
     #plt.gca().invert_yaxis()
 
 
-def plot_relative_abundance_RA_prod_coculture(results_df, scatter=False):
+def plot_relative_abundance_RA_prod_coculture(results_df):
     """Make relative abundance plot different production-rates of RA, for RAU2:RAD4 co-culture"""
-    
-    plot_df = results_df.explode(["RAU2", "RAD4"])
-    df_melt = plot_df.drop(columns=["RA_prod_rate"]).melt('RA_percentage', var_name='strain', value_name='species abundance')
 
-    if scatter:
-        sns.scatterplot(data=df_melt, x="RA_percentage", y="species abundance", hue="strain")    
-    else:
-        sns.lineplot(data=df_melt, x="RA_percentage", y="species abundance", hue="strain",orient="y")
+    # sorting and re-concating the results df so that it is first max values for increasing RA_percentage, 
+    # then min values for decreasing RA_percentage. 
+    # this to ensure that the plot is drawn correctly
+    rau_df = pd.DataFrame(results_df['RAU2'].tolist(), columns=['RAU2_min', 'RAU2_max'])
+    rad_df = pd.DataFrame(results_df['RAD4'].tolist(), columns=['RAD4_min', 'RAD4_max'])
 
+    exploded_df = pd.concat([rau_df, rad_df, results_df[['RA_prod_rate', 'RA_percentage']]], axis=1)
+
+    min_df = exploded_df[["RAU2_min", "RAD4_min", "RA_percentage"]].rename(columns={"RAU2_min":"RAU2","RAD4_min":"RAD4"})
+    max_df = exploded_df[["RAU2_max", "RAD4_max", "RA_percentage"]].rename(columns={"RAU2_max":"RAU2","RAD4_max":"RAD4"})
+    min_df.sort_values("RA_percentage", ascending=False, inplace=True)
+    max_df.sort_values("RA_percentage", ascending=True, inplace=True)
+    sorted_df = pd.concat([max_df, min_df])
+    df_melt = sorted_df.melt('RA_percentage', var_name='strain', value_name='species abundance')
+
+    sns.lineplot(data=df_melt, x="RA_percentage", y="species abundance", hue="strain",orient="y", sort=False)
     plt.xlabel("Percentage of maximal RA production")
 
     plt.gca().invert_xaxis()

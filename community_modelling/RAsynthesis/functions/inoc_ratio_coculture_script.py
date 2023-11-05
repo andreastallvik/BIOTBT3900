@@ -19,9 +19,6 @@ print("loading exp. data")
 
 # load exp. data yields, but magnified
 CA_yield, SAA_yield, RA_yield = data_analysis.get_yields_coculture()
-# CA_yield = CA_yield * 10
-# SAA_yield = SAA_yield * 10
-# RA_yield = RA_yield * 10
 
 print("loading and preparing GEMs")
 
@@ -64,7 +61,7 @@ for inocculation_ratio in tqdm(inocculation_ratios):
     try:
 
         sim = simulate_coculture(RAU2_cobra, RAD4_cobra, initial_pop=2.e-3, 
-                                 initial_pop_ratio=inocculation_ratio)
+                                 initial_pop_ratio=inocculation_ratio, km_glc_adj=1000, glc_vmax_adjustment=0.45)
 
         tot_BM = sum(sim.total_biomass.drop(columns=["cycle"], inplace=False).iloc[-1])
         tot_CA = sim.get_metabolite_time_series()["34dhcinm_e"].iloc[-1]
@@ -83,4 +80,4 @@ for inocculation_ratio in tqdm(inocculation_ratios):
 
 results_df = pd.DataFrame({'inoculation_ratio': inoc_ratio_list, 'total_biomass': tot_BM_list, 'total_RA': tot_RAs, 'total_CA': tot_CAs, 'total_SAA': tot_SAAs})
 
-results_df.to_csv("../results/fig_3D", index=False)
+results_df.to_csv("../results/fig_3D_5nov", index=False)

@@ -262,8 +262,8 @@ def simulate_glc_triculture(cal2, sal9, mam2, initial_pop_ratio: tuple[int] =(2,
     return sim
 
 
-def simulate_coculture(rau2, rad4, initial_pop_ratio: tuple[int] =(3, 1), 
-                    RA_lb: float = 0.00104, glc_mmol: float = 2.78, initial_pop: float = 1.e-3) -> c.comets:
+def simulate_coculture(rau2, rad4, initial_pop_ratio: tuple[int] =(3, 1), RA_lb: float = 0.00104, 
+                       glc_mmol: float = 2.78, initial_pop: float = 1.e-3, glc_vmax_adjustment = 1, km_glc_adj = 1) -> c.comets:
 
     
     # make comets models
@@ -283,15 +283,20 @@ def simulate_coculture(rau2, rad4, initial_pop_ratio: tuple[int] =(3, 1),
 
     # set MM kinetic parameters for glucose, oxygen, and xylose uptake reactions
 
-    rau2_c.change_vmax("EX_o2_e", 15)
-    rau2_c.change_km("EX_o2_e", 0.024)
-    rau2_c.change_vmax("EX_glc__D_e", 10.5)
-    rau2_c.change_km("EX_glc__D_e", 0.0027)
+    O2Vmax = 15
+    O2Km = 0.024 #mmol/L
+    GlcVmax = 10.5 * glc_vmax_adjustment
+    GlcKm = 0.000015  * km_glc_adj # mmol/ml #0.0027 g/L
 
-    rad4_c.change_vmax("EX_o2_e", 15)
-    rad4_c.change_km("EX_o2_e", 0.024)
-    rad4_c.change_vmax("EX_glc__D_e", 10.5)
-    rad4_c.change_km("EX_glc__D_e", 0.0027)
+    rau2_c.change_vmax("EX_o2_e", O2Vmax)
+    rau2_c.change_km("EX_o2_e", O2Km)
+    rau2_c.change_vmax("EX_glc__D_e", GlcVmax)
+    rau2_c.change_km("EX_glc__D_e", GlcKm)
+
+    rad4_c.change_vmax("EX_o2_e", O2Vmax)
+    rad4_c.change_km("EX_o2_e", O2Km)
+    rad4_c.change_vmax("EX_glc__D_e", GlcVmax)
+    rad4_c.change_km("EX_glc__D_e", GlcKm)
 
     # create a 1x1 layout
 
