@@ -20,7 +20,7 @@ MAM2_cobra.reactions.get_by_id("GLCtex_copy1").bounds = (0.0, 0.0)
 
 # ---- define yield values to iterate over ------
 initial_yields = np.array([0.0448, 0.115, 0.0600]) #from exp. values
-yield_factors = np.arange(4.5, 7.5, 0.2)
+yield_factors = np.arange(2.5, 7.6, 0.2)
 
 # --- run analysis for each yield ---
 
