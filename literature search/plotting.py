@@ -13,7 +13,7 @@ import plotly.graph_objects as go
 import random
 from maps import SUBSTRATE_MAP, PRODUCT_MAP
 
-plt.style.use('seaborn-v0_8-pastel')
+#plt.style.use('seaborn-v0_8-pastel')
 
 def publications_per_year(data: pd.DataFrame, save_fig = False):
     """Bar graph showing publications per year"""
