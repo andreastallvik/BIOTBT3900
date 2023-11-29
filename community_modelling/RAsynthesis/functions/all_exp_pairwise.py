@@ -119,4 +119,4 @@ for experiment in tqdm(all_experiment_combinations):
 
 results_df = pd.DataFrame({'inoculation_ratio': inoc_ratio_list, 'glc_xyl_ratio': glc_xyl_ratio_list, 'total_biomass': tot_BM_list, 'total_RA': tot_RAs})
 
-results_df.to_csv("../results/fig_6_new_params", index=False)
+results_df.to_csv("../results/fig_6_29nov", index=False)
