@@ -55,14 +55,14 @@ def mam2():
     #3,4-Dihydroxyphenyllactic acid | Salvianic acid A | SAA
     saa_c = Metabolite(
         'saa_c',
-        formula='C9H10O5',
+        formula='C9H9O5',
         name='3,4-Dihydroxyphenyllactic acid',
         compartment='c')
 
     #external 3,4-Dihydroxyphenyllactic acid | Salvianic acid A | SAA
     saa_e = Metabolite(
         'saa_e',
-        formula='C9H10O5',
+        formula='C9H9O5',
         name='3,4-Dihydroxyphenyllactic acid',
         compartment='e')
 
@@ -203,21 +203,21 @@ def sal9():
     #3,4-dihydroxyphenylpyruvate
     dhpp34_c = Metabolite(
         '34dhpp_c',
-        formula='C9H8O5',
+        formula='C9H7O5',
         name='3,4-Dihydroxyphenylpyruvate',
         compartment='c')
 
     #3,4-Dihydroxyphenyllactic acid | Salvianic acid A | SAA
     saa_c = Metabolite(
         'saa_c',
-        formula='C9H10O5',
+        formula='C9H9O5',
         name='3,4-Dihydroxyphenyllactic acid',
         compartment='c')
 
     #external 3,4-Dihydroxyphenyllactic acid | Salvianic acid A | SAA
     saa_e = Metabolite(
         'saa_e',
-        formula='C9H10O5',
+        formula='C9H9O5',
         name='3,4-Dihydroxyphenyllactic acid',
         compartment='e')
 
@@ -234,12 +234,6 @@ def sal9():
 
     #H+
     h_c = bl21.metabolites.get_by_id("h_c")
-
-    #NADPH
-    nadph_c = bl21.metabolites.get_by_id("nadph_c")
-
-    #NADP+
-    nadp_c = bl21.metabolites.get_by_id("nadp_c")
 
     #H20
     h2o_c = bl21.metabolites.get_by_id("h2o_c")
@@ -277,18 +271,13 @@ def sal9():
     HPPHD.upper_bound = 1000  # This is the default
     #4-hydroxyphenylpyruvate + Oxygen + NADH + H+ <=> 3,4-dihydroxyphenylpyruvate + NAD+ + H2O
     HPPHD.add_metabolites({
-        # hpp34_c: -1.0,
-        # o2_c: -1.0,
-        # nadh_c: -1.0,
-        # h_c: -1.0,
-        # dhpp34_c: 1.0,
-        # nad_c: 1.0,
-        # h2o_c: 1.0
         hpp34_c: -1.0,
+        o2_c: -1.0,
         nadh_c: -1.0,
         h_c: -1.0,
         dhpp34_c: 1.0,
         nad_c: 1.0,
+        h2o_c: 1.0
     })
     HPPHD.gene_reaction_rule = '(hpaB and hpaC)' #synthetic hpaBC gene
     
@@ -316,18 +305,13 @@ def sal9():
     HPLSA.upper_bound = 1000  # This is the default
     #4-Hydroxyphenyllactate + Oxygen + NADH + H+ <=> 3,4-Dihydroxyphenylacetic acid + NAD+ + H2O
     HPLSA.add_metabolites({
-        # hpl34_c: -1.0,
-        # o2_c: -1.0,
-        # nadh_c: -1.0,
-        # h_c: -1.0,
-        # saa_c: 1.0,
-        # nad_c: 1.0,
-        # h2o_c: 1.0
         hpl34_c: -1.0,
+        o2_c: -1.0,
         nadh_c: -1.0,
         h_c: -1.0,
         saa_c: 1.0,
         nad_c: 1.0,
+        h2o_c: 1.0
     })
     HPLSA.gene_reaction_rule = '(hpaB and hpaC)' #synthetic ldh gene
 
@@ -426,6 +410,12 @@ def cal2():
     #Diphosphate
     pi_c = k12.metabolites.get_by_id("pi_c")
 
+    #H20
+    h2o_c = k12.metabolites.get_by_id("h2o_c")
+
+    #O2
+    o2_c = k12.metabolites.get_by_id("o2_c")
+
     ############### Reactions ###############
 
     print("adding reactions")
@@ -454,9 +444,11 @@ def cal2():
     COURCA.add_metabolites({
         p_coumaric_acid_c: -1.0,
         nadh_c: -1.0,
+        o2_c: -1.0,
+        h_c: -1.0,
         caffeic_acid_c: 1.0,
         nad_c: 1.0,
-        h_c: 1.0
+        h2o_c: 1.0
     })
     COURCA.gene_reaction_rule = '(hpaB and hpaC)' #synthetic hpaC gene
 
@@ -765,6 +757,12 @@ def mra():
     #CoA
     coa_c = k12.metabolites.get_by_id("coa_c")
 
+    #H20
+    h2o_c = k12.metabolites.get_by_id("h2o_c")
+
+    #O2
+    o2_c = k12.metabolites.get_by_id("o2_c")
+
     ############### Reactions ###############
 
     print("adding reactions")
@@ -793,11 +791,13 @@ def mra():
     COURCA.add_metabolites({
         p_coumaric_acid_c: -1.0,
         nadh_c: -1.0,
+        o2_c: -1.0,
+        h_c: -1.0,
         caffeic_acid_c: 1.0,
         nad_c: 1.0,
-        h_c: 1.0
+        h2o_c: 1.0
     })
-    #COURCA.gene_reaction_rule = '(hpaB and hpaC)' #synthetic hpaC gene
+    COURCA.gene_reaction_rule = '(hpaB and hpaC)' #synthetic hpaC gene
 
     #HPP -> 4-hydroxyphenyllactate
     DLDH = Reaction('DLDH')
@@ -984,6 +984,11 @@ def cal11():
     #Diphosphate
     pi_c = k12.metabolites.get_by_id("pi_c")
 
+    #H20
+    h2o_c = k12.metabolites.get_by_id("h2o_c")
+
+    #O2
+    o2_c = k12.metabolites.get_by_id("o2_c")
     ############### Reactions ###############
 
     print("adding reactions")
@@ -1012,9 +1017,11 @@ def cal11():
     COURCA.add_metabolites({
         p_coumaric_acid_c: -1.0,
         nadh_c: -1.0,
+        o2_c: -1.0,
+        h_c: -1.0,
         caffeic_acid_c: 1.0,
         nad_c: 1.0,
-        h_c: 1.0
+        h2o_c: 1.0
     })
     COURCA.gene_reaction_rule = '(hpaB and hpaC)' #synthetic hpaC gene
 
@@ -1111,14 +1118,14 @@ def mam3():
     #3,4-Dihydroxyphenyllactic acid | Salvianic acid A | SAA
     saa_c = Metabolite(
         'saa_c',
-        formula='C9H10O5',
+        formula='C9H9O5',
         name='3,4-Dihydroxyphenyllactic acid',
         compartment='c')
 
     #external 3,4-Dihydroxyphenyllactic acid | Salvianic acid A | SAA
     saa_e = Metabolite(
         'saa_e',
-        formula='C9H10O5',
+        formula='C9H9O5',
         name='3,4-Dihydroxyphenyllactic acid',
         compartment='e')
 
@@ -1281,21 +1288,21 @@ def sal11():
     #3,4-dihydroxyphenylpyruvate
     dhpp34_c = Metabolite(
         '34dhpp_c',
-        formula='C9H8O5',
+        formula='C9H7O5',
         name='3,4-Dihydroxyphenylpyruvate',
         compartment='c')
 
     #3,4-Dihydroxyphenyllactic acid | Salvianic acid A | SAA
     saa_c = Metabolite(
         'saa_c',
-        formula='C9H10O5',
+        formula='C9H9O5',
         name='3,4-Dihydroxyphenyllactic acid',
         compartment='c')
 
     #external 3,4-Dihydroxyphenyllactic acid | Salvianic acid A | SAA
     saa_e = Metabolite(
         'saa_e',
-        formula='C9H10O5',
+        formula='C9H9O5',
         name='3,4-Dihydroxyphenyllactic acid',
         compartment='e')
 
@@ -1312,12 +1319,6 @@ def sal11():
 
     #H+
     h_c = bl21.metabolites.get_by_id("h_c")
-
-    #NADPH
-    nadph_c = bl21.metabolites.get_by_id("nadph_c")
-
-    #NADP+
-    nadp_c = bl21.metabolites.get_by_id("nadp_c")
 
     #H20
     h2o_c = bl21.metabolites.get_by_id("h2o_c")
@@ -1355,18 +1356,13 @@ def sal11():
     HPPHD.upper_bound = 1000  # This is the default
     #4-hydroxyphenylpyruvate + Oxygen + NADH + H+ <=> 3,4-dihydroxyphenylpyruvate + NAD+ + H2O
     HPPHD.add_metabolites({
-        # hpp34_c: -1.0,
-        # o2_c: -1.0,
-        # nadh_c: -1.0,
-        # h_c: -1.0,
-        # dhpp34_c: 1.0,
-        # nad_c: 1.0,
-        # h2o_c: 1.0
         hpp34_c: -1.0,
+        o2_c: -1.0,
         nadh_c: -1.0,
         h_c: -1.0,
         dhpp34_c: 1.0,
         nad_c: 1.0,
+        h2o_c: 1.0
     })
     HPPHD.gene_reaction_rule = '(hpaB and hpaC)' #synthetic hpaBC gene
     
@@ -1394,18 +1390,13 @@ def sal11():
     HPLSA.upper_bound = 1000  # This is the default
     #4-Hydroxyphenyllactate + Oxygen + NADH + H+ <=> 3,4-Dihydroxyphenylacetic acid + NAD+ + H2O
     HPLSA.add_metabolites({
-        # hpl34_c: -1.0,
-        # o2_c: -1.0,
-        # nadh_c: -1.0,
-        # h_c: -1.0,
-        # saa_c: 1.0,
-        # nad_c: 1.0,
-        # h2o_c: 1.0
         hpl34_c: -1.0,
+        o2_c: -1.0,
         nadh_c: -1.0,
         h_c: -1.0,
         saa_c: 1.0,
         nad_c: 1.0,
+        h2o_c: 1.0
     })
     HPLSA.gene_reaction_rule = '(hpaB and hpaC)' #synthetic hpaBC gene
 
@@ -1513,6 +1504,12 @@ def rau2():
     #Diphosphate
     pi_c = k12.metabolites.get_by_id("pi_c")
 
+    #H20
+    h2o_c = k12.metabolites.get_by_id("h2o_c")
+
+    #O2
+    o2_c = k12.metabolites.get_by_id("o2_c")
+
     ############### Reactions ###############
 
     print("adding reactions")
@@ -1541,9 +1538,11 @@ def rau2():
     COURCA.add_metabolites({
         p_coumaric_acid_c: -1.0,
         nadh_c: -1.0,
+        o2_c: -1.0,
+        h_c: -1.0,
         caffeic_acid_c: 1.0,
         nad_c: 1.0,
-        h_c: 1.0
+        h2o_c: 1.0
     })
     COURCA.gene_reaction_rule = '(hpaB and hpaC)' #synthetic hpaC gene
 
@@ -1632,21 +1631,21 @@ def rad4():
     #3,4-dihydroxyphenylpyruvate
     dhpp34_c = Metabolite(
         '34dhpp_c',
-        formula='C9H8O5',
+        formula='C9H7O5',
         name='3,4-Dihydroxyphenylpyruvate',
         compartment='c')
 
     #3,4-Dihydroxyphenyllactic acid | Salvianic acid A | SAA
     saa_c = Metabolite(
         'saa_c',
-        formula='C9H10O5',
+        formula='C9H9O5',
         name='3,4-Dihydroxyphenyllactic acid',
         compartment='c')
 
     #external 3,4-Dihydroxyphenyllactic acid | Salvianic acid A | SAA
     saa_e = Metabolite(
         'saa_e',
-        formula='C9H10O5',
+        formula='C9H9O5',
         name='3,4-Dihydroxyphenyllactic acid',
         compartment='e')
 
@@ -1724,18 +1723,13 @@ def rad4():
     HPPHD.upper_bound = 1000  # This is the default
     #4-hydroxyphenylpyruvate + Oxygen + NADH + H+ <=> 3,4-dihydroxyphenylpyruvate + NAD+ + H2O
     HPPHD.add_metabolites({
-        # hpp34_c: -1.0,
-        # o2_c: -1.0,
-        # nadh_c: -1.0,
-        # h_c: -1.0,
-        # dhpp34_c: 1.0,
-        # nad_c: 1.0,
-        # h2o_c: 1.0
         hpp34_c: -1.0,
+        o2_c: -1.0,
         nadh_c: -1.0,
         h_c: -1.0,
         dhpp34_c: 1.0,
         nad_c: 1.0,
+        h2o_c: 1.0
     })
     HPPHD.gene_reaction_rule = '(hpaB and hpaC)' #synthetic hpaBC gene
     
@@ -1763,18 +1757,13 @@ def rad4():
     HPLSA.upper_bound = 1000  # This is the default
     #4-Hydroxyphenyllactate + Oxygen + NADH + H+ <=> 3,4-Dihydroxyphenylacetic acid + NAD+ + H2O
     HPLSA.add_metabolites({
-        # hpl34_c: -1.0,
-        # o2_c: -1.0,
-        # nadh_c: -1.0,
-        # h_c: -1.0,
-        # saa_c: 1.0,
-        # nad_c: 1.0,
-        # h2o_c: 1.0
         hpl34_c: -1.0,
+        o2_c: -1.0,
         nadh_c: -1.0,
         h_c: -1.0,
         saa_c: 1.0,
         nad_c: 1.0,
+        h2o_c: 1.0
     })
     HPLSA.gene_reaction_rule = '(hpaB and hpaC)' #synthetic ldh gene
 
@@ -1869,13 +1858,11 @@ def rad4():
 
 if __name__ == '__main__':
     freeze_support()
-    # mam2()
-    # sal9()
-    # cal2()
-    # mam1()
-    # mra()
-    # cal11()
-    # mam3()
-    # sal11()
-    # rau2()
+    #mam2()
+    #sal9()
+    #cal2()
+    #cal11()
+    #mam3()
+    #sal11()
+    #rau2()
     rad4()
