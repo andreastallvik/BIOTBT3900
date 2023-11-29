@@ -458,7 +458,7 @@ def plot_inoculum_4D(results_df):
     ax.set_ylabel('RA concentration (mg/L)')
     ax.set_xlabel("inoculation ratio")
     plt.tight_layout()
-    plt.show()   
+    #plt.show()   
 
 
 def plot_inoculum_3D(results_df):
@@ -486,7 +486,7 @@ def plot_inoculum_3D(results_df):
     ax.set_ylabel('product concentration (mg/L)')
     ax.set_xlabel("inoculation ratio")
     plt.tight_layout()
-    plt.show()  
+    #plt.show()  
 
 
 def get_best_performing_combo(df):

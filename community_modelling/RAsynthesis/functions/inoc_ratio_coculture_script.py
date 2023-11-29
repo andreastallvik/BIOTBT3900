@@ -80,4 +80,4 @@ for inocculation_ratio in tqdm(inocculation_ratios):
 
 results_df = pd.DataFrame({'inoculation_ratio': inoc_ratio_list, 'total_biomass': tot_BM_list, 'total_RA': tot_RAs, 'total_CA': tot_CAs, 'total_SAA': tot_SAAs})
 
-results_df.to_csv("../results/fig_3D_5nov", index=False)
+results_df.to_csv("../results/fig_3D_29nov", index=False)
