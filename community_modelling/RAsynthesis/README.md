@@ -5,6 +5,6 @@ In addition, functions in [create_GEMS.py](create_GEMS.py) was used to generate 
 
 The main results are disrtibuted in the following notebooks:
 
-- [results_coculture.ipynb](community_modelling/RAsynthesis/results_coculture.ipynb), for RAD2:RAU4 coculture simulation
-- [results_glc_tri.ipynb](community_modelling/RAsynthesis/results_glc_tri.ipynb), for CAL2:SAL9:MAM2 triculture simulation
-- [results_mixed_sub_tri_atp_adjusted.ipynb](community_modelling/RAsynthesis/results_mixed_sub_tri_atp_adjusted.ipynb), for CAL11:SAL11:MAM3 triculture simulation
+- [results_coculture.ipynb](../RAsynthesis/results_coculture.ipynb), for RAD2:RAU4 coculture simulation
+- [results_glc_tri.ipynb](../RAsynthesis/results_glc_tri.ipynb), for CAL2:SAL9:MAM2 triculture simulation
+- [results_mixed_sub_tri_atp_adjusted.ipynb](../RAsynthesis/results_mixed_sub_tri_atp_adjusted.ipynb), for CAL11:SAL11:MAM3 triculture simulation
