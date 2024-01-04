@@ -6,6 +6,10 @@ genomes/
 genome_sequences/
 large_input/
 
+# genome sequences
+*.faa.gz
+*.faa.tsv
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
