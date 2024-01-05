@@ -177,8 +177,8 @@ def create_graph(model, metabolites = None):
 
         reaction_dict = reaction.metabolites
 
-        consumed = [key.id for key, value in reaction_dict.items() if value == -1.0]
-        produced = [key.id for key, value in reaction_dict.items() if value == 1.0]
+        consumed = [key.id for key, value in reaction_dict.items() if value < 0]
+        produced = [key.id for key, value in reaction_dict.items() if value > 0]
 
         G.add_nodes_from(consumed, bipartite=0)
         G.add_nodes_from(produced, bipartite=0)
