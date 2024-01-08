@@ -44,7 +44,7 @@ def growth_possible(model, medium = None) -> bool:
 
     test_model = model.copy()
 
-    if medium is None:
+    if medium is not None:
         test_model.medium = medium
     
     sol = test_model.optimize()
@@ -53,6 +53,59 @@ def growth_possible(model, medium = None) -> bool:
         return False
     else:
         return True
+    
+
+def reactions_exist(model, reactions) -> bool:
+    """Tests that the model contains all the reactions in the list."""
+    
+    test_model = model.copy()
+
+    missing_reactions = []
+
+    for reaction in reactions:
+        if reaction not in test_model.reactions:
+            missing_reactions.append(reaction)
+    
+    if missing_reactions:
+        print("The following reactions are missing: " + str(missing_reactions))
+        return False
+    else:
+        return True
+
+
+def check_production(model, reactions, medium = None) -> bool:
+    """Tests whether there is any flux through the specified reaction at any optimal solution."""
+    
+    test_model = model.copy()
+
+    if not reactions_exist(test_model, reactions):
+        return False
+
+    if medium is not None:
+        test_model.medium = medium
+
+    # run FVA for the reactions and check that both their scores are not 0
+    fva_sol = cobra.flux_analysis.flux_variability_analysis(test_model, reactions, fraction_of_optimum=1)
+    
+    return fva_sol
+
+def check_blocked_reactions(model, reactions, medium = None):
+    """Checks whether any of the reactions are blocked reactions. 
+    Returns the input reactions which are blocked. Uses cobra.flux_analysis.find_blocked_reactions, but allows for str id input on list of reactions."""
+    
+    test_model = model.copy()
+
+    if medium is not None:
+        test_model.medium = medium
+
+    reaction_list = [test_model.reactions.get_by_id(r) for r in reactions]
+
+    blocked_reactions = cobra.flux_analysis.find_blocked_reactions(test_model, reaction_list=reaction_list)
+
+    if blocked_reactions:
+        return blocked_reactions
+    else:
+        return False
 
 
 def get_exhange(reactions):
@@ -130,33 +183,6 @@ def exists_path(model, A, B) -> bool:
         return sol.fluxes[sol.fluxes > 0]
     else:
         return False
-
-
-def production_possible(model, reaction, medium = None) -> bool:
-    """Tests whether the model is able to carry flux through the reaction at steady-state on the specified medium."""
-    
-    test_model = model.copy()
-
-    if reaction not in test_model.reactions:
-        print("Reaction " + reaction + " not in model.")
-        return False
-
-    if medium is None:
-        medium = test_model.medium 
-
-    test_model.medium = medium
-
-    test_model.objective = reaction
-    
-    sol = test_model.optimize()
-    
-    return sol.objective_value > 0
-
-
-def reactions_exist(model, reactions) -> bool:
-    """Tests that the model contains the specified reactions."""
-    # TODO: implement
-    pass
 
 
 def create_graph(model, metabolites = None):
