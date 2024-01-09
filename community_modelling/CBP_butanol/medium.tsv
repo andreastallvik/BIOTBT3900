@@ -67,3 +67,73 @@ nj4_med	anaerobic medium with YE and xylose	pnto__R	PAN
 nj4_med	anaerobic medium with YE and xylose	pydx	Pyridoxal
 nj4_med	anaerobic medium with YE and xylose	ribflv	Riboflavin
 nj4_med	anaerobic medium with YE and xylose	thm	Thiamin
+m5_med	anaerobic medium with YE and xylan	xylan4	"Xylan (4 backbone units, 1 glcur side chain)"
+m5_med	anaerobic medium with YE and xylan	xylan8	"Xylan (8 backbone units, 2 glcur side chain)"
+m5_med	anaerobic medium with YE and xylan	xylan12	"Xylan (12 backbone units, 3 glcur side chain)"
+m5_med	anaerobic medium with YE and xylose	ca2	Ca2+
+m5_med	anaerobic medium with YE and xylose	cl	Cl-
+m5_med	anaerobic medium with YE and xylose	cobalt2	Co2+
+m5_med	anaerobic medium with YE and xylose	cu2	Cu2+
+m5_med	anaerobic medium with YE and xylose	fe2	Fe2+
+m5_med	anaerobic medium with YE and xylose	fe3	Fe3+
+m5_med	anaerobic medium with YE and xylose	h2o	H2O
+m5_med	anaerobic medium with YE and xylose	h	H+
+m5_med	anaerobic medium with YE and xylose	k	K+
+m5_med	anaerobic medium with YE and xylose	mg2	Mg
+m5_med	anaerobic medium with YE and xylose	mn2	Mn2+
+m5_med	anaerobic medium with YE and xylose	mobd	Molybdate
+m5_med	anaerobic medium with YE and xylose	na1	Na+
+m5_med	anaerobic medium with YE and xylose	nh4	Ammonium
+m5_med	anaerobic medium with YE and xylose	ni2	Ni2+
+m5_med	anaerobic medium with YE and xylose	pi	Phosphate
+m5_med	anaerobic medium with YE and xylose	so4	Sulfate
+m5_med	anaerobic medium with YE and xylose	zn2	Zn2+
+m5_med	anaerobic medium with YE and xylose	adn	Adenosine
+m5_med	anaerobic medium with YE and xylose	ala__L	L-Alanine
+m5_med	anaerobic medium with YE and xylose	arg__L	L-Arginine
+m5_med	anaerobic medium with YE and xylose	amp	AMP
+m5_med	anaerobic medium with YE and xylose	asp__L	L-Aspartate
+m5_med	anaerobic medium with YE and xylose	cbl1	Vitamin B12
+m5_med	anaerobic medium with YE and xylose	fe2	Fe2+
+m5_med	anaerobic medium with YE and xylose	fe3	Fe3+
+m5_med	anaerobic medium with YE and xylose	fol	Folate
+m5_med	anaerobic medium with YE and xylose	cmp	CMP
+m5_med	anaerobic medium with YE and xylose	glu__L	L-Glutamate
+m5_med	anaerobic medium with YE and xylose	his__L	L-Histidine
+m5_med	anaerobic medium with YE and xylose	ser__L	L-Serine
+m5_med	anaerobic medium with YE and xylose	trp__L	L-Tryptophan
+m5_med	anaerobic medium with YE and xylose	tyr__L	L-Tyrosine
+m5_med	anaerobic medium with YE and xylose	ump	UMP
+m5_med	anaerobic medium with YE and xylose	ura	Uracil
+m5_med	anaerobic medium with YE and xylose	val__L	L-Valine
+m5_med	anaerobic medium with YE and xylose	thr__L	L-Threonine
+m5_med	anaerobic medium with YE and xylose	lys__L	L-Lysine
+m5_med	anaerobic medium with YE and xylose	met__L	L-Methionine
+m5_med	anaerobic medium with YE and xylose	ile__L	L-Isoleucine
+m5_med	anaerobic medium with YE and xylose	phe__L	L-Phenylalanine
+m5_med	anaerobic medium with YE and xylose	pro__L	L-Proline
+m5_med	anaerobic medium with YE and xylose	thymd	Thymidine
+m5_med	anaerobic medium with YE and xylose	uri	Uridine
+m5_med	anaerobic medium with YE and xylose	aso3	Arsenite 
+m5_med	anaerobic medium with YE and xylose	cd2	Cadmium 
+m5_med	anaerobic medium with YE and xylose	cobalt2	Co2+
+m5_med	anaerobic medium with YE and xylose	cro4	Chromate 
+m5_med	anaerobic medium with YE and xylose	cu2	Cu2+
+m5_med	anaerobic medium with YE and xylose	cys__L	L-Cysteine
+m5_med	anaerobic medium with YE and xylose	dad_2	Deoxyadenosine 
+m5_med	anaerobic medium with YE and xylose	dcyt	Deoxycytidine
+m5_med	anaerobic medium with YE and xylose	gmp	GMP
+m5_med	anaerobic medium with YE and xylose	gsn	Guanosine
+m5_med	anaerobic medium with YE and xylose	h2s	Hydrogen sulfide
+m5_med	anaerobic medium with YE and xylose	hg2	Hg2+ 
+m5_med	anaerobic medium with YE and xylose	hxan	Hypoxanthine
+m5_med	anaerobic medium with YE and xylose	ins	Inosine
+m5_med	anaerobic medium with YE and xylose	lipoate	Lipoate
+m5_med	anaerobic medium with YE and xylose	mobd	Molybdate
+m5_med	anaerobic medium with YE and xylose	nac	Isonicotinic acid
+m5_med	anaerobic medium with YE and xylose	pheme	Protoheme
+m5_med	anaerobic medium with YE and xylose	pi	Phosphate
+m5_med	anaerobic medium with YE and xylose	pnto__R	PAN
+m5_med	anaerobic medium with YE and xylose	pydx	Pyridoxal
+m5_med	anaerobic medium with YE and xylose	ribflv	Riboflavin
+m5_med	anaerobic medium with YE and xylose	thm	Thiamin
