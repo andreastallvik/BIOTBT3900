@@ -5,66 +5,104 @@ Helper functions for checking validity of automatically reconstructed models.
 import cobra
 from cobra.io import read_sbml_model
 from cobra.exceptions import Infeasible
+from cobra.flux_analysis import gapfill
 import traceback
 import networkx as nx
 import pyvis.network
 
 
-def energy_generation_cycle(model) -> bool:
-    """Tests for energy-generation cycles in the model."""
+def ATP_generation_cycle(model):
+    """Tests whether model contains ATP-generation cycle."""
     
-    test_model = model.copy()
+    with model:
 
-    # set the lower bound of ATMP function to 0
-    test_model.reactions.ATPM.lower_bound = 0
+        # set the lower bound of ATMP function to 0
+        model.reactions.ATPM.lower_bound = 0
 
-    # set the objective function to max ATP maintance
-    test_model.objective = "ATPM"
+        # set the objective function to max ATP maintance
+        model.objective = "ATPM"
 
-    # set lower bound of all exhanges to 0 (no uptake allowed)
-    for reaction in test_model.reactions:
-            if reaction.boundary:
-                    reaction.lower_bound = 0
+        # set lower bound of all exhanges to 0 (no uptake allowed)
+        for reaction in model.reactions:
+                if reaction.boundary:
+                        reaction.lower_bound = 0
 
-    # solve for max ATPM reaction with pFBA
-    try:
-        pfba_solution = cobra.flux_analysis.pfba(test_model)
-        print("ATPM flux: " + str(pfba_solution.fluxes["ATPM"]))
-        if pfba_solution.fluxes["ATPM"] > 0:
-            print("Energy-generating cycle detected.")
-            return True
-        else:
-            return False
-    except Infeasible:
-        traceback.print_exc()
+        # solve for max ATPM reaction with pFBA
+        try:
+            pfba_solution = cobra.flux_analysis.pfba(model)
+            #print("ATPM flux: " + str(pfba_solution.fluxes["ATPM"]))
+            if pfba_solution.fluxes["ATPM"] > 0:
+                print("Energy-generating cycle detected.")
+                return True
+            else:
+                return False
+        except Infeasible:
+            traceback.print_exc()
+
+
+def NADH_generation_cycle(model):
+    """Tests whether model contains NADH-generation cycle."""
+    
+    with model:
+
+        # set the lower bound of ATMP function to 0
+        model.reactions.ATPM.lower_bound = 0
+
+        # add a demand reaction for NADH
+        model.add_boundary(model.metabolites.nadh_c, type="deman", reaction_id="DM_nadh_c")
+
+        # set the objective function to be consumption of NADH
+        model.objective = "DM_nadh_c"
+
+        # set lower bound of all exhanges to 0 (no uptake allowed)
+        for reaction in model.reactions:
+                if reaction.boundary:
+                        reaction.lower_bound = 0
+
+        try:
+            pfba_solution = cobra.flux_analysis.pfba(model)
+            if pfba_solution.fluxes["DM_nadh_c"] > 0:
+                print("Energy-generating cycle detected.")
+                return True
+            else:
+                return False
+        except Infeasible:
+            traceback.print_exc()
+            
+
+def energy_generation_cycle(model):
+    """Tests whether model contains energy-generating cycle (ATP or NADH - returns false if neither is detected). """
+    atp = ATP_generation_cycle(model)
+    nadh = NADH_generation_cycle(model)
+    return atp or nadh
 
 
 def growth_possible(model, medium = None) -> bool:
     """Tests that the model can grow on the specified medium."""
 
-    test_model = model.copy()
+    with model:
 
-    if medium is not None:
-        test_model.medium = medium
-    
-    sol = test_model.optimize()
-    
-    if sol.objective_value == 0:
-        return False
-    else:
+        if medium is not None:
+            model.medium = medium
+        
+        sol = model.slim_optimize()
+        
+    if sol > 0:
         return True
+    else:
+        return False
     
 
 def reactions_exist(model, reactions) -> bool:
     """Tests that the model contains all the reactions in the list."""
     
-    test_model = model.copy()
-
     missing_reactions = []
 
-    for reaction in reactions:
-        if reaction not in test_model.reactions:
-            missing_reactions.append(reaction)
+    with model:
+
+        for reaction in reactions:
+            if reaction not in model.reactions:
+                missing_reactions.append(reaction)
     
     if missing_reactions:
         print("The following reactions are missing: " + str(missing_reactions))
@@ -74,39 +112,67 @@ def reactions_exist(model, reactions) -> bool:
 
 
 def check_production(model, reactions, medium = None) -> bool:
-    """Tests whether there is any flux through the specified reaction at any optimal solution."""
+    """Get the possible flux values for the reactions at any optimal solution."""
     
-    test_model = model.copy()
+    with model:
 
-    if not reactions_exist(test_model, reactions):
-        return False
+        if not reactions_exist(model, reactions):
+            raise ValueError("Input only reactions that are present in the model.")
 
-    if medium is not None:
-        test_model.medium = medium
+        if medium is not None:
+            model.medium = medium
 
-    # run FVA for the reactions and check that both their scores are not 0
-    fva_sol = cobra.flux_analysis.flux_variability_analysis(test_model, reactions, fraction_of_optimum=1)
+        # run FVA for the reactions and check that both their scores are not 0
+        fva_sol = cobra.flux_analysis.flux_variability_analysis(model, reactions, fraction_of_optimum=1)
     
     return fva_sol
+
 
 def check_blocked_reactions(model, reactions, medium = None):
     """Checks whether any of the reactions are blocked reactions. 
     Returns the input reactions which are blocked. Uses cobra.flux_analysis.find_blocked_reactions, but allows for str id input on list of reactions."""
     
-    test_model = model.copy()
+    with model:
 
-    if medium is not None:
-        test_model.medium = medium
+        if medium is not None:
+            model.medium = medium
 
-    reaction_list = [test_model.reactions.get_by_id(r) for r in reactions]
+        reaction_list = [model.reactions.get_by_id(r) for r in reactions]
 
-    blocked_reactions = cobra.flux_analysis.find_blocked_reactions(test_model, reaction_list=reaction_list)
+        blocked_reactions = cobra.flux_analysis.find_blocked_reactions(model, reaction_list=reaction_list)
 
     if blocked_reactions:
         return blocked_reactions
     else:
         return False
 
+
+def validate_pathway(model, A, B) -> bool:
+    """Tests whether the model network supports production of metabolite B from metabolite A."""
+    
+    with model:    
+        
+        model.add_boundary(model.metabolites.get_by_id(A), type="sink", reaction_id="SK_A")
+        model.add_boundary(model.metabolites.get_by_id(B), type="sink", reaction_id="DM_B")
+
+        model.objective="DM_B"
+
+        sol = model.slim_optimize()
+
+    return sol > 0 
+
+
+def find_gapfilling_reactions(model, universal_model, reaction):
+    """Using cobrapy gapfill function, find reactions from the universal model that when added will unblock reaction."""
+    
+    with model:
+        model.objective = model.reactions.get_by_id(reaction)
+        gapfilling_reactions = gapfill(model, universal_model)
+        
+    return [r.id for r in gapfilling_reactions[0]]
+
+
+## archive(?) - need to figure out how to actually use these functions
 
 def get_exhange(reactions):
     """Returns first exhange reaction in list of reactions, returns false if no exchange reaction is found."""
@@ -225,9 +291,3 @@ def visualise_graph(G, filename):
     nt.from_nx(G)
     filepath = filename + ".html"
     nt.show(filepath, notebook=False)
-
-
-# main - to troubleshoot
-
-# nj4 = read_sbml_model('community_modelling/CBP_butanol/GEMs/NJ4.xml')
-# print(exists_path(nj4, "glc__D_c", "ac_c"))
