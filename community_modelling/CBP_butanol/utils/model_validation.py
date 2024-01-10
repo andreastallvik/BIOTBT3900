@@ -111,7 +111,7 @@ def reactions_exist(model, reactions) -> bool:
         return True
 
 
-def check_production(model, reactions, medium = None) -> bool:
+def check_production(model, reactions, medium = None, fraction_of_optimum=1.0) -> bool:
     """Get the possible flux values for the reactions at any optimal solution."""
     
     with model:
@@ -123,7 +123,7 @@ def check_production(model, reactions, medium = None) -> bool:
             model.medium = medium
 
         # run FVA for the reactions and check that both their scores are not 0
-        fva_sol = cobra.flux_analysis.flux_variability_analysis(model, reactions, fraction_of_optimum=1)
+        fva_sol = cobra.flux_analysis.flux_variability_analysis(model, reactions, fraction_of_optimum=fraction_of_optimum)
     
     return fva_sol
 
