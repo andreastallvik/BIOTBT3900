@@ -29,13 +29,17 @@ ACEt = universal_model.reactions.get_by_id("ACEt")
 # acetate transport reaction
 ACtr = universal_model.reactions.get_by_id("ACtr")
 
-# acetoacetyl-CoA + butyrate -> acetoacetate + butanoyl-CoA
-nj4.reactions.get_by_id("BUTCT2").bounds = (-1000, 1000) # make this reaction reversible like god intended
+# make these reaction reversible like god intended
+# CoA- transferase reactions by enzyme 2.8.3.8
+nj4.reactions.get_by_id("BUTCT").bounds = (-1000, 1000) 
+nj4.reactions.get_by_id("ACACCT").bounds = (-1000, 1000) 
+nj4.reactions.get_by_id("BUTCT2").bounds = (-1000, 1000) 
+
 
 print("adding reactions...")
 nj4.add_reactions([BTOHt, BUTt, ADCi, ACEt, ACtr])
-nj4.add_boundary(nj4.metabolites.get_by_id('btoh_e'), type='exchange', reaction_id='EX_btoh_e')
-nj4.add_boundary(nj4.metabolites.get_by_id('acetone_e'), type='exchange', reaction_id='EX_acetone_e')
+nj4.add_boundary(nj4.metabolites.get_by_id('btoh_e'), type='exchange', reaction_id='EX_btoh_e', lb=0, ub=1000)
+nj4.add_boundary(nj4.metabolites.get_by_id('acetone_e'), type='exchange', reaction_id='EX_acetone_e', lb=0, ub=1000)
 
 print("writing model as NJ4_curated...")
 write_sbml_model(nj4, str(ROOT_DIR / "community_modelling" / "CBP_butanol" / "GEMs" / "NJ4_curated.xml"))

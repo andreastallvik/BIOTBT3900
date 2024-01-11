@@ -116,3 +116,22 @@ def mmol_to_g_per_L(met_name, met_mmol, volume = 0.05):
     
     # divide by 1000 (-> mol), multiply by molar mass (-> g) and divide by volume (-> g/L)
     return (met_mmol / 1000) * MM[met_name] / volume
+
+
+def plot_reaction_flux(sim, reactions: list, strain: str, time_step=0.1):
+    """Plot reaction fluxes for a single strain from a comets simulation."""
+    
+    fluxes = sim.get_species_exchange_fluxes(strain)
+    time = fluxes["cycle"] * time_step
+
+    present_reaction_fluxes = [rx for rx in reactions if rx in fluxes.columns]
+    df = fluxes[present_reaction_fluxes].copy()
+
+    missing_reactions = list(set(reactions) - set(present_reaction_fluxes))
+    for rx in missing_reactions:
+            df[rx] = 0
+    df["time"] = time
+
+    plot_df = df.melt(id_vars="time", value_name="flux", var_name="reaction")
+    
+    sns.lineplot(data=plot_df, x="time", y="flux", hue="reaction") 
