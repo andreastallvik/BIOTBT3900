@@ -62,10 +62,10 @@ BTOHt = universal_model.reactions.get_by_id('BTOHt')
 BUTt = universal_model.reactions.get_by_id('BUTt')
 
 # acetoacetate -> acetone + CO2
-ADCi = universal_model.reactions.get_by_id("ADCi")
+#ADCi = universal_model.reactions.get_by_id("ADCi")
 
-# acetone transport reaction
-ACEt = universal_model.reactions.get_by_id("ACEt")
+# # acetone transport reaction
+# ACEt = universal_model.reactions.get_by_id("ACEt")
 
 # acetate transport reaction
 ACtr = universal_model.reactions.get_by_id("ACtr")
@@ -73,17 +73,20 @@ ACtr = universal_model.reactions.get_by_id("ACtr")
 # ethanol transport reaction
 ETOHt = universal_model.reactions.get_by_id("ETOHt")
 
-# CoA- transferase reactions by enzyme 2.8.3.8
-ACACCT = universal_model.reactions.get_by_id("ACACCT")
-BUTCT2 = universal_model.reactions.get_by_id("BUTCT2")
+# enzyme 1.1.1.157
+HBCO_nadp = universal_model.reactions.get_by_id("HBCO_nadp")
 
-# make these reaction reversible like god intended
+# # CoA- transferase reactions by enzyme 2.8.3.8
+# ACACCT = universal_model.reactions.get_by_id("ACACCT")
+# BUTCT2 = universal_model.reactions.get_by_id("BUTCT2")
+
+# make reaction reversible
 m5.reactions.get_by_id("BUTCT").bounds = (-1000, 1000) 
 
 print("adding reactions...")
-m5.add_reactions([xyl4_transport, glcur_transport, GLCURS1_e, XYLOS1_e, BTOHt, BUTt, ADCi, ACEt, ACtr, ETOHt, ACACCT, BUTCT2])
+m5.add_reactions([xyl4_transport, glcur_transport, GLCURS1_e, XYLOS1_e, BTOHt, BUTt, ACtr, ETOHt, HBCO_nadp])
 m5.add_boundary(m5.metabolites.get_by_id('btoh_e'), type='exchange', reaction_id='EX_btoh_e', lb=0, ub=1000)
-m5.add_boundary(m5.metabolites.get_by_id('acetone_e'), type='exchange', reaction_id='EX_acetone_e', lb=0, ub=1000)
+#m5.add_boundary(m5.metabolites.get_by_id('acetone_e'), type='exchange', reaction_id='EX_acetone_e', lb=0, ub=1000)
 
 print("writing model as M5_curated...")
 write_sbml_model(m5, str(ROOT_DIR / "community_modelling" / "CBP_butanol" / "GEMs" / "M5_curated.xml"))
