@@ -4,6 +4,7 @@ Helper functions for preforming/displaying static simulations of the CBP butanol
 
 from cobra.flux_analysis import pfba, flux_variability_analysis
 import pandas as pd
+import seaborn as sns
 
 
 def get_productions(model, medium: dict = None, reactions: list = None):
@@ -24,7 +25,7 @@ def get_productions(model, medium: dict = None, reactions: list = None):
         return output_df.rename(columns={"fluxes": "pFBA sol"})
     
     
-def get_specific_medium(model, specific_reactions: list):
+def get_specific_medium(model, specific_reactions: dict):
     """Get a dictionary of max uptake rates for a model, with 0.1 for each reaction in the original medium, and specific custimisations."""
     
     essential_rx = ['EX_ca2_e', 'EX_cl_e', 'EX_cobalt2_e', 'EX_cu2_e', 'EX_fe3_e', 'EX_fol_e', 
@@ -47,3 +48,13 @@ def print_production_rates(sol):
     production_reactions = ["EX_but_e", "EX_ac_e", "EX_etoh_e", "EX_btoh_e", "EX_acetone_e"]
     print('Production fluxes:')
     print(sol.fluxes[production_reactions])
+
+def plot_production_stats(solution_df):
+    """Makes a simple plot to visualise the output of get_productions()."""
+
+    plot_df = solution_df.copy()
+    plot_df["reaction"] = solution_df.index
+    plot_df.rename(columns={"pFBA sol": "pFBA", "minimum": "FVA min", "maximum": "FVA max"}, inplace=True)
+    plot_df = plot_df.melt(id_vars="reaction", var_name="solution type", value_name="flux")
+
+    sns.scatterplot(data=plot_df, x="reaction", y="flux", hue="solution type")

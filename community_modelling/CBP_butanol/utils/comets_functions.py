@@ -112,7 +112,9 @@ def mmol_to_g_per_L(met_name, met_mmol, volume = 0.05):
           "but_e": 88.11, 
           "btoh_e": 74.12, 
           "ac_e": 59.044, 
-          "acetone_e": 58.08}
+          "acetone_e": 58.08,
+          "xylan4_e": 600.52,
+          "xylan8_e": 1201.04}
     
     # divide by 1000 (-> mol), multiply by molar mass (-> g) and divide by volume (-> g/L)
     return (met_mmol / 1000) * MM[met_name] / volume
