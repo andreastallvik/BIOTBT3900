@@ -65,6 +65,67 @@ def single_strain(model, medium: dict = {}, initial_pop: float = 1.e-3, sim_time
     return sim
 
 
+def mult_strain(models: list, medium: dict = {}, initial_pop: float = 1.e-3, sim_time: float = 140):
+
+    comets_models = {model.id:None for model in models}
+
+    # for each model
+
+    for model in models:
+
+        # make a comets model
+        comets_models[model.id] = c.model(model)
+
+        # set initial population
+        comets_models[model.id].initial_pop = [0, 0, initial_pop]
+        
+        # open all exhange reactions
+        comets_models[model.id].open_exchanges()
+
+        # use pFBA when solving
+        comets_models[model.id].obj_style="MAX_OBJECTIVE_MIN_TOTAL"
+    
+
+    # TODO: Set MM kinetics for uptake reactions
+
+    # create a 1x1 layout
+    layout = c.layout(list(comets_models.values()))
+
+    # set metabolite availability
+    for met in UNLIMITED_METABOLITES:
+        layout.set_specific_metabolite(met, 1000.)
+    
+    for met, mmol in medium.items():
+        layout.set_specific_metabolite(met, mmol)
+
+    # create params object
+    params = c.params()
+
+    # set grid size specifications
+    params.set_param("spaceWidth", SPACE_WIDTH)
+
+    # set simulation parameters
+    time_step = 0.1 # hours
+    params.set_param("timeStep", time_step)
+    params.set_param("maxSpaceBiomass", 10.) # max gDW in simulation TODO: set this to a sensible number and not an arbitrarily large one
+    params.set_param("maxCycles", int(sim_time / time_step))
+
+    # set logging parameters
+    params.set_param("writeFluxLog", True)
+    params.set_param("writeMediaLog", True)
+    params.set_param("FluxLogRate", 1)
+    params.set_param("MediaLogRate", 1)
+
+    # create simultion object
+    sim = c.comets(layout, params)
+
+    with warnings.catch_warnings(): #to avoid getting many futurewarning messages from a cometspy function
+        warnings.simplefilter(action='ignore', category=FutureWarning)
+        sim.run()
+
+    return sim
+
+
 def plot_metabolites(sim, metabolites, time_step = 0.1):
     """Plot specific metabolites from comets simulation results."""
 
