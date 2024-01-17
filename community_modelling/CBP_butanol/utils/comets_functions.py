@@ -12,6 +12,17 @@ SPACE_WIDTH = 3.684
 
 
 def single_strain(model, medium: dict = {}, initial_pop: float = 1.e-3, sim_time: float = 140):
+    """Run a comets simulation for a single strain
+
+    Args:
+        model: cobrapy model
+        medium (dict, optional): metabolite: molar amount to be included in sim. Defaults to {}. If empty, only std. unlimited metabolites will be included.
+        initial_pop (float, optional): initial biomass of organism. Defaults to 1.e-3.
+        sim_time (float, optional): number of hours in simulation. Defaults to 140.
+
+    Returns:
+        sim: comets simulation object
+    """
 
     # make a comets model
     comets_model = c.model(model)
@@ -65,7 +76,19 @@ def single_strain(model, medium: dict = {}, initial_pop: float = 1.e-3, sim_time
     return sim
 
 
-def mult_strain(models: list, medium: dict = {}, initial_pop: float = 1.e-3, sim_time: float = 140):
+def mult_strain(models: list, medium: dict = {}, initial_pop: float = 1.e-3, sim_time: float = 140, specific_initial_pop: dict = {}):
+    """Run a simulation for multiple strains.
+
+    Args:
+        models (list): list of cobrapy models
+        medium (dict, optional): Dict of metabolite:molar amount, if empty only unlimited metabolites are included. Defaults to {}.
+        initial_pop (float, optional): initial biomass for all community members, ignored if specific_initial_pop is non-empty. Defaults to 1.e-3.
+        sim_time (float, optional): number of hours of simulation time. Defaults to 140.
+        specific_initial_pop (dict, optional): dictionary of cobrapy model.id:initial biomass. If not empty this is used instead of initial_pop. Defaults to {}.
+
+    Returns:
+        sim: comets simulation object
+    """
 
     comets_models = {model.id:None for model in models}
 
@@ -77,6 +100,9 @@ def mult_strain(models: list, medium: dict = {}, initial_pop: float = 1.e-3, sim
         comets_models[model.id] = c.model(model)
 
         # set initial population
+        if specific_initial_pop:
+            initial_pop = specific_initial_pop[model.id]
+            
         comets_models[model.id].initial_pop = [0, 0, initial_pop]
         
         # open all exhange reactions
@@ -124,6 +150,32 @@ def mult_strain(models: list, medium: dict = {}, initial_pop: float = 1.e-3, sim
         sim.run()
 
     return sim
+
+
+def sequental_com(m5, nj4, init_medium: dict = {}, initial_pop_m5: float = 1.e-3, initial_pop_nj4: float = 1.e-3, 
+                  total_sim_time: float = 140, inoc_time: float = 60):
+    
+
+    #TODO: check this works / add in some failsafes for if the simulation fails
+    
+    second_sim_time = total_sim_time - inoc_time
+
+    # run a single-strain simulation for the first strain
+    first_sim = single_strain(m5, medium=init_medium, initial_pop=initial_pop_m5, sim_time=inoc_time)
+
+    # retrieve information from the first simulation 
+    
+    biomass_m5 = first_sim.total_biomass["M5"].iloc[-1]
+    
+    # final metabolite amounts in the medium
+    metabolites = first_sim.get_metabolite_time_series().iloc[-1, 2:]
+    new_medium = {met:mol for met,mol in metabolites.items() if mol > 0.0}
+
+    # run a mult-strain simulation for the second strain
+    second_sim = mult_strain([m5, nj4], medium=new_medium, sim_time=second_sim_time, specific_initial_pop={"NJ4":initial_pop_nj4, "M5": biomass_m5})
+
+    # TODO: combine the reults from the first and second sim in sime meaningful way
+    return first_sim, second_sim
 
 
 def plot_metabolites(sim, metabolites, time_step = 0.1):
