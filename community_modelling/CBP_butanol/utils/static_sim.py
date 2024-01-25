@@ -2,7 +2,8 @@
 Helper functions for preforming/displaying static simulations of the CBP butanol model.
 """
 
-from cobra.flux_analysis import pfba, flux_variability_analysis
+from cobra.flux_analysis import pfba, flux_variability_analysis, production_envelope
+import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
@@ -49,6 +50,7 @@ def print_production_rates(sol):
     print('Production fluxes:')
     print(sol.fluxes[production_reactions])
 
+
 def plot_production_stats(solution_df):
     """Makes a simple plot to visualise the output of get_productions()."""
 
@@ -58,3 +60,40 @@ def plot_production_stats(solution_df):
     plot_df = plot_df.melt(id_vars="reaction", var_name="solution type", value_name="flux")
 
     sns.scatterplot(data=plot_df, x="reaction", y="flux", hue="solution type")
+
+
+def plot_flux_envelopes(model, reactions: list = None, medium: dict = None):
+
+    if reactions is None:
+        reactions = ["EX_but_e", "EX_ac_e", "EX_etoh_e", "EX_btoh_e", "EX_acetone_e"]
+
+    colors = ['b', 'g', 'r', 'c', 'm', 'y']
+    
+    with model:
+        
+        if medium is not None:
+            model.medium = medium
+
+        # create subplots with 3 columns for each row
+        num_reactions = len(reactions)
+        num_rows = num_reactions // 3 if num_reactions % 3 == 0 else (num_reactions // 3) + 1
+        fig, axes = plt.subplots(num_rows, 3, figsize=(10, 3 * num_rows))
+
+        for i, (rx, color) in enumerate(zip(reactions, colors)):
+            # calculate the current row and column index in the grid
+            row_index = i // 3
+            col_index = i % 3
+            
+            # get the current subplot
+            ax = axes[row_index, col_index] if num_reactions > 1 else axes
+            
+            prod_env = production_envelope(model, [rx])
+
+            # plot on the current subplot with the specified color
+            prod_env.plot(kind='line', x='flux_maximum', y=rx, xlabel="Growth rate", ax=ax, color=color)
+            ax.fill_between(prod_env["flux_maximum"], prod_env[rx], alpha=0.2, color=color)
+            
+            # set title for the subplot
+            ax.set_title(rx)
+
+    plt.tight_layout()
