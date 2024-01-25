@@ -87,11 +87,11 @@ def plot_flux_envelopes(model, reactions: list = None, medium: dict = None):
             # get the current subplot
             ax = axes[row_index, col_index] if num_reactions > 1 else axes
             
-            prod_env = production_envelope(model, [rx])
+            prod_env = production_envelope(model, ["Growth"], objective=rx)
 
             # plot on the current subplot with the specified color
-            prod_env.plot(kind='line', x='flux_maximum', y=rx, xlabel="Growth rate", ax=ax, color=color)
-            ax.fill_between(prod_env["flux_maximum"], prod_env[rx], alpha=0.2, color=color)
+            prod_env.plot(kind='line', y=['flux_maximum', 'flux_minimum'], x="Growth", ax=ax, color = color, legend=False)
+            ax.fill_between(prod_env["Growth"], prod_env["flux_minimum"], prod_env["flux_maximum"], alpha=0.2, color=color)
             
             # set title for the subplot
             ax.set_title(rx)
