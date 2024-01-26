@@ -63,6 +63,14 @@ def plot_production_stats(solution_df):
 
 
 def plot_flux_envelopes(model, reactions: list = None, medium: dict = None, BM_func: str = "Growth"):
+    """Plots production envelopes for each of the liste reactions in a single figure.
+
+    Args:
+        model: cobrapy GEM
+        reactions (list, optional): Reactions to use for plot production envelope for. If None, ABE production reactions are used. Defaults to None.
+        medium (dict, optional): Medium to use. If None the model medium is used. Defaults to None.
+        BM_func (str, optional): Biomass function id. Defaults to "Growth".
+    """
 
     if reactions is None:
         reactions = ["EX_but_e", "EX_ac_e", "EX_etoh_e", "EX_btoh_e", "EX_acetone_e"]
