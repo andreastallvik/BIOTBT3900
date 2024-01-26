@@ -5,6 +5,7 @@ literature search/archive/
 genomes/
 genome_sequences/
 large_input/
+idun_kode/
 
 # genome sequences
 *.faa.gz
