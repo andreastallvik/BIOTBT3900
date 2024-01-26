@@ -62,13 +62,13 @@ def plot_production_stats(solution_df):
     sns.scatterplot(data=plot_df, x="reaction", y="flux", hue="solution type")
 
 
-def plot_flux_envelopes(model, reactions: list = None, medium: dict = None):
+def plot_flux_envelopes(model, reactions: list = None, medium: dict = None, BM_func: str = "Growth"):
 
     if reactions is None:
         reactions = ["EX_but_e", "EX_ac_e", "EX_etoh_e", "EX_btoh_e", "EX_acetone_e"]
 
     colors = ['b', 'g', 'r', 'c', 'm', 'y']
-    
+
     with model:
         
         if medium is not None:
@@ -87,11 +87,11 @@ def plot_flux_envelopes(model, reactions: list = None, medium: dict = None):
             # get the current subplot
             ax = axes[row_index, col_index] if num_reactions > 1 else axes
             
-            prod_env = production_envelope(model, ["Growth"], objective=rx)
+            prod_env = production_envelope(model, [BM_func], objective=rx)
 
             # plot on the current subplot with the specified color
-            prod_env.plot(kind='line', y=['flux_maximum', 'flux_minimum'], x="Growth", ax=ax, color = color, legend=False)
-            ax.fill_between(prod_env["Growth"], prod_env["flux_minimum"], prod_env["flux_maximum"], alpha=0.2, color=color)
+            prod_env.plot(kind='line', y=['flux_maximum', 'flux_minimum'], x=BM_func, ax=ax, color = color, legend=False)
+            ax.fill_between(prod_env[BM_func], prod_env["flux_minimum"], prod_env["flux_maximum"], alpha=0.2, color=color)
             
             # set title for the subplot
             ax.set_title(rx)
