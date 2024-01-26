@@ -3,7 +3,8 @@
 import cometspy as c
 import warnings
 import seaborn as sns
-
+import pandas as pd
+import matplotlib.pyplot as plt
 
 UNLIMITED_METABOLITES = ['ca2_e', 'cl_e', 'cobalt2_e', 'cu2_e', 'fe2_e', 'fe3_e','h_e', 'k_e', 'h2o_e', 'mg2_e', 
                     'mn2_e', 'mobd_e', 'na1_e', 'nh4_e', 'ni2_e', 'pi_e', 'so4_e', 'zn2_e']
@@ -174,15 +175,49 @@ def sequental_com(m5, nj4, init_medium: dict = {}, initial_pop_m5: float = 1.e-3
     # run a mult-strain simulation for the second strain
     second_sim = mult_strain([m5, nj4], medium=new_medium, sim_time=second_sim_time, specific_initial_pop={"NJ4":initial_pop_nj4, "M5": biomass_m5})
 
-    # TODO: combine the reults from the first and second sim in sime meaningful way
     return first_sim, second_sim
 
 
-def plot_metabolites(sim, metabolites, time_step = 0.1):
+def collapse_sequential_sim(sim_1, sim_2):
+
+    # biomass
+    bm_1 = sim_1.total_biomass.copy()
+    bm_2 = sim_2.total_biomass.copy()
+
+    cycle_diff = bm_1["cycle"].iloc[bm_1.shape[0]-1] + 1
+
+    bm_2["cycle"] = bm_2["cycle"] + cycle_diff
+    bm = pd.concat([bm_1, bm_2]).fillna(value=0)
+
+    # metabolies
+    met_1 = sim_1.get_metabolite_time_series()
+    met_2 = sim_2.get_metabolite_time_series()
+
+    met_2["cycle"] = met_2["cycle"] + cycle_diff
+    met = pd.concat([met_1, met_2]).fillna(value=0)
+
+    # fluxes
+    flux_1 = sim_1.get_species_exchange_fluxes("M5")
+    flux_2 = sim_2.get_species_exchange_fluxes("NJ4")
+
+    flux_2["cycle"] = flux_2["cycle"] + cycle_diff
+    flux = pd.concat([flux_1, flux_2]).fillna(value=0)
+
+    return bm, met, flux
+
+
+def plot_metabolites(sim = None, metabolites = None, time_step = 0.1, metabolites_time_series = None, inoc_time = None):
     """Plot specific metabolites from comets simulation results."""
 
+    if sim is None and metabolites_time_series is None:
+        raise ValueError("Either a comets simulation object or a dataframe of metabolite time-series data must be provided.")
+
+    if metabolites is None:
+        raise ValueError("A list of metabolites to plot must be provided.")
+
     # get metabolite time-course data
-    metabolites_time_series = sim.get_metabolite_time_series()
+    if metabolites_time_series is None:
+        metabolites_time_series = sim.get_metabolite_time_series()
 
     # prepare dataframe for plotting
 
@@ -204,16 +239,29 @@ def plot_metabolites(sim, metabolites, time_step = 0.1):
     
     sns.lineplot(data=plot_df, x="time", y="g/L", hue="metabolite")
 
+    if inoc_time is not None:
+        plt.axvline(x=inoc_time, color='k', linestyle='--')
 
-def plot_biomass(sim, time_step=0.1):
+
+def plot_biomass(sim = None, time_step=0.1, total_biomass = None, inoc_time = None):
     """Plot biomass from comets simulation results."""
 
-    biomass_time_series = sim.total_biomass.copy()
+    if sim is None and total_biomass is None:
+        raise ValueError("Either a comets simulation object or a dataframe of biomass time-series data must be provided.")
+
+    if total_biomass is None:
+        biomass_time_series = sim.total_biomass.copy()
+    else:
+        biomass_time_series = total_biomass.copy()
+
     time = biomass_time_series["cycle"] * time_step
     biomass_time_series["time"] = time
     biomass_time_series.drop(columns = ["cycle"], inplace=True)
     plot_df = biomass_time_series.melt(id_vars="time", var_name="strain", value_name="biomass")
     sns.lineplot(data=plot_df, x="time", y="biomass", hue="strain")
+    if inoc_time is not None:
+        plt.axvline(x=inoc_time, color='k', linestyle='--')
+        
 
 
 def mmol_to_g_per_L(met_name, met_mmol, volume = 0.05):
@@ -233,10 +281,18 @@ def mmol_to_g_per_L(met_name, met_mmol, volume = 0.05):
     return (met_mmol / 1000) * MM[met_name] / volume
 
 
-def plot_reaction_flux(sim, reactions: list, strain: str, time_step=0.1):
+def plot_reaction_flux(sim = None, reactions: list = None, strain: str = None, time_step=0.1, fluxes = None, inoc_time=None):
     """Plot reaction fluxes for a single strain from a comets simulation."""
     
-    fluxes = sim.get_species_exchange_fluxes(strain)
+    if sim is None and fluxes is None:
+        raise ValueError("Either a comets simulation object or a dataframe of fluxes time-series data must be provided.")
+
+    if reactions is None:
+        raise ValueError("A list of reactions to plot must be provided.")
+    
+    if fluxes is None:
+        fluxes = sim.get_species_exchange_fluxes(strain)
+
     time = fluxes["cycle"] * time_step
 
     present_reaction_fluxes = [rx for rx in reactions if rx in fluxes.columns]
@@ -250,3 +306,7 @@ def plot_reaction_flux(sim, reactions: list, strain: str, time_step=0.1):
     plot_df = df.melt(id_vars="time", value_name="flux", var_name="reaction")
     
     sns.lineplot(data=plot_df, x="time", y="flux", hue="reaction") 
+
+    if inoc_time is not None:
+        plt.axvline(x=inoc_time, color='k', linestyle='--')
+        
