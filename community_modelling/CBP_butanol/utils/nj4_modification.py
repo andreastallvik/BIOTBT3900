@@ -29,6 +29,15 @@ ACEt = universal_model.reactions.get_by_id("ACEt")
 # acetate transport reaction
 ACtr = universal_model.reactions.get_by_id("ACtr")
 
+# Acyl-CoA dehydrogenase (butanoyl-CoA) - added due to an article claiming this reaction is solely NADH dependant. consider incorporating ferrodoxin
+ACOAD1 = universal_model.reactions.get_by_id("ACOAD1")
+
+# ferrodoxin oxidoreductase reaction
+POR_syn = universal_model.reactions.get_by_id("POR_syn")
+
+# Ferredoxin:NAD+ reductase
+FNRR = universal_model.reactions.get_by_id("FNRR")
+
 # make these reaction reversible like god intended
 # CoA- transferase reactions by enzyme 2.8.3.8
 nj4.reactions.get_by_id("BUTCT").bounds = (-1000, 1000) 
@@ -37,7 +46,7 @@ nj4.reactions.get_by_id("BUTCT2").bounds = (-1000, 1000)
 
 
 print("adding reactions...")
-nj4.add_reactions([BTOHt, BUTt, ADCi, ACEt, ACtr])
+nj4.add_reactions([BTOHt, BUTt, ADCi, ACEt, ACtr, ACOAD1, POR_syn, FNRR])
 nj4.add_boundary(nj4.metabolites.get_by_id('btoh_e'), type='exchange', reaction_id='EX_btoh_e', lb=0, ub=1000)
 nj4.add_boundary(nj4.metabolites.get_by_id('acetone_e'), type='exchange', reaction_id='EX_acetone_e', lb=0, ub=1000)
 

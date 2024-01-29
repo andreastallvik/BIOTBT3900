@@ -162,6 +162,17 @@ def validate_pathway(model, A, B) -> bool:
     return sol > 0 
 
 
+def find_reaction_connections(model, A, B):
+    """Find the reaction(s) that connect metabolite A and B in a given model."""
+
+    rx_A = model.metabolites.get_by_id(A).reactions
+    rx_B = model.metabolites.get_by_id(B).reactions
+
+    # get list of elements in both r1 and r2
+    common = list(set(rx_A).intersection(rx_B))
+    return [r.id for r in common]
+
+
 def find_gapfilling_reactions(model, universal_model, reaction):
     """Using cobrapy gapfill function, find reactions from the universal model that when added will unblock reaction."""
     
