@@ -84,8 +84,9 @@ def plot_flux_envelopes(model, reactions: list = None, medium: dict = None, BM_f
 
         # create subplots with 3 columns for each row
         num_reactions = len(reactions)
+
         num_rows = num_reactions // 3 if num_reactions % 3 == 0 else (num_reactions // 3) + 1
-        fig, axes = plt.subplots(num_rows, 3, figsize=(10, 3 * num_rows))
+        _, axes = plt.subplots(num_rows, 3, figsize=(10, 3 * num_rows))
 
         for i, (rx, color) in enumerate(zip(reactions, colors)):
             # calculate the current row and column index in the grid
@@ -93,7 +94,7 @@ def plot_flux_envelopes(model, reactions: list = None, medium: dict = None, BM_f
             col_index = i % 3
             
             # get the current subplot
-            ax = axes[row_index, col_index] if num_reactions > 1 else axes
+            ax = axes[row_index, col_index] if num_reactions > 3 else axes[i]
             
             prod_env = production_envelope(model, [BM_func], objective=rx)
 
@@ -103,5 +104,13 @@ def plot_flux_envelopes(model, reactions: list = None, medium: dict = None, BM_f
             
             # set title for the subplot
             ax.set_title(rx)
+
+        # remove empty subplots, if any
+        for i in range(num_reactions, num_rows * 3):
+            if num_reactions > 3:
+                row, col = divmod(i, 3)
+                axes[row, col].axis('off')
+            else:
+                axes[i].axis('off')
 
     plt.tight_layout()
