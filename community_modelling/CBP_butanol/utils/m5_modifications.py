@@ -73,15 +73,12 @@ ACtr = universal_model.reactions.get_by_id("ACtr")
 # ethanol transport reaction
 ETOHt = universal_model.reactions.get_by_id("ETOHt")
 
-# enzyme 1.1.1.157
-HBCO_nadp = universal_model.reactions.get_by_id("HBCO_nadp")
+# enzyme 1.1.1.157 - evidence for it in KeGG 
+# this allready existed in the model?? idk why I added it again...
+# HBCO_nadp = universal_model.reactions.get_by_id("HBCO_nadp")
 
-# # CoA- transferase reactions by enzyme 2.8.3.8
-# ACACCT = universal_model.reactions.get_by_id("ACACCT")
-# BUTCT2 = universal_model.reactions.get_by_id("BUTCT2")
-
-# make reaction reversible
-m5.reactions.get_by_id("BUTCT").bounds = (-1000, 1000) 
+# block reaction as there is no evidence for existance of this enzyme (2.8.3.8) in the bacteria
+m5.reactions.get_by_id("BUTCT").bounds = (0, 0) 
 
 print("adding reactions...")
 m5.add_reactions([xyl4_transport, glcur_transport, GLCURS1_e, XYLOS1_e, BTOHt, BUTt, ACtr, ETOHt, HBCO_nadp])
