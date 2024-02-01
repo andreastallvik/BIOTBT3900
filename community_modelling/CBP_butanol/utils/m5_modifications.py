@@ -24,18 +24,18 @@ xyl4_e = cobra.Metabolite(
     compartment='C_e')
 
 # xyl_e <-> xyl_c transport rx
-xyl4_transport = cobra.Reaction('xyl4_transport')
-xyl4_transport.add_metabolites({
-    m5.metabolites.get_by_id("xyl4_c"): -1.0,
-    xyl4_e: 1.0
-})
-xyl4_transport.bounds = (-1000, 1000)
+# xyl4_transport = cobra.Reaction('xyl4_transport')
+# xyl4_transport.add_metabolites({
+#     m5.metabolites.get_by_id("xyl4_c"): -1.0,
+#     xyl4_e: 1.0
+# })
+# xyl4_transport.bounds = (-1000, 1000)
 
 # glcur_e <-> glcur_c transport rx
 glcur_transport = cobra.Reaction('glcur_transport')
 glcur_transport.add_metabolites({
     m5.metabolites.get_by_id("glcur_c"): -1.0,
-    m5.metabolites.get_by_id("glcur_e"): -1.0,
+    m5.metabolites.get_by_id("glcur_e"): 1.0,
 })
 glcur_transport.bounds = (-1000, 1000)
 
@@ -85,7 +85,7 @@ ETOHt = universal_model.reactions.get_by_id("ETOHt")
 m5.reactions.get_by_id("BUTCT").bounds = (0, 0) 
 
 print("adding reactions...")
-m5.add_reactions([xyl4_transport, glcur_transport, GLCURS1_e, XYLOS1_e, BTOHt, BUTt, ACtr, ETOHt])
+m5.add_reactions([glcur_transport, GLCURS1_e, XYLOS1_e, BTOHt, BUTt, ACtr, ETOHt])
 m5.add_boundary(m5.metabolites.get_by_id('btoh_e'), type='exchange', reaction_id='EX_btoh_e', lb=0, ub=1000)
 #m5.add_boundary(m5.metabolites.get_by_id('acetone_e'), type='exchange', reaction_id='EX_acetone_e', lb=0, ub=1000)
 
