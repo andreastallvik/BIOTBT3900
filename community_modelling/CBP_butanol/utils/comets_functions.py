@@ -12,7 +12,7 @@ UNLIMITED_METABOLITES = ['ca2_e', 'cl_e', 'cobalt2_e', 'cu2_e', 'fe2_e', 'fe3_e'
 SPACE_WIDTH = 3.684
 
 
-def single_strain(model, medium: dict = {}, initial_pop: float = 1.e-3, sim_time: float = 140):
+def single_strain(model, medium: dict = {}, initial_pop: float = 1.e-3, sim_time: float = 140, km_dict: dict = {}, vmax_dict: dict = {}):
     """Run a comets simulation for a single strain
 
     Args:
@@ -20,6 +20,8 @@ def single_strain(model, medium: dict = {}, initial_pop: float = 1.e-3, sim_time
         medium (dict, optional): metabolite: molar amount to be included in sim. Defaults to {}. If empty, only std. unlimited metabolites will be included.
         initial_pop (float, optional): initial biomass of organism. Defaults to 1.e-3.
         sim_time (float, optional): number of hours in simulation. Defaults to 140.
+        km_dict (dict, optional): dict of rx:value for km values to set. Defaults to {}.
+        vmax_dict (dict, optional): dict of rx:value for vmax values to set. Defaults to {}.
 
     Returns:
         sim: comets simulation object
@@ -37,7 +39,8 @@ def single_strain(model, medium: dict = {}, initial_pop: float = 1.e-3, sim_time
     # use pFBA when solving
     comets_model.obj_style="MAX_OBJECTIVE_MIN_TOTAL"
 
-    # TODO: Set MM kinetics for uptake reactions
+    # set MM kinetic parameters
+    set_kinetic_params(comets_model, vmax_dict, km_dict)
 
     # create a 1x1 layout
     layout = c.layout([comets_model])
@@ -77,7 +80,7 @@ def single_strain(model, medium: dict = {}, initial_pop: float = 1.e-3, sim_time
     return sim
 
 
-def mult_strain(models: list, medium: dict = {}, initial_pop: float = 1.e-3, sim_time: float = 140, specific_initial_pop: dict = {}):
+def mult_strain(models: list, medium: dict = {}, initial_pop: float = 1.e-3, sim_time: float = 140, specific_initial_pop: dict = {}, kinetic_params: dict = {}):
     """Run a simulation for multiple strains.
 
     Args:
@@ -86,6 +89,7 @@ def mult_strain(models: list, medium: dict = {}, initial_pop: float = 1.e-3, sim
         initial_pop (float, optional): initial biomass for all community members, ignored if specific_initial_pop is non-empty. Defaults to 1.e-3.
         sim_time (float, optional): number of hours of simulation time. Defaults to 140.
         specific_initial_pop (dict, optional): dictionary of cobrapy model.id:initial biomass. If not empty this is used instead of initial_pop. Defaults to {}.
+        kinetic_params (dict, optional): dict of model_id:{"vmax":{rx:val}, "km":{rx:val}} for setting kinetic parameters for each model. Defaults to {}.
 
     Returns:
         sim: comets simulation object
@@ -113,7 +117,11 @@ def mult_strain(models: list, medium: dict = {}, initial_pop: float = 1.e-3, sim
         comets_models[model.id].obj_style="MAX_OBJECTIVE_MIN_TOTAL"
     
 
-    # TODO: Set MM kinetics for uptake reactions
+    # set kinetic parameters
+    for model_id, params in kinetic_params.items():
+        vmax_dict = params.get("vmax", {})
+        km_dict = params.get("km", {})
+        set_kinetic_params(comets_models[model_id], vmax_dict, km_dict)
 
     # create a 1x1 layout
     layout = c.layout(list(comets_models.values()))
@@ -154,7 +162,7 @@ def mult_strain(models: list, medium: dict = {}, initial_pop: float = 1.e-3, sim
 
 
 def sequental_com(m5, nj4, init_medium: dict = {}, initial_pop_m5: float = 1.e-3, initial_pop_nj4: float = 1.e-3, 
-                  total_sim_time: float = 140, inoc_time: float = 60):
+                  total_sim_time: float = 140, inoc_time: float = 60, kinetic_params: dict = {}):
     """Run 2 sequential COMETS simulations for the CBP butanol community.
 
     Args:
@@ -165,6 +173,7 @@ def sequental_com(m5, nj4, init_medium: dict = {}, initial_pop_m5: float = 1.e-3
         initial_pop_nj4 (float, optional): Initial biomass for nj4 strain. Defaults to 1.e-3.
         total_sim_time (float, optional): Total hours to simulate for. Defaults to 140.
         inoc_time (float, optional): Hour in which nj4 is added to the community. Defaults to 60.
+        kinetic_params (dict, optional): dict of model_id:{"vmax":{rx:val}, "km":{rx:val}} for setting kinetic parameters for each model. Defaults to {}.
 
     Returns:
         tuple(c.sim, c.sim): Simulation object for the first sim (only m5) and the second sim (m5 + nj4).
@@ -175,8 +184,13 @@ def sequental_com(m5, nj4, init_medium: dict = {}, initial_pop_m5: float = 1.e-3
     
     second_sim_time = total_sim_time - inoc_time
 
+    # get the kinetic parameters for the first sim if any
+    m5_kinetic_params = kinetic_params.get(m5.id, {})
+    m5_vmax = m5_kinetic_params.get("vmax", {})
+    m5_km = m5_kinetic_params.get("km", {})
+
     # run a single-strain simulation for the first strain
-    first_sim = single_strain(m5, medium=init_medium, initial_pop=initial_pop_m5, sim_time=inoc_time)
+    first_sim = single_strain(m5, medium=init_medium, initial_pop=initial_pop_m5, sim_time=inoc_time, km_dict=m5_km, vmax_dict=m5_vmax)
 
     # retrieve information from the first simulation 
     
@@ -187,9 +201,25 @@ def sequental_com(m5, nj4, init_medium: dict = {}, initial_pop_m5: float = 1.e-3
     new_medium = {met:mol for met,mol in metabolites.items() if mol > 0.0}
 
     # run a mult-strain simulation for the second strain
-    second_sim = mult_strain([m5, nj4], medium=new_medium, sim_time=second_sim_time, specific_initial_pop={"NJ4":initial_pop_nj4, "M5": biomass_m5})
+    second_sim = mult_strain([m5, nj4], medium=new_medium, sim_time=second_sim_time, specific_initial_pop={"NJ4":initial_pop_nj4, "M5": biomass_m5}, kinetic_params=kinetic_params)
 
     return first_sim, second_sim
+
+
+def set_kinetic_params(model: c.model, vmax_dict: dict = {}, km_dict: dict = {}):
+    """Set kinetic parameters for a comets model inplace.
+
+    Args:
+        model (c.model): comets model object
+        vmax_dict (dict, optional): dict of rx:value for vmax values to set. Defaults to {}.
+        km_dict (dict, optional): dict of rx:value for km values to set. Defaults to {}.
+    """
+    
+    for rx, vmax in vmax_dict.items():
+        model.change_vmax(rx, vmax)
+
+    for rx, km in km_dict.items():
+        model.change_km(rx, km)
 
 
 def collapse_sequential_sim(sim_1, sim_2):
