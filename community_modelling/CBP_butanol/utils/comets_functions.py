@@ -249,7 +249,7 @@ def collapse_sequential_sim(sim_1, sim_2):
     met_2["cycle"] = met_2["cycle"] + cycle_diff
     met = pd.concat([met_1, met_2]).fillna(value=0)
 
-    # fluxes
+    # fluxes #TODO: fix this ! this is very wrong!!
     flux_1 = sim_1.get_species_exchange_fluxes("M5")
     flux_2 = sim_2.get_species_exchange_fluxes("NJ4")
 
