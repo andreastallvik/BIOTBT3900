@@ -5,6 +5,7 @@ import warnings
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
 UNLIMITED_METABOLITES = ['ca2_e', 'cl_e', 'cobalt2_e', 'cu2_e', 'fe2_e', 'fe3_e','h_e', 'k_e', 'h2o_e', 'mg2_e', 
                     'mn2_e', 'mobd_e', 'na1_e', 'nh4_e', 'ni2_e', 'pi_e', 'so4_e', 'zn2_e']
@@ -230,7 +231,7 @@ def collapse_sequential_sim(sim_1, sim_2):
         sim_2 (c.sim): second simulation object
 
     Returns:
-        df: dataframe of biomass, metabolite and flux time-series data
+        df: dataframe of biomass, metabolite and a dictionary of flux time-series data for each strain.
     """
 
     # biomass
@@ -249,14 +250,24 @@ def collapse_sequential_sim(sim_1, sim_2):
     met_2["cycle"] = met_2["cycle"] + cycle_diff
     met = pd.concat([met_1, met_2]).fillna(value=0)
 
-    # fluxes #TODO: fix this ! this is very wrong!!
-    flux_1 = sim_1.get_species_exchange_fluxes("M5")
-    flux_2 = sim_2.get_species_exchange_fluxes("NJ4")
+    # fluxes
+    # M5 fluxes
+    flux_1_a = sim_1.fluxes_by_species["M5"].copy()
+    flux_2_a = sim_2.fluxes_by_species["M5"].copy()
+    flux_2_a["cycle"] = flux_2_a["cycle"] + cycle_diff
+    flux_1 = pd.concat([flux_1_a, flux_2_a]).fillna(value=0)
 
+    #NJ4 fluxes
+    flux_2 = sim_2.fluxes_by_species["NJ4"].copy()
     flux_2["cycle"] = flux_2["cycle"] + cycle_diff
-    flux = pd.concat([flux_1, flux_2]).fillna(value=0)
+    # adding in 0s for the cycles before NJ4 is added
+    zeros_df = pd.DataFrame(0, index=range(cycle_diff), columns=flux_2.columns)
+    zeros_df["cycle"] = np.arange(1,cycle_diff+1)
+    flux_2 = pd.concat([zeros_df, flux_2], ignore_index=True)
 
-    return bm, met, flux
+    fluxes = {"M5": flux_1, "NJ4": flux_2}
+
+    return bm, met, fluxes
 
 
 def plot_metabolites(sim = None, metabolites = None, time_step = 0.1, metabolites_time_series = None, inoc_time = None):
@@ -344,7 +355,7 @@ def plot_reaction_flux(sim = None, reactions: list = None, strain: str = None, t
         raise ValueError("A list of reactions to plot must be provided.")
     
     if fluxes is None:
-        fluxes = sim.get_species_exchange_fluxes(strain)
+        fluxes = sim.fluxes_by_species[strain]
 
     time = fluxes["cycle"] * time_step
 
