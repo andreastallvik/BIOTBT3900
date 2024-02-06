@@ -26,13 +26,13 @@ def get_productions(model, medium: dict = None, reactions: list = None):
         return output_df.rename(columns={"fluxes": "pFBA sol"})
     
     
-def get_specific_medium(model, specific_reactions: dict):
-    """Get a dictionary of max uptake rates for a model, with 0.1 for each reaction in the original medium, and specific custimisations."""
+def get_specific_medium(model, specific_reactions: dict, fill_value: float = 0.1):
+    """Get a dictionary of max uptake rates for a model, with a set value (default 0.1) for each reaction in the original medium, and specific custimisations."""
     
     essential_rx = ['EX_ca2_e', 'EX_cl_e', 'EX_cobalt2_e', 'EX_cu2_e', 'EX_fe3_e', 'EX_fol_e', 
                     'EX_k_e', 'EX_mg2_e', 'EX_mn2_e', 'EX_pi_e', 'EX_so4_e', 'EX_ura_e', 'EX_zn2_e']
     
-    full_medium = {rx:0.1 for rx in model.medium.keys()}
+    full_medium = {rx:fill_value for rx in model.medium.keys()}
 
     for rx in essential_rx:
         full_medium[rx] = 10
