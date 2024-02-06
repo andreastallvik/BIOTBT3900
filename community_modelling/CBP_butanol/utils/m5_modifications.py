@@ -77,6 +77,12 @@ ACtr = universal_model.reactions.get_by_id("ACtr")
 # ethanol transport reaction
 ETOHt = universal_model.reactions.get_by_id("ETOHt")
 
+# Ferredoxin:NAD+ reductase
+FNRR = universal_model.reactions.get_by_id("FNRR")
+
+# Acyl-CoA dehydrogenase (butanoyl-CoA) - added due to an article claiming this reaction is solely NADH dependant. consider incorporating ferrodoxin
+ACOAD1 = universal_model.reactions.get_by_id("ACOAD1")
+
 # enzyme 1.1.1.157 - evidence for it in KeGG 
 # this allready existed in the model?? idk why I added it again...
 # HBCO_nadp = universal_model.reactions.get_by_id("HBCO_nadp")
@@ -85,7 +91,7 @@ ETOHt = universal_model.reactions.get_by_id("ETOHt")
 m5.reactions.get_by_id("BUTCT").bounds = (0, 0) 
 
 print("adding reactions...")
-m5.add_reactions([glcur_transport, GLCURS1_e, XYLOS1_e, BTOHt, BUTt, ACtr, ETOHt])
+m5.add_reactions([glcur_transport, GLCURS1_e, XYLOS1_e, BTOHt, BUTt, ACtr, ETOHt, FNRR, ACOAD1])
 m5.add_boundary(m5.metabolites.get_by_id('btoh_e'), type='exchange', reaction_id='EX_btoh_e', lb=0, ub=1000)
 #m5.add_boundary(m5.metabolites.get_by_id('acetone_e'), type='exchange', reaction_id='EX_acetone_e', lb=0, ub=1000)
 
