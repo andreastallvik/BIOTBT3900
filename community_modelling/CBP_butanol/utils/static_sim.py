@@ -25,7 +25,32 @@ def get_productions(model, medium: dict = None, reactions: list = None):
         output_df = pd.concat([pfba_sol.fluxes, fva_sol], axis=1, join="inner")
         return output_df.rename(columns={"fluxes": "pFBA sol"})
     
-    
+
+def calculate_essential_rx(model):
+    """Calculate essential reactions and metabolites in a model."""
+
+    medium = list(model.medium.keys())
+    essential_rx = []
+
+    for rx in medium:
+        with model:
+            model.reactions.get_by_id(rx).lower_bound = 0
+            sol = model.slim_optimize()
+            if sol < 1e-6:
+                essential_rx.append(rx)
+
+    print('essential metabolites:' ,[rx[3:] for rx in essential_rx])
+    print('essential reactions:' ,[rx for rx in essential_rx])
+
+
+def read_production_rates(sol, production_reactions = None):
+    """Returns some metrics from a cobra solution in an easily readable format."""
+    if production_reactions is None:
+        production_reactions = ["EX_but_e", "EX_ac_e", "EX_etoh_e", "EX_btoh_e", "EX_acetone_e"]
+    print('Production fluxes:')
+    print(sol.fluxes[production_reactions])
+
+
 def get_specific_medium(model, specific_reactions: dict, fill_value: float = 0.1):
     """Get a dictionary of max uptake rates for a model, with a set value (default 0.1) for each reaction in the original medium, and specific custimisations."""
     
@@ -116,7 +141,8 @@ def plot_flux_envelopes(model, reactions: list = None, medium: dict = None, BM_f
     plt.tight_layout()
 
 
-def plot_flux_ranges(model = None, medium: dict=None, reactions: list=None, fva_sol: pd.DataFrame = None, log_scale: bool = True, loopless: bool = True):
+def plot_flux_ranges(model = None, medium: dict=None, reactions: list=None, fva_sol: pd.DataFrame = None, 
+                     log_scale: bool = True, loopless: bool = True, fraction_of_optimum: float = 1.0):
     """Plot flux ranges of reactions. Either takes in an existing FVA solution, or calculates a new one.
 
     Args:
@@ -140,7 +166,7 @@ def plot_flux_ranges(model = None, medium: dict=None, reactions: list=None, fva_
             if medium is not None:
                 model.medium = medium
 
-            fva_sol = flux_variability_analysis(model, reactions, loopless=loopless)
+            fva_sol = flux_variability_analysis(model, reactions, loopless=loopless, fraction_of_optimum=fraction_of_optimum)
     
     # plot figure
     
