@@ -40,6 +40,9 @@ def single_strain(model, medium: dict = {}, initial_pop: float = 1.e-3, sim_time
     # use pFBA when solving
     comets_model.obj_style="MAX_OBJECTIVE_MIN_TOTAL"
 
+    print("default vmax:", comets_model.default_vmax)
+    print("default km:", comets_model.default_km)
+
     # set MM kinetic parameters
     set_kinetic_params(comets_model, vmax_dict, km_dict)
 
@@ -326,7 +329,6 @@ def plot_biomass(sim = None, time_step=0.1, total_biomass = None, inoc_time = No
     if inoc_time is not None:
         plt.axvline(x=inoc_time, color='k', linestyle='--')
         
-
 
 def mmol_to_g_per_L(met_name, met_mmol, volume = 0.05):
     """Convert mmol to g/L.""" 
