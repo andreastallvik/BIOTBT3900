@@ -114,3 +114,46 @@ def plot_flux_envelopes(model, reactions: list = None, medium: dict = None, BM_f
                 axes[i].axis('off')
 
     plt.tight_layout()
+
+
+def plot_flux_ranges(model = None, medium: dict=None, reactions: list=None, fva_sol: pd.DataFrame = None, log_scale: bool = True, loopless: bool = True):
+    """Plot flux ranges of reactions. Either takes in an existing FVA solution, or calculates a new one.
+
+    Args:
+        model (cobrapy model, optional): genome scale model. Defaults to None.
+        medium (dict, optional): Medium. If None, default medium is used. Defaults to None.
+        reactions (list, optional): reactions to plot flux ranges for. Defaults to None.
+        fva_sol (pd.DataFrame, optional): Existing FVA solution. If given, new solution is not calculated. Defaults to None.
+        log_scale (bool, optional): Symetric log-scale on x-axis. Defaults to True.
+        loopless (bool, optional): use loopless FVA for analysis. Defaults to True.
+    """
+
+    if model is None and fva_sol is None:
+        raise ValueError("Either model or existing FVA solution must be provided.")
+    
+    if model is not None and reactions is None:
+        raise ValueError("Reactions must be provided if solution is to be calculated.")
+    
+    # calculate FVA result
+    if fva_sol is None:
+        with model:
+            if medium is not None:
+                model.medium = medium
+
+            fva_sol = flux_variability_analysis(model, reactions, loopless=loopless)
+    
+    # plot figure
+    
+    plt.figure()
+    
+    for idx, row in fva_sol.iterrows():
+        min_val = row['minimum']
+        max_val = row['maximum']
+
+        plt.plot([min_val, max_val], [idx, idx], marker='o', linestyle='-')
+
+    if log_scale:
+        plt.xscale('symlog')
+        
+    plt.xlabel('Flux (mmol/gDW/h)')
+    plt.ylabel('Reaction')
