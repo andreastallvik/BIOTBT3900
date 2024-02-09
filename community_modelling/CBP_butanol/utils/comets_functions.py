@@ -349,8 +349,43 @@ def plot_metabolites(sim = None, metabolites = None, time_step = 0.1, metabolite
     df["time"] = time
 
     plot_df = df.melt(id_vars="time", value_name="g/L")
+
+    # make plot
+
+    # second axis for sugars if they are present in the metabolite set
+    # create a boolean mask for sugars
+    sugar_mask = plot_df["metabolite"].str.contains("xyl")
+
+    if sugar_mask.any():
+
+        palette = sns.color_palette("tab10", len(metabolites))
+
+        # plot non-sugar metabolites
+        fig, ax1 = plt.subplots()
+        # supress userwarning about palette length
+        with warnings.catch_warnings():
+            warnings.simplefilter(action='ignore', category=UserWarning)
+            sns.lineplot(data=plot_df[~sugar_mask], x="time", y="g/L", hue="metabolite", ax=ax1, palette=palette)
+        ax1.set_ylabel('Metabolites (g/L)')
+        ax1.get_legend().remove()
+
+        palette.reverse()
+
+        # plot sugars on second y-axis
+        ax2 = ax1.twinx()
+        with warnings.catch_warnings():
+            warnings.simplefilter(action='ignore', category=UserWarning)
+            sns.lineplot(data=plot_df[sugar_mask], x="time", y="g/L", hue="metabolite", ax=ax2, palette=palette)
+        ax2.set_ylabel('Sugars (g/L)')
+        ax2.get_legend().remove()
+
+        # combine legends
+        lines, labels = ax1.get_legend_handles_labels()
+        lines2, labels2 = ax2.get_legend_handles_labels()
+        ax1.legend(lines + lines2, labels + labels2, loc='center left')
     
-    sns.lineplot(data=plot_df, x="time", y="g/L", hue="metabolite")
+    else:
+        sns.lineplot(data=plot_df, x="time", y="g/L", hue="metabolite")
 
     if inoc_time is not None:
         plt.axvline(x=inoc_time, color='k', linestyle='--')
