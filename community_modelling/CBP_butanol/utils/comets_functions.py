@@ -217,6 +217,41 @@ def sequental_com(m5, nj4, init_medium: dict = {}, initial_pop_m5: float = 1.e-3
     return first_sim, second_sim
 
 
+def two_phase_sim(model1, model2, medium: dict = {}, initial_pop: float = 1.e-3, sim_time: float = 168, phase_switch_time: float = 96, km_dict: dict = {}, vmax_dict: dict = {}):
+    """Dynamic simulation in which some metabolic switch encoded in the supplied cobrapy model (eg. objective function, constraints) happens at a given swithc point.
+
+    Args:
+        model1 (cobrapy model): genome scale model, in metabolic state 1
+        model2 (cobrapy model): genome scale model, in metabolic state 2
+        medium (dict, optional): Culture medium. If empty, only UNLIMITED METABOLITES are added. Defaults to {}.
+        initial_pop (float, optional): Initial biomass. Defaults to 1.e-3.
+        sim_time (float, optional): Total hours to simulate for. Defaults to 168.
+        phase_switch_time (float, optional): Time to swich from metabolic state 1 to metabolic state 2. Defaults to 96.
+        km_dict (dict, optional): dict of rx:value for km values to set. Defaults to {}.
+        vmax_dict (dict, optional): dict of rx:value for vmax values to set. Defaults to {}.
+
+    Returns:
+        tuple(c.sim, c.sim): Simulation object for the first sim and second simulation results.
+    """
+
+    second_sim_time = sim_time - phase_switch_time
+
+    # run a single-strain simulation for the first strain
+    first_sim = single_strain(model1, medium=medium, initial_pop=initial_pop, sim_time=phase_switch_time, km_dict=km_dict, vmax_dict=vmax_dict)
+
+    # retrieve information from the first simulation 
+    biomass = first_sim.total_biomass[model1.id].iloc[-1]
+    
+    # final metabolite amounts in the medium
+    metabolites = first_sim.get_metabolite_time_series().iloc[-1, 2:]
+    new_medium = {met:mol for met,mol in metabolites.items() if mol > 0.0}
+
+    # run a mult-strain simulation for the second strain
+    second_sim = single_strain(model2, medium=new_medium, initial_pop=biomass, sim_time=second_sim_time, km_dict=km_dict, vmax_dict=vmax_dict)
+
+    return first_sim, second_sim
+
+
 def set_kinetic_params(model: c.model, vmax_dict: dict = {}, km_dict: dict = {}):
     """Set kinetic parameters for a comets model inplace.
 
