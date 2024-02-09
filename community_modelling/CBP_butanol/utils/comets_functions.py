@@ -15,7 +15,7 @@ UNLIMITED_METABOLITES = ['ca2_e', 'cl_e', 'cobalt2_e', 'cu2_e', 'fe2_e', 'fe3_e'
 SPACE_WIDTH = 3.684
 
 
-def single_strain(model, medium: dict = {}, initial_pop: float = 1.e-3, sim_time: float = 140, km_dict: dict = {}, vmax_dict: dict = {}):
+def single_strain(model, medium: dict = {}, initial_pop: float = 1.e-3, sim_time: float = 140, km_dict: dict = {}, vmax_dict: dict = {}, hill_dict: dict = {}):
     """Run a comets simulation for a single strain
 
     Args:
@@ -43,7 +43,7 @@ def single_strain(model, medium: dict = {}, initial_pop: float = 1.e-3, sim_time
     comets_model.obj_style="MAX_OBJECTIVE_MIN_TOTAL"
 
     # set MM kinetic parameters
-    set_kinetic_params(comets_model, vmax_dict, km_dict)
+    set_kinetic_params(comets_model, vmax_dict, km_dict, hill_dict)
 
     # create a 1x1 layout
     layout = c.layout([comets_model])
@@ -132,7 +132,8 @@ def mult_strain(models: list, medium: dict = {}, initial_pop: float = 1.e-3, sim
     for model_id, params in kinetic_params.items():
         vmax_dict = params.get("vmax", {})
         km_dict = params.get("km", {})
-        set_kinetic_params(comets_models[model_id], vmax_dict, km_dict)
+        hill_dict = params.get("hill", {})
+        set_kinetic_params(comets_models[model_id], vmax_dict, km_dict, hill_dict)
 
     # create a 1x1 layout
     layout = c.layout(list(comets_models.values()))
@@ -252,7 +253,7 @@ def two_phase_sim(model1, model2, medium: dict = {}, initial_pop: float = 1.e-3,
     return first_sim, second_sim
 
 
-def set_kinetic_params(model: c.model, vmax_dict: dict = {}, km_dict: dict = {}):
+def set_kinetic_params(model: c.model, vmax_dict: dict = {}, km_dict: dict = {}, hill_dict: dict = {}):
     """Set kinetic parameters for a comets model inplace.
 
     Args:
@@ -266,6 +267,9 @@ def set_kinetic_params(model: c.model, vmax_dict: dict = {}, km_dict: dict = {})
 
     for rx, km in km_dict.items():
         model.change_km(rx, km)
+
+    for rx, hill in hill_dict.items():
+        model.change_hill(rx, hill)
 
 
 def collapse_sequential_sim(sim_1, sim_2):

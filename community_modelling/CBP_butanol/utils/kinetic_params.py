@@ -11,7 +11,12 @@ KINETIC_PARAMS = {
             "EX_xylan4_e": 10,
             "EX_xylan8_e": 10,
             "EX_xyl__D_e": 6,
-        }
+        },
+        "hill": {
+            "EX_xylan4_e": 1,
+            "EX_xylan8_e": 1,
+            "EX_xyl__D_e": 1,
+        },
     },
     "NJ4": {
         "km": {
@@ -23,11 +28,18 @@ KINETIC_PARAMS = {
             "EX_ac_e": 10,
             "EX_but_e": 10,
             "EX_xyl__D_e": 6,
-        }
+        },
+        "hill": {
+            "EX_xylan4_e": 1,
+            "EX_xylan8_e": 1,
+            "EX_xyl__D_e": 1,
+        },
     },
 }
 
 NJ4_VMAX = KINETIC_PARAMS["NJ4"]["vmax"]
 NJ4_KM = KINETIC_PARAMS["NJ4"]["km"]
+NJ4_HILL = KINETIC_PARAMS["NJ4"]["hill"]
 M5_VMAX = KINETIC_PARAMS["M5"]["vmax"]
 M5_KM = KINETIC_PARAMS["M5"]["km"]
+M5_HILL = KINETIC_PARAMS["M5"]["hill"]
