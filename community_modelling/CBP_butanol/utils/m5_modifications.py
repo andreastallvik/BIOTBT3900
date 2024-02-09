@@ -23,14 +23,6 @@ xyl4_e = cobra.Metabolite(
     name='Xylotetraose',
     compartment='C_e')
 
-# xyl_e <-> xyl_c transport rx
-# xyl4_transport = cobra.Reaction('xyl4_transport')
-# xyl4_transport.add_metabolites({
-#     m5.metabolites.get_by_id("xyl4_c"): -1.0,
-#     xyl4_e: 1.0
-# })
-# xyl4_transport.bounds = (-1000, 1000)
-
 # glcur_e <-> glcur_c transport rx
 glcur_transport = cobra.Reaction('glcur_transport')
 glcur_transport.add_metabolites({
@@ -65,12 +57,6 @@ BTOHt = universal_model.reactions.get_by_id('BTOHt')
 # butyrate transport reaction
 BUTt = universal_model.reactions.get_by_id('BUTt')
 
-# acetoacetate -> acetone + CO2
-#ADCi = universal_model.reactions.get_by_id("ADCi")
-
-# # acetone transport reaction
-# ACEt = universal_model.reactions.get_by_id("ACEt")
-
 # acetate transport reaction
 ACtr = universal_model.reactions.get_by_id("ACtr")
 
@@ -83,17 +69,24 @@ FNRR = universal_model.reactions.get_by_id("FNRR")
 # Acyl-CoA dehydrogenase (butanoyl-CoA) - added due to an article claiming this reaction is solely NADH dependant. consider incorporating ferrodoxin
 ACOAD1 = universal_model.reactions.get_by_id("ACOAD1")
 
-# enzyme 1.1.1.157 - evidence for it in KeGG 
-# this allready existed in the model?? idk why I added it again...
-# HBCO_nadp = universal_model.reactions.get_by_id("HBCO_nadp")
-
 # block reaction as there is no evidence for existance of this enzyme (2.8.3.8) in the bacteria
-m5.reactions.get_by_id("BUTCT").bounds = (0, 0) 
+m5.reactions.get_by_id("BUTCT").bounds = (0, 0)
+
+# (FeFe)-hydrogenase, EC 1.12.1.4, KeGG rx: R09508 - evidence for this in prev paper from same authors
+HYDA = cobra.Reaction('HYDA')
+HYDA.add_metabolites({
+    m5.metabolites.get_by_id("h2_c"): -2.0,
+    m5.metabolites.get_by_id("nad_c"): -1.0,
+    m5.metabolites.get_by_id("fdxo_2_2_c"): -2.0,
+    m5.metabolites.get_by_id("h_c"): 5.0,
+    m5.metabolites.get_by_id("nadh_c"): 1.0,
+    m5.metabolites.get_by_id("fdxrd_c"): 2.0,
+})
+HYDA.bounds = (-1000, 1000)
 
 print("adding reactions...")
-m5.add_reactions([glcur_transport, GLCURS1_e, XYLOS1_e, BTOHt, BUTt, ACtr, ETOHt, FNRR, ACOAD1])
+m5.add_reactions([glcur_transport, GLCURS1_e, XYLOS1_e, BTOHt, BUTt, ACtr, ETOHt, FNRR, ACOAD1, HYDA])
 m5.add_boundary(m5.metabolites.get_by_id('btoh_e'), type='exchange', reaction_id='EX_btoh_e', lb=0, ub=1000)
-#m5.add_boundary(m5.metabolites.get_by_id('acetone_e'), type='exchange', reaction_id='EX_acetone_e', lb=0, ub=1000)
 
 print("writing model as M5_curated...")
 write_sbml_model(m5, str(ROOT_DIR / "community_modelling" / "CBP_butanol" / "GEMs" / "M5_curated.xml"))
