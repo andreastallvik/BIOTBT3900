@@ -6,6 +6,8 @@ import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import traceback
+
 
 UNLIMITED_METABOLITES = ['ca2_e', 'cl_e', 'cobalt2_e', 'cu2_e', 'fe2_e', 'fe3_e','h_e', 'k_e', 'h2o_e', 'mg2_e', 
                     'mn2_e', 'mobd_e', 'na1_e', 'nh4_e', 'ni2_e', 'pi_e', 'so4_e', 'zn2_e']
@@ -39,9 +41,6 @@ def single_strain(model, medium: dict = {}, initial_pop: float = 1.e-3, sim_time
 
     # use pFBA when solving
     comets_model.obj_style="MAX_OBJECTIVE_MIN_TOTAL"
-
-    print("default vmax:", comets_model.default_vmax)
-    print("default km:", comets_model.default_km)
 
     # set MM kinetic parameters
     set_kinetic_params(comets_model, vmax_dict, km_dict)
@@ -77,9 +76,17 @@ def single_strain(model, medium: dict = {}, initial_pop: float = 1.e-3, sim_time
     # create simultion object
     sim = c.comets(layout, params)
 
-    with warnings.catch_warnings(): #to avoid getting many futurewarning messages from a cometspy function
-        warnings.simplefilter(action='ignore', category=FutureWarning)
-        sim.run()
+    try:
+        with warnings.catch_warnings(): #to avoid getting many futurewarning messages from a cometspy function
+            warnings.simplefilter(action='ignore', category=FutureWarning)
+            sim.run()
+
+    except Exception as e:
+        with open('run_output.log', 'w') as f:
+            f.write(sim.run_output)
+            f.write('\n\nException traceback:\n')
+            f.write(traceback.format_exc())
+        raise  # re-raise the exception after logging
 
     return sim
 
