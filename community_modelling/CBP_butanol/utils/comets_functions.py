@@ -173,8 +173,8 @@ def mult_strain(models: list, medium: dict = {}, initial_pop: float = 1.e-3, sim
     return sim
 
 
-def sequental_com(m5, nj4, init_medium: dict = {}, initial_pop_m5: float = 1.e-3, initial_pop_nj4: float = 1.e-3, 
-                  total_sim_time: float = 140, inoc_time: float = 60, kinetic_params: dict = {}):
+def sequental_com(m5, nj4, init_medium: dict = {}, initial_pop_m5: float = 1.e-3, total_sim_time: float = 140, 
+                  inoc_time: float = 60, kinetic_params: dict = {}, inoc_ratio: float = 1):
     """Run 2 sequential COMETS simulations for the CBP butanol community.
 
     Args:
@@ -186,6 +186,7 @@ def sequental_com(m5, nj4, init_medium: dict = {}, initial_pop_m5: float = 1.e-3
         total_sim_time (float, optional): Total hours to simulate for. Defaults to 140.
         inoc_time (float, optional): Hour in which nj4 is added to the community. Defaults to 60.
         kinetic_params (dict, optional): dict of model_id:{"vmax":{rx:val}, "km":{rx:val}} for setting kinetic parameters for each model. Defaults to {}.
+        inoc_ratio (float, optional): Ratio of nj4 to m5 biomass at inoculation. Defaults to 1.
 
     Returns:
         tuple(c.sim, c.sim): Simulation object for the first sim (only m5) and the second sim (m5 + nj4).
@@ -207,13 +208,14 @@ def sequental_com(m5, nj4, init_medium: dict = {}, initial_pop_m5: float = 1.e-3
     # retrieve information from the first simulation 
     
     biomass_m5 = first_sim.total_biomass["M5"].iloc[-1]
+    biomass_nj4 = biomass_m5 * inoc_ratio
     
     # final metabolite amounts in the medium
     metabolites = first_sim.get_metabolite_time_series().iloc[-1, 2:]
     new_medium = {met:mol for met,mol in metabolites.items() if mol > 0.0}
 
     # run a mult-strain simulation for the second strain
-    second_sim = mult_strain([m5, nj4], medium=new_medium, sim_time=second_sim_time, specific_initial_pop={"NJ4":initial_pop_nj4, "M5": biomass_m5}, kinetic_params=kinetic_params)
+    second_sim = mult_strain([m5, nj4], medium=new_medium, sim_time=second_sim_time, specific_initial_pop={"NJ4":biomass_nj4, "M5": biomass_m5}, kinetic_params=kinetic_params)
 
     return first_sim, second_sim
 
