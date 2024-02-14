@@ -14,6 +14,8 @@ UNLIMITED_METABOLITES = ['ca2_e', 'cl_e', 'cobalt2_e', 'cu2_e', 'fe2_e', 'fe3_e'
 
 SPACE_WIDTH = 3.684
 
+TIME_STEP = 0.1
+
 
 def single_strain(model, medium: dict = {}, initial_pop: float = 1.e-3, sim_time: float = 140, km_dict: dict = {}, vmax_dict: dict = {}, hill_dict: dict = {}):
     """Run a comets simulation for a single strain
@@ -62,10 +64,9 @@ def single_strain(model, medium: dict = {}, initial_pop: float = 1.e-3, sim_time
     params.set_param("spaceWidth", SPACE_WIDTH)
 
     # set simulation parameters
-    time_step = 0.1 # hours
-    params.set_param("timeStep", time_step)
+    params.set_param("timeStep", TIME_STEP)
     params.set_param("maxSpaceBiomass", 10.) # max gDW in simulation TODO: set this to a sensible number and not an arbitrarily large one
-    params.set_param("maxCycles", int(sim_time / time_step))
+    params.set_param("maxCycles", int(sim_time / TIME_STEP))
 
     # set logging parameters
     params.set_param("writeFluxLog", True)
@@ -152,10 +153,9 @@ def mult_strain(models: list, medium: dict = {}, initial_pop: float = 1.e-3, sim
     params.set_param("spaceWidth", SPACE_WIDTH)
 
     # set simulation parameters
-    time_step = 0.1 # hours
-    params.set_param("timeStep", time_step)
+    params.set_param("timeStep", TIME_STEP)
     params.set_param("maxSpaceBiomass", 10.) # max gDW in simulation TODO: set this to a sensible number and not an arbitrarily large one
-    params.set_param("maxCycles", int(sim_time / time_step))
+    params.set_param("maxCycles", int(sim_time / TIME_STEP))
 
     # set logging parameters
     params.set_param("writeFluxLog", True)
@@ -434,7 +434,9 @@ def mmol_to_g_per_L(met_name, met_mmol, volume = 0.05):
           "ac_e": 59.044, 
           "acetone_e": 58.08,
           "xylan4_e": 600.52,
-          "xylan8_e": 1201.04}
+          "xylan8_e": 1201.04,
+          "arg__L_e": 174.2, 
+          "asp__L_e": 133.1,}
     
     # divide by 1000 (-> mol), multiply by molar mass (-> g) and divide by volume (-> g/L)
     return (met_mmol / 1000) * MM[met_name] / volume
