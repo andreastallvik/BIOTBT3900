@@ -13,7 +13,7 @@ import plotly.graph_objects as go
 import random
 from maps import SUBSTRATE_MAP, PRODUCT_MAP
 
-#plt.style.use('seaborn-v0_8-pastel')
+plt.style.use('seaborn-v0_8-pastel')
 
 def publications_per_year(data: pd.DataFrame, save_fig = False):
     """Bar graph showing publications per year"""
@@ -116,11 +116,14 @@ def substrate_hist(df: pd.DataFrame, save_fig = False):
     #make the plot
     substrate_per_journal.plot.bar()
     plt.ylabel("Number of publications")
-    plt.show()
+    plt.xticks(rotation=45, ha='right')
+
+    plt.tight_layout()
 
     if save_fig:
         plt.savefig("plots/substrate_hist.svg", format="svg")
 
+    plt.show()
 
 def product_hist(df: pd.DataFrame, save_fig = False):
     """Pareto histogram of products"""
@@ -150,10 +153,14 @@ def product_hist(df: pd.DataFrame, save_fig = False):
     #make the plot
     product_per_journal.plot.bar()
     plt.ylabel("Number of publications")
-    plt.show()
+    plt.xticks(rotation=45, ha='right')
+
+    plt.tight_layout()
 
     if save_fig:
         plt.savefig("plots/product_hist.svg", format="svg")
+
+    plt.show()
 
 
 def genus_hist(df: pd.DataFrame, save_fig = False):
