@@ -331,7 +331,7 @@ def collapse_sequential_sim(sim_1, sim_2, mult_species=True):
     return bm, met, fluxes
 
 
-def plot_metabolites(sim = None, metabolites = None, time_step = 0.1, metabolites_time_series = None, inoc_time = None):
+def plot_metabolites(sim = None, metabolites = None, time_step = 0.1, metabolites_time_series = None, inoc_time = None, use_molar_amount: bool = False):
     """Plot specific metabolites from comets simulation results."""
 
     if sim is None and metabolites_time_series is None:
@@ -354,13 +354,18 @@ def plot_metabolites(sim = None, metabolites = None, time_step = 0.1, metabolite
     for m in missing_metabolites:
         df[m] = 0
 
-    # convert mmol to g/L
-    df = df.apply(lambda x: mmol_to_g_per_L(x.name, x))
+    if use_molar_amount:
+        y_val = "mmol"
+    else:
+        y_val = "g/L"
+
+        # convert mmol to g/L
+        df = df.apply(lambda x: mmol_to_g_per_L(x.name, x))
     
     # add time column
     df["time"] = time
 
-    plot_df = df.melt(id_vars="time", value_name="g/L")
+    plot_df = df.melt(id_vars="time", value_name=y_val)
 
     # make plot
 
@@ -377,8 +382,11 @@ def plot_metabolites(sim = None, metabolites = None, time_step = 0.1, metabolite
         # supress userwarning about palette length
         with warnings.catch_warnings():
             warnings.simplefilter(action='ignore', category=UserWarning)
-            sns.lineplot(data=plot_df[~sugar_mask], x="time", y="g/L", hue="metabolite", ax=ax1, palette=palette)
-        ax1.set_ylabel('Metabolites (g/L)')
+            sns.lineplot(data=plot_df[~sugar_mask], x="time", y=y_val, hue="metabolite", ax=ax1, palette=palette)
+        if use_molar_amount:
+            ax1.set_ylabel('Metabolites (mmol)')
+        else:
+            ax1.set_ylabel('Metabolites (g/L)')
         ax1.get_legend().remove()
 
         palette.reverse()
@@ -387,8 +395,11 @@ def plot_metabolites(sim = None, metabolites = None, time_step = 0.1, metabolite
         ax2 = ax1.twinx()
         with warnings.catch_warnings():
             warnings.simplefilter(action='ignore', category=UserWarning)
-            sns.lineplot(data=plot_df[sugar_mask], x="time", y="g/L", hue="metabolite", ax=ax2, palette=palette)
-        ax2.set_ylabel('Sugars (g/L)')
+            sns.lineplot(data=plot_df[sugar_mask], x="time", y=y_val, hue="metabolite", ax=ax2, palette=palette)
+        if use_molar_amount:
+            ax2.set_ylabel('Sugars (mmol)')
+        else:
+            ax2.set_ylabel('Sugars (g/L)')
         ax2.get_legend().remove()
 
         # combine legends
@@ -397,7 +408,7 @@ def plot_metabolites(sim = None, metabolites = None, time_step = 0.1, metabolite
         ax1.legend(lines + lines2, labels + labels2, loc='center left')
     
     else:
-        sns.lineplot(data=plot_df, x="time", y="g/L", hue="metabolite")
+        sns.lineplot(data=plot_df, x="time", y=y_val, hue="metabolite")
 
     if inoc_time is not None:
         plt.axvline(x=inoc_time, color='k', linestyle='--')
