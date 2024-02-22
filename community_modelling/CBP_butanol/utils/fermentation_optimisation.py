@@ -29,8 +29,7 @@ print("adding constraints...")
 
 # make the reactions in the ABE pathway irreversible
 
-reactions = ["POR_syn",
-            "ACACT1r",
+reactions = ["ACACT1r",
             "HACD1",
             "ECOAH1",
             "ACOAD1fr",
@@ -38,9 +37,13 @@ reactions = ["POR_syn",
             "BTCOARx",
             "PBUTT",
             "ADCi",
-            "PTAr"]
+            "PTAr",
+            "POR_syn", "FNOR", "FNRR",
+            "T2ECR", "BNOCA"]
 
-reverse_reactions = ["ALCD4", "BUTKr", "BUTCT2", "ACKr", "ACACCT", "ACALD"]
+reverse_reactions = ["ALCD4", "BUTKr", "BUTCT2", "ACKr", "ACACCT", "ACALD",
+                     "HYDA",
+                     "HACD1i", "ACOAD1fr", "ACOAD1f"]
 
 for rx in reactions:
     nj4.reactions.get_by_id(rx).bounds = (0, 1000)
@@ -65,13 +68,36 @@ add_ratio_constraint_cobra(nj4, "BUTt" , "ACtr",  0.42, r_num_reverse=False, r_d
 # acetone / butanol production flux coupling, constrained to exp. measurement
 add_ratio_constraint_cobra(nj4, "BTOHt" , "ACEt",  2.68, r_num_reverse=True, r_den_reverse=False)
 
+# constraint for specific proton flux
+h_membrane_rx = [r.id for r in nj4.metabolites.h_e.reactions if "EX" not in r.id]
+
+neg_stoich = []
+pos_stoich = []
+
+for rx in h_membrane_rx:
+    stociometry = {met.id:coeff for met, coeff in nj4.reactions.get_by_id(rx).metabolites.items()}    
+    if stociometry["h_e"] < 0:
+        neg_stoich.append(rx)
+    elif stociometry["h_e"] > 0:
+        pos_stoich.append(rx)
+
+SPF_constraint = nj4.problem.Constraint(
+        sum([nj4.reactions.get_by_id(rx).flux_expression for rx in pos_stoich]) - sum([nj4.reactions.get_by_id(rx).flux_expression for rx in neg_stoich]),
+        lb=0,
+        ub=5)
+
+nj4.add_cons_vars(SPF_constraint)
+
 # knock out reactions for xylose uptake
 uptake_KO = ["XYLANabc", "XYLabc", "XYLtex"]
 for rx in uptake_KO:
     m5.reactions.get_by_id(rx).bounds = (0, 0)
 
 # restrict the max rate of xylose uptake
-m5.reactions.XYLt2.bounds = (0, 0.25)
+m5.reactions.XYLt2.bounds = (0, 0.6)
+
+# restrict uptake of butanol
+m5.reactions.BTOHt.bounds = (-1000, 0)
 
 # constrain butyrate / acetate production ratio to exp. measurement
 add_ratio_constraint_cobra(m5, "BUTt" , "ACtr",  0.71, r_num_reverse=False, r_den_reverse=False)
@@ -86,12 +112,13 @@ UNLIMITED_METABOLITES = ['ca2_e', 'cl_e', 'cobalt2_e', 'cu2_e', 'fe2_e', 'fe3_e'
 metabolite_list = [str(m+"_e") for m in m5_med["compound"].tolist()]
 limited_metabolites = set(metabolite_list) - set(UNLIMITED_METABOLITES)
 medium = {k:0.5 for k in limited_metabolites}
+medium["xylan4_e"] = 0
 
 # ---------------- grid search ----------------
 print("running the grid search...")
-inoculation_times = [60, 70]
-inoculation_ratios = [1, 1.5]
-xylan_concentrations = [60, 70]
+inoculation_times = [24, 48, 72]
+inoculation_ratios = [2, 1, 0.67]
+xylan_concentrations = [40, 60, 80]
 
 results = pd.DataFrame(columns=['inoc_time', 'inoc_ratio', 'xylan_conc', 'butanol'])
 
