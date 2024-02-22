@@ -211,7 +211,7 @@ def sequental_com(m5, nj4, init_medium: dict = {}, initial_pop_m5: float = 1.e-3
     biomass_nj4 = biomass_m5 * inoc_ratio
     
     # final metabolite amounts in the medium
-    metabolites = first_sim.get_metabolite_time_series().iloc[-1, 2:]
+    metabolites = first_sim.get_metabolite_time_series().iloc[-1, 1:]
     new_medium = {met:mol for met,mol in metabolites.items() if mol > 0.0}
 
     # run a mult-strain simulation for the second strain
@@ -246,7 +246,7 @@ def two_phase_sim(model1, model2, medium: dict = {}, initial_pop: float = 1.e-3,
     biomass = first_sim.total_biomass[model1.id].iloc[-1]
     
     # final metabolite amounts in the medium
-    metabolites = first_sim.get_metabolite_time_series().iloc[-1, 2:]
+    metabolites = first_sim.get_metabolite_time_series().iloc[-1, 1:]
     new_medium = {met:mol for met,mol in metabolites.items() if mol > 0.0}
 
     # run a mult-strain simulation for the second strain
