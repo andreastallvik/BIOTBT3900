@@ -19,6 +19,11 @@ MM_XYLAN8 = 1201.04
 timestamp = datetime.datetime.now().strftime("%b_%d_%H%M")
 FILEPATH = f"grid_search_results/grid_search_result_{timestamp}.csv"
 
+# parameter grid
+inoculation_times = [40, 50, 60]
+inoculation_ratios = [0.6, 1, 1.3]
+xylan_concentrations = [40, 50, 60]
+
 # ---------------- load models ----------------
 print("loading models...")
 nj4 = read_sbml_model("GEMs/NJ4_curated.xml")
@@ -116,9 +121,6 @@ medium["xylan4_e"] = 0
 
 # ---------------- grid search ----------------
 print("running the grid search...")
-inoculation_times = [24, 48, 72]
-inoculation_ratios = [2, 1, 0.67]
-xylan_concentrations = [40, 60, 80]
 
 results = pd.DataFrame(columns=['inoc_time', 'inoc_ratio', 'xylan_conc', 'butanol'])
 
