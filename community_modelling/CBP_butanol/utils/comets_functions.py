@@ -506,7 +506,7 @@ def plot_relative_abundance(sim = None, time_step=0.1, total_biomass = None, ino
     
     biomass_time_series.drop(columns = ["cycle", "M5", "NJ4"], inplace=True)
 
-    plt.stackplot(biomass_time_series["time"], biomass_time_series["NJ4_frac"], biomass_time_series["M5_frac"], labels=['NJ4', 'M5'], alpha=0.6, edgecolor="face")
+    plt.stackplot(biomass_time_series["time"], biomass_time_series["M5_frac"], biomass_time_series["NJ4_frac"], labels=['M5', 'NJ4'], alpha=0.6, edgecolor="face")
     plt.legend()
     plt.xlabel('Time (h)')
     plt.ylabel('Biomass relative abundance')
