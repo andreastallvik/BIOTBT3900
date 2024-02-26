@@ -449,6 +449,9 @@ def mmol_to_g_per_L(met_name, met_mmol, volume = 0.05):
           "arg__L_e": 174.2, 
           "asp__L_e": 133.1,}
     
+    if met_name not in MM.keys():
+        raise ValueError(f"Metabolite {met_name} not found in molar mass dictionary.")
+    
     # divide by 1000 (-> mol), multiply by molar mass (-> g) and divide by volume (-> g/L)
     return (met_mmol / 1000) * MM[met_name] / volume
 
@@ -481,4 +484,32 @@ def plot_reaction_flux(sim = None, reactions: list = None, strain: str = None, t
 
     if inoc_time is not None:
         plt.axvline(x=inoc_time, color='k', linestyle='--')
-        
+
+
+def plot_relative_abundance(sim = None, time_step=0.1, total_biomass = None, inoc_time = None):
+    
+    if sim is None and total_biomass is None:
+        raise ValueError("Either a comets simulation object or a dataframe of biomass time-series data must be provided.")
+    
+    if total_biomass is None:
+        biomass_time_series = sim.total_biomass.copy()
+    else:
+        biomass_time_series = total_biomass.copy()
+
+    time = biomass_time_series["cycle"] * time_step
+    biomass_time_series["time"] = time
+
+    sum_bm = biomass_time_series[["M5", "NJ4"]].sum(axis=1)
+
+    biomass_time_series["NJ4_frac"] = biomass_time_series["NJ4"] / sum_bm
+    biomass_time_series["M5_frac"] = biomass_time_series["M5"] / sum_bm
+    
+    biomass_time_series.drop(columns = ["cycle", "M5", "NJ4"], inplace=True)
+
+    plt.stackplot(biomass_time_series["time"], biomass_time_series["NJ4_frac"], biomass_time_series["M5_frac"], labels=['NJ4', 'M5'], alpha=0.6, edgecolor="face")
+    plt.legend()
+    plt.xlabel('Time (h)')
+    plt.ylabel('Biomass relative abundance')
+
+    if inoc_time is not None:
+        plt.axvline(x=inoc_time, color='k', linestyle='--')
