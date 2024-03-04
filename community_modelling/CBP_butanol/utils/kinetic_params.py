@@ -42,16 +42,6 @@ KINETIC_PARAMS = {
             "EX_ac_e": 0.01,
             "EX_but_e": 0.01,
             "EX_xyl__D_e": 1,
-        },
-        "vmax": {
-            "EX_ac_e": 10,
-            "EX_but_e": 10,
-            "EX_xyl__D_e": 6,
-        },
-        "hill": {
-            "EX_xylan4_e": 1,
-            "EX_xylan8_e": 1,
-            "EX_xyl__D_e": 1,
             'EX_val__L_e': 0.5,
             'EX_arg__L_e': 0.5,
             'EX_asp__L_e': 0.5,
@@ -71,6 +61,16 @@ KINETIC_PARAMS = {
             'EX_tyr__L_e': 0.5,
             'EX_trp__L_e': 0.5,
             'EX_lys__L_e': 0.5,
+        },
+        "vmax": {
+            "EX_ac_e": 10,
+            "EX_but_e": 10,
+            "EX_xyl__D_e": 6,
+        },
+        "hill": {
+            "EX_xylan4_e": 1,
+            "EX_xylan8_e": 1,
+            "EX_xyl__D_e": 1,
         },
     },
 }
