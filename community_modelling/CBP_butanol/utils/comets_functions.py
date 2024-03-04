@@ -173,8 +173,8 @@ def mult_strain(models: list, medium: dict = {}, initial_pop: float = 1.e-3, sim
     return sim
 
 
-def sequental_com(m5, nj4, init_medium: dict = {}, initial_pop_m5: float = 1.e-3, total_sim_time: float = 140, 
-                  inoc_time: float = 60, kinetic_params: dict = {}, inoc_ratio: float = 1):
+def sequental_com(m5, nj4, init_medium: dict = {}, initial_pop_m5: float = 1.e-3, total_sim_time: float = 192, 
+                  inoc_time: float = 50, kinetic_params: dict = {}, inoc_ratio: float = 1):
     """Run 2 sequential COMETS simulations for the CBP butanol community.
 
     Args:
@@ -183,8 +183,8 @@ def sequental_com(m5, nj4, init_medium: dict = {}, initial_pop_m5: float = 1.e-3
         init_medium (dict, optional): Culture medium. If empty, only UNLIMITED METABOLITES are added. Therefore carbon source must be added. Defaults to {}.
         initial_pop_m5 (float, optional): Initail biomass for m5 strain. Defaults to 1.e-3.
         initial_pop_nj4 (float, optional): Initial biomass for nj4 strain. Defaults to 1.e-3.
-        total_sim_time (float, optional): Total hours to simulate for. Defaults to 140.
-        inoc_time (float, optional): Hour in which nj4 is added to the community. Defaults to 60.
+        total_sim_time (float, optional): Total hours to simulate for. Defaults to 192.
+        inoc_time (float, optional): Hour in which nj4 is added to the community. Defaults to 50.
         kinetic_params (dict, optional): dict of model_id:{"vmax":{rx:val}, "km":{rx:val}} for setting kinetic parameters for each model. Defaults to {}.
         inoc_ratio (float, optional): Ratio of nj4 to m5 biomass at inoculation. Defaults to 1.
 
@@ -253,6 +253,39 @@ def two_phase_sim(model1, model2, medium: dict = {}, initial_pop: float = 1.e-3,
     second_sim = single_strain(model2, medium=new_medium, initial_pop=biomass, sim_time=second_sim_time, km_dict=km_dict, vmax_dict=vmax_dict)
 
     return first_sim, second_sim
+
+
+def sequential_with_switch(m5, nj4_acido, nj4_solvento, init_meidum, total_sim_time, inoc_time):
+    '''Just a draft of a function rn.
+    TODO: finish implementation
+    '''
+    
+    # run a sequential model
+    first_sim, second_sim = sequental_com(m5, nj4_acido, init_meidum, total_sim_time, inoc_time)
+
+    # collapse the reuslts
+    bm, met, fluxes = collapse_sequential_sim(first_sim, second_sim)
+
+    # search for the switch-point
+    switch_point = 20
+    solvento_time = 20
+
+    # run a three-phase model with the switch-point
+    # run a seqential sim until the switch-point
+    first_sim, second_sim = sequental_com(m5=m5, nj4=nj4_acido, total_sim_time=switch_point, inoc_time=inoc_time)
+    # run a mult-strain from the switch-point to the end
+    third_sim = mult_strain(models=[m5, nj4_solvento], total_sim_time=solvento_time)
+
+    # return the three simulation objects
+    return first_sim, second_sim, third_sim
+
+def collapse_three_sim(first_sim, second_sim, third_sim):
+
+    bm, met, fluxes = collapse_sequential_sim(first_sim, second_sim)
+
+    # TODO: addd on the third sim, which has the same strains    
+
+    return bm, met, fluxes
 
 
 def set_kinetic_params(model: c.model, vmax_dict: dict = {}, km_dict: dict = {}, hill_dict: dict = {}):
