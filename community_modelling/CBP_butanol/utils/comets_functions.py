@@ -255,37 +255,60 @@ def two_phase_sim(model1, model2, medium: dict = {}, initial_pop: float = 1.e-3,
     return first_sim, second_sim
 
 
-def sequential_with_switch(m5, nj4_acido, nj4_solvento, init_meidum, total_sim_time, inoc_time):
-    '''Just a draft of a function rn.
-    TODO: finish implementation
+def sequential_with_switch(m5, nj4_acido, nj4_solvento, init_medium: dict = {}, total_sim_time: float = 192, initial_pop_m5: float = 1.e-3,
+                           inoc_time: float = 50, switch_time: float = 72, kinetic_params: dict = {}, inoc_ratio: float = 1):
+    '''Just a draft of a function rn. to be doccumented
+    A possible extention: run a standard sequential sim first and determine the switch-time based on some metric, ie. butyrate conc.
     '''
-    
-    # run a sequential model
-    first_sim, second_sim = sequental_com(m5, nj4_acido, init_meidum, total_sim_time, inoc_time)
 
-    # collapse the reuslts
-    bm, met, fluxes = collapse_sequential_sim(first_sim, second_sim)
-
-    # search for the switch-point
-    switch_point = 20
-    solvento_time = 20
+    # caluclate the time for the third simulation
+    third_sim_time = total_sim_time - switch_time
 
     # run a three-phase model with the switch-point
     # run a seqential sim until the switch-point
-    first_sim, second_sim = sequental_com(m5=m5, nj4=nj4_acido, total_sim_time=switch_point, inoc_time=inoc_time)
+    first_sim, second_sim = sequental_com(m5=m5, nj4=nj4_acido, init_medium=init_medium, total_sim_time=switch_time, 
+                                          inoc_time=inoc_time, kinetic_params=kinetic_params, inoc_ratio=inoc_ratio)
+    
+    # retrieve biomass and metabolites from the end of the second sim
+    biomass_m5 = second_sim.total_biomass["M5"].iloc[-1]
+    biomass_nj4 = second_sim.total_biomass["NJ4"].iloc[-1]
+    metabolites = second_sim.get_metabolite_time_series().iloc[-1, 1:]
+    new_medium = {met:mol for met,mol in metabolites.items() if mol > 0.0}
+
     # run a mult-strain from the switch-point to the end
-    third_sim = mult_strain(models=[m5, nj4_solvento], total_sim_time=solvento_time)
+    third_sim = mult_strain([m5, nj4_solvento], medium=new_medium, sim_time=third_sim_time, 
+                            specific_initial_pop={"NJ4":biomass_nj4, "M5": biomass_m5}, kinetic_params=kinetic_params)
 
     # return the three simulation objects
     return first_sim, second_sim, third_sim
 
+
 def collapse_three_sim(first_sim, second_sim, third_sim):
+    """Untested, to be used to collapse three simulation objects"""
 
     bm, met, fluxes = collapse_sequential_sim(first_sim, second_sim)
 
-    # TODO: addd on the third sim, which has the same strains    
+    cycle_diff = bm["cycle"].iloc[bm.shape[0]-1] + 1
 
-    return bm, met, fluxes
+    # biomass
+    bm_3 = third_sim.total_biomass.copy()
+    bm_3["cycle"] = bm_3["cycle"] + cycle_diff
+    tot_bm = pd.concat([bm, bm_3]).fillna(value=0)
+
+    # metabolites
+    met_3 = third_sim.get_metabolite_time_series()
+    met_3["cycle"] = met_3["cycle"] + cycle_diff
+    tot_met = pd.concat([met, met_3]).fillna(value=0)
+
+    # fluxes
+    tot_fluxes = {}
+    for strain in fluxes.keys():
+        flux_3 = third_sim.fluxes_by_species[strain].copy()
+        flux_3["cycle"] = flux_3["cycle"] + cycle_diff
+        new_flux = pd.concat([fluxes[strain], flux_3]).fillna(value=0)
+        tot_fluxes[strain] = new_flux
+
+    return tot_bm, tot_met, tot_fluxes
 
 
 def set_kinetic_params(model: c.model, vmax_dict: dict = {}, km_dict: dict = {}, hill_dict: dict = {}):

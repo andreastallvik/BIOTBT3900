@@ -20,9 +20,9 @@ timestamp = datetime.datetime.now().strftime("%b_%d_%H%M")
 FILEPATH = f"grid_search_results/grid_search_result_{timestamp}.csv"
 
 # parameter grid
-inoculation_times = [40, 50, 60]
-inoculation_ratios = [0.6, 1, 1.3]
-xylan_concentrations = [40, 50, 60]
+inoculation_times = [24, 48, 72]
+inoculation_ratios = [0.5, 1, 1.33]
+xylan_concentrations = [40, 60, 80]
 
 # ---------------- load models ----------------
 print("loading models...")
@@ -34,21 +34,14 @@ print("adding constraints...")
 
 # make the reactions in the ABE pathway irreversible
 
-reactions = ["ACACT1r",
-            "HACD1",
-            "ECOAH1",
-            "ACOAD1fr",
-            "ACOAD1",
-            "BTCOARx",
-            "PBUTT",
-            "ADCi",
-            "PTAr",
-            "POR_syn", "FNOR", "FNRR",
-            "T2ECR", "BNOCA"]
+reactions = ["ACACT1r", "HACD1", "ECOAH1", "ACOAD1fr", "ACOAD1", "BTCOARx", "PBUTT", 
+             "ADCi", "PTAr", "POR_syn", "FNOR", "FNRR","T2ECR", "BNOCA", #ABE pathway
+             ]
 
 reverse_reactions = ["ALCD4", "BUTKr", "BUTCT2", "ACKr", "ACACCT", "ACALD",
-                     "HYDA",
-                     "HACD1i", "ACOAD1fr", "ACOAD1f"]
+                      "HYDA", "HACD1i", "ACOAD1fr", "ACOAD1f",] #ABE pathway
+
+KO_rx = ["XYLANabc", "GLCURS1"] #xylan uptake reactions
 
 for rx in reactions:
     nj4.reactions.get_by_id(rx).bounds = (0, 1000)
@@ -56,24 +49,32 @@ for rx in reactions:
 for rx in reverse_reactions:
     nj4.reactions.get_by_id(rx).bounds = (-1000, 0)
 
-# knock out reactions for xylan uptake
-
-xylan_rx = ["XYLANabc", "GLCURS1"]
-
-for rx in xylan_rx:
+for rx in KO_rx:
     nj4.reactions.get_by_id(rx).bounds = (0, 0)
+
+# TCA cycle
+#nj4_acido.reactions.SUCD2.bounds = (-1000, 1000) #only relevant if doing 3-step with acido and solvento models
+
+# "closing off" reductive TCA for solventogenesis
+nj4.reactions.SUCD2.bounds = (-1000, 0)
+nj4.reactions.MDH.bounds = (-1000, 0)
 
 # knock out reactions for acetate and butyrate production
 nj4.reactions.ACtr.bounds = (0, 1000)
 nj4.reactions.BUTt.bounds = (0, 1000)
 
-# ac / but flux uptake flux couplued to adhere to exp. measurement
-add_ratio_constraint_cobra(nj4, "BUTt" , "ACtr",  0.42, r_num_reverse=False, r_den_reverse=False)
+# knock out reactions for acetate and butyrate production
+nj4.reactions.ACtr.bounds = (0, 1000)
+nj4.reactions.BUTt.bounds = (0, 1000)
 
-# acetone / butanol production flux coupling, constrained to exp. measurement
+# flux coupling but/ac uptake for solventogenesis to exp. value
+add_ratio_constraint_cobra(nj4, "BUTt" , "ACtr",  0.42, r_num_reverse=True, r_den_reverse=True)
+
+# flux coupling btoh/acetone production for solventogenesis to exp. value
 add_ratio_constraint_cobra(nj4, "BTOHt" , "ACEt",  2.68, r_num_reverse=True, r_den_reverse=False)
 
-# constraint for specific proton flux
+# define the Specific Proton Flux (SPF) property
+
 h_membrane_rx = [r.id for r in nj4.metabolites.h_e.reactions if "EX" not in r.id]
 
 neg_stoich = []
@@ -82,15 +83,22 @@ pos_stoich = []
 for rx in h_membrane_rx:
     stociometry = {met.id:coeff for met, coeff in nj4.reactions.get_by_id(rx).metabolites.items()}    
     if stociometry["h_e"] < 0:
-        neg_stoich.append(rx)
-    elif stociometry["h_e"] > 0:
         pos_stoich.append(rx)
+    elif stociometry["h_e"] > 0:
+        neg_stoich.append(rx)
 
+# as a constraint
 SPF_constraint = nj4.problem.Constraint(
         sum([nj4.reactions.get_by_id(rx).flux_expression for rx in pos_stoich]) - sum([nj4.reactions.get_by_id(rx).flux_expression for rx in neg_stoich]),
-        lb=0,
+        lb=0.2,
         ub=5)
 
+# as an objective
+SPF_obj = nj4.problem.Objective(
+        sum([nj4.reactions.get_by_id(rx).flux_expression for rx in pos_stoich]) - sum([nj4.reactions.get_by_id(rx).flux_expression for rx in neg_stoich]),
+        direction="max")
+
+#nj4.objective = SPF_obj
 nj4.add_cons_vars(SPF_constraint)
 
 # knock out reactions for xylose uptake
