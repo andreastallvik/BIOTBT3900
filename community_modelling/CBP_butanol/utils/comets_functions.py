@@ -256,10 +256,29 @@ def two_phase_sim(model1, model2, medium: dict = {}, initial_pop: float = 1.e-3,
 
 
 def sequential_with_switch(m5, nj4_acido, nj4_solvento, init_medium: dict = {}, total_sim_time: float = 192, initial_pop_m5: float = 1.e-3,
-                           inoc_time: float = 50, switch_time: float = 72, kinetic_params: dict = {}, inoc_ratio: float = 1):
-    '''Just a draft of a function rn. to be doccumented
-    A possible extention: run a standard sequential sim first and determine the switch-time based on some metric, ie. butyrate conc.
+                           inoc_time: float = 50, switch_time: float = 72, kinetic_params: dict = {}, inoc_ratio: float = 1, find_switch_time: bool = False):
+    '''tbd (to be documented)
+    # TODO: find more sensible way to set search_time and threshold_val
     '''
+
+    if find_switch_time:
+        
+        search_time = 120 # how many hours to search into the simulation for
+        threshold_val = 5 # mmol of butyrate to trigger switch-point
+
+        first_search_sim, second_search_sim = sequental_com(m5=m5, nj4=nj4_acido, init_medium=init_medium, total_sim_time=search_time, 
+                                          inoc_time=inoc_time, kinetic_params=kinetic_params, inoc_ratio=inoc_ratio, initial_pop_m5=initial_pop_m5)
+        
+        search_bm, search_met, search_fluxes = collapse_sequential_sim(first_search_sim, second_search_sim)
+
+        search_met.reset_index(inplace=True)
+        row = search_met[search_met['but_e'] > threshold_val].first_valid_index()
+
+        if row is None:
+            raise ValueError("Switch-point not found in the first simulation. Try again with higher search-time or lower threshold.")
+        
+        switch_time = search_met.iloc[row]["cycle"] * TIME_STEP
+
 
     # caluclate the time for the third simulation
     third_sim_time = total_sim_time - switch_time
@@ -267,7 +286,7 @@ def sequential_with_switch(m5, nj4_acido, nj4_solvento, init_medium: dict = {}, 
     # run a three-phase model with the switch-point
     # run a seqential sim until the switch-point
     first_sim, second_sim = sequental_com(m5=m5, nj4=nj4_acido, init_medium=init_medium, total_sim_time=switch_time, 
-                                          inoc_time=inoc_time, kinetic_params=kinetic_params, inoc_ratio=inoc_ratio)
+                                          inoc_time=inoc_time, kinetic_params=kinetic_params, inoc_ratio=inoc_ratio, initial_pop_m5=initial_pop_m5)
     
     # retrieve biomass and metabolites from the end of the second sim
     biomass_m5 = second_sim.total_biomass["M5"].iloc[-1]
