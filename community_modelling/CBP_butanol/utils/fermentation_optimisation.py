@@ -5,7 +5,7 @@ inoculation time, inoculation ratio, and xylan concentration, to get highest but
 NOTE: file-paths are absolute, so the script needs to be run from the CBP_butanol directory.
 """
 
-from comets_functions import sequental_com, collapse_sequential_sim
+from comets_functions import sequential_with_switch, collapse_three_sim
 import pandas as pd
 from cobra.io import read_sbml_model
 from flux_coupling import add_ratio_constraint_cobra
@@ -32,47 +32,23 @@ m5 = read_sbml_model("GEMs/M5_curated.xml")
 # ---------------- add constraints to models ----------------
 print("adding constraints...")
 
-# make the reactions in the ABE pathway irreversible
+# M5:
 
-reactions = ["ACACT1r", "HACD1", "ECOAH1", "ACOAD1fr", "ACOAD1", "BTCOARx", "PBUTT", 
-             "ADCi", "PTAr", "POR_syn", "FNOR", "FNRR","T2ECR", "BNOCA", #ABE pathway
-             ]
+uptake_KO = ["XYLANabc", "XYLabc", "XYLtex"]
 
-reverse_reactions = ["ALCD4", "BUTKr", "BUTCT2", "ACKr", "ACACCT", "ACALD",
-                      "HYDA", "HACD1i", "ACOAD1fr", "ACOAD1f",] #ABE pathway
+for rx in uptake_KO:
+    m5.reactions.get_by_id(rx).bounds = (0, 0)
 
-KO_rx = ["XYLANabc", "GLCURS1"] #xylan uptake reactions
+# restrict rate of xylose uptake
+m5.reactions.XYLt2.bounds = (0, 0.4)
 
-for rx in reactions:
-    nj4.reactions.get_by_id(rx).bounds = (0, 1000)
+# restrict uptake of butanol
+m5.reactions.BTOHt.bounds = (-1000, 0)
 
-for rx in reverse_reactions:
-    nj4.reactions.get_by_id(rx).bounds = (-1000, 0)
+# flux coupling constraint forcing but/ac production to exp. values
+add_ratio_constraint_cobra(m5, "BUTt" , "ACtr",  0.71, r_num_reverse=False, r_den_reverse=False)
 
-for rx in KO_rx:
-    nj4.reactions.get_by_id(rx).bounds = (0, 0)
-
-# TCA cycle
-#nj4_acido.reactions.SUCD2.bounds = (-1000, 1000) #only relevant if doing 3-step with acido and solvento models
-
-# "closing off" reductive TCA for solventogenesis
-nj4.reactions.SUCD2.bounds = (-1000, 0)
-nj4.reactions.MDH.bounds = (-1000, 0)
-
-# knock out reactions for acetate and butyrate production
-nj4.reactions.ACtr.bounds = (0, 1000)
-nj4.reactions.BUTt.bounds = (0, 1000)
-
-# knock out reactions for acetate and butyrate production
-nj4.reactions.ACtr.bounds = (0, 1000)
-nj4.reactions.BUTt.bounds = (0, 1000)
-
-# flux coupling but/ac uptake for solventogenesis to exp. value
-add_ratio_constraint_cobra(nj4, "BUTt" , "ACtr",  0.42, r_num_reverse=True, r_den_reverse=True)
-
-# flux coupling btoh/acetone production for solventogenesis to exp. value
-add_ratio_constraint_cobra(nj4, "BTOHt" , "ACEt",  2.68, r_num_reverse=True, r_den_reverse=False)
-
+# nj4
 # define the Specific Proton Flux (SPF) property
 
 h_membrane_rx = [r.id for r in nj4.metabolites.h_e.reactions if "EX" not in r.id]
@@ -87,33 +63,71 @@ for rx in h_membrane_rx:
     elif stociometry["h_e"] > 0:
         neg_stoich.append(rx)
 
-# as a constraint
-SPF_constraint = nj4.problem.Constraint(
-        sum([nj4.reactions.get_by_id(rx).flux_expression for rx in pos_stoich]) - sum([nj4.reactions.get_by_id(rx).flux_expression for rx in neg_stoich]),
-        lb=0.2,
-        ub=5)
-
 # as an objective
 SPF_obj = nj4.problem.Objective(
         sum([nj4.reactions.get_by_id(rx).flux_expression for rx in pos_stoich]) - sum([nj4.reactions.get_by_id(rx).flux_expression for rx in neg_stoich]),
         direction="max")
 
-#nj4.objective = SPF_obj
-nj4.add_cons_vars(SPF_constraint)
+nj4_acido = nj4.copy()
+nj4_solvento = nj4.copy()
 
-# knock out reactions for xylose uptake
-uptake_KO = ["XYLANabc", "XYLabc", "XYLtex"]
-for rx in uptake_KO:
-    m5.reactions.get_by_id(rx).bounds = (0, 0)
+# restrict reaction reversibility
 
-# restrict the max rate of xylose uptake
-m5.reactions.XYLt2.bounds = (0, 0.6)
+reactions = ["ACACT1r", "HACD1", "ECOAH1", "ACOAD1fr", "ACOAD1", "BTCOARx", "PBUTT", 
+             "ADCi", "PTAr", "POR_syn", "FNOR", "FNRR","T2ECR", "BNOCA", #ABE pathway
+             ]
 
-# restrict uptake of butanol
-m5.reactions.BTOHt.bounds = (-1000, 0)
+reverse_reactions = ["ALCD4", "BUTKr", "BUTCT2", "ACKr", "ACACCT", "ACALD",
+                      "HYDA", "HACD1i", "ACOAD1fr", "ACOAD1f", #ABE pathway
+                      ]
 
-# constrain butyrate / acetate production ratio to exp. measurement
-add_ratio_constraint_cobra(m5, "BUTt" , "ACtr",  0.71, r_num_reverse=False, r_den_reverse=False)
+KO_rx = ["XYLANabc", "GLCURS1"] #xylan uptake reactions
+
+for rx in reactions:
+    nj4_acido.reactions.get_by_id(rx).bounds = (0, 1000)
+    nj4_solvento.reactions.get_by_id(rx).bounds = (0, 1000)
+
+for rx in reverse_reactions:
+    nj4_acido.reactions.get_by_id(rx).bounds = (-1000, 0)
+    nj4_solvento.reactions.get_by_id(rx).bounds = (-1000, 0)
+
+for rx in KO_rx:
+    nj4_acido.reactions.get_by_id(rx).bounds = (0, 0)
+    nj4_solvento.reactions.get_by_id(rx).bounds = (0, 0)
+
+# TCA cycle
+nj4_acido.reactions.SUCD2.bounds = (-1000, 1000)
+
+# "closing off" reductive TCA for solventogenesis
+nj4_solvento.reactions.SUCD2.bounds = (-1000, 0)
+nj4_solvento.reactions.MDH.bounds = (-1000, 0)
+# nj4_solvento.reactions.FUM.bounds = (-1000, 0)
+
+# knock out reactions for acetate and butyrate production
+nj4_solvento.reactions.ACtr.bounds = (0, 1000)
+nj4_solvento.reactions.BUTt.bounds = (0, 1000)
+
+# flux coupling but/ac production for acidogeneis to exp. value
+add_ratio_constraint_cobra(nj4_acido, "BUTt" , "ACtr",  1.02, r_num_reverse=True, r_den_reverse=True)
+
+# flux coupling btoh/acetone production for solventogenesis to exp. value
+add_ratio_constraint_cobra(nj4_solvento, "BTOHt" , "ACEt",  2.68, r_num_reverse=True, r_den_reverse=False)
+
+# add SPF objectove to solventogen model
+nj4_solvento.objective = SPF_obj
+
+# update some kinetic params
+KINETIC_PARAMS["M5"]["km"]["EX_xylan8_e"] = 0.7
+KINETIC_PARAMS["M5"]["km"]["EX_xyl__D_e"] = 10
+KINETIC_PARAMS["NJ4"]["km"]["EX_xyl__D_e"] = 1
+
+AA_uptake_rx = ["EX_val__L_e", "EX_arg__L_e", "EX_asp__L_e", "EX_dhptd_e", "EX_glu__L_e", "EX_ile__L_e", "EX_ser__L_e", 
+                "EX_thr__L_e", "EX_ala__L_e", "EX_cys__L_e", "EX_gly_e", "EX_his__L_e", "EX_leu__L_e", 
+                "EX_met__L_e", "EX_phe__L_e", "EX_pro__L_e", "EX_tyr__L_e", "EX_trp__L_e", "EX_lys__L_e"]
+
+for strain in KINETIC_PARAMS.keys():
+    for rx in AA_uptake_rx:
+        KINETIC_PARAMS[strain]["km"][rx] = 1
 
 # ---------------- get the base medium dict ----------------
 media_db = pd.read_csv("medium.tsv", sep="\t")
@@ -147,10 +161,12 @@ for inoculation_time in inoculation_times:
 
             try:
                 # run the simulation
-                first_sim, second_sim = sequental_com(m5, nj4, init_medium=medium, kinetic_params=KINETIC_PARAMS, inoc_time=inoculation_time, inoc_ratio=inoculation_ratio)
+                switch_time = inoculation_time + 24 #trying this
+                first_sim, second_sim, third_sim = sequential_with_switch(m5=m5, nj4_acido=nj4_acido, nj4_solvento=nj4_solvento, init_medium=medium, 
+                                                  kinetic_params=KINETIC_PARAMS, inoc_time=inoculation_time, inoc_ratio=inoculation_ratio, switch_time=switch_time)
                 
                 # collapse the results
-                bm, met, fluxes = collapse_sequential_sim(first_sim, second_sim)
+                bm, met, fluxes = collapse_three_sim(first_sim, second_sim, third_sim)
 
                 # get final butanol titer
                 if "btoh_e" in met.columns:
