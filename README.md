@@ -1,6 +1,6 @@
-# BIOTBT3900
+# MSc project
 Master project in systems biology on the topic of metabolic modelling of microbial communities.  
-By Andrea Stallvik, completed in 2024.
+By Andrea Stallvik, completed in 2024 at NTNU.
 
 The project consists of three main setions:
 
