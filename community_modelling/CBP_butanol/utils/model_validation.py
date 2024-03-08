@@ -1,5 +1,6 @@
 """
 Helper functions for checking validity of automatically reconstructed models.
+Andrea Stallvik, 2024.
 """
 
 import cobra
@@ -183,7 +184,7 @@ def find_gapfilling_reactions(model, universal_model, reaction):
     return [r.id for r in gapfilling_reactions[0]]
 
 
-## archive(?) - need to figure out how to actually use these functions
+### ------------------------------ ARCHIVE / Unfinished functions ------------------------------
 
 def get_exhange(reactions):
     """Returns first exhange reaction in list of reactions, returns false if no exchange reaction is found."""

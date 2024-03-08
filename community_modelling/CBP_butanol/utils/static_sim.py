@@ -1,5 +1,6 @@
 """
 Helper functions for preforming/displaying static simulations of the CBP butanol model.
+Andrea Stallvik, 2024.
 """
 
 from cobra.flux_analysis import pfba, flux_variability_analysis, production_envelope
