@@ -180,6 +180,7 @@ def sequental_com(m5, nj4, m5_cold = None, init_medium: dict = {}, initial_pop_m
     Args:
         m5 (cobrapy model): GEM for m5
         nj4 (cobrapy model): GEM for nj4
+        m5_cold (cobrapy model, optional): GEM for M5 adjusted for lower metabolic activity for lower temperatures. If None, m5 is used for entire simulation. Defaults to None.
         init_medium (dict, optional): Culture medium. If empty, only UNLIMITED METABOLITES are added. Therefore carbon source must be added. Defaults to {}.
         initial_pop_m5 (float, optional): Initail biomass for m5 strain. Defaults to 1.e-3.
         initial_pop_nj4 (float, optional): Initial biomass for nj4 strain. Defaults to 1.e-3.
@@ -260,16 +261,33 @@ def two_phase_sim(model1, model2, medium: dict = {}, initial_pop: float = 1.e-3,
 
 def sequential_with_switch(m5, nj4_acido, nj4_solvento, m5_cold = None, init_medium: dict = {}, total_sim_time: float = 192, initial_pop_m5: float = 1.e-3,
                            inoc_time: float = 50, switch_time: float = 72, kinetic_params: dict = {}, inoc_ratio: float = 1, find_switch_time: bool = False):
-    '''tbd (to be documented)
-    # TODO: find more sensible way to set search_time and threshold_val
-    '''
+    """Sequential community with a switch-point between acidogenic and solventogenic phases. Switch-point can be automatically detected or manually set.
+    Allows for switching out M5 model for a different version at inoc_time, when temperature is lowered.
+
+    Args:
+        m5 (cobrapy model): metabolic model for m5
+        nj4_acido (cobrapy model): metabolic model for acidogenic nj4
+        nj4_solvento (cobrapy model): metabolic model for solventogenic nj4
+        m5_cold (cobrapy model, optional): GEM for M5 adjusted for lower metabolic activity for lower temperatures. If None, m5 is used for entire simulation. Defaults to None.
+        init_medium (dict, optional): Culture medium. If empty, only UNLIMITED METABOLITES are added. Therefore carbon source must be added. Defaults to {}.
+        total_sim_time (float, optional): Total number of hours for simulation. Defaults to 192.
+        initial_pop_m5 (float, optional): Initial biomass for M5 strain. Defaults to 1.e-3.
+        inoc_time (float, optional): Time-point to add NJ4 to the simulation (h). Defaults to 50.
+        switch_time (float, optional): Time-point for acidogenic / solventogenic switch to occur. Defaults to 72.
+        kinetic_params (dict, optional): dict of model_id:{"vmax":{rx:val}, "km":{rx:val}} for setting kinetic parameters for each model. Defaults to {}.
+        inoc_ratio (float, optional): Ratio of NJ4 to M5 biomass at inoculation. Defaults to 1.
+        find_switch_time (bool, optional): _description_. Defaults to False.
+
+    Returns:
+        tuple(c.sim, c.sim, c.sim): Simulation object for the first sim (only M5), the second sim (M5 + acidogenic NJ4), and the thirs sim (M5 + solventogenic NJ4).
+    """
 
     if find_switch_time:
         
-        search_time = 120 # how many hours to search into the simulation for
+        search_time = total_sim_time #TODO: consider setting to lower to decrease the sim-time
         threshold_val = 5 # mmol of butyrate to trigger switch-point
 
-        first_search_sim, second_search_sim = sequental_com(m5=m5, nj4=nj4_acido, init_medium=init_medium, total_sim_time=search_time, 
+        first_search_sim, second_search_sim = sequental_com(m5=m5, nj4=nj4_acido, m5_cold=m5_cold, init_medium=init_medium, total_sim_time=search_time, 
                                           inoc_time=inoc_time, kinetic_params=kinetic_params, inoc_ratio=inoc_ratio, initial_pop_m5=initial_pop_m5)
         
         search_bm, search_met, search_fluxes = collapse_sequential_sim(first_search_sim, second_search_sim)
@@ -277,10 +295,18 @@ def sequential_with_switch(m5, nj4_acido, nj4_solvento, m5_cold = None, init_med
         search_met.reset_index(inplace=True)
         row = search_met[search_met['but_e'] > threshold_val].first_valid_index()
 
-        if row is None:
-            raise ValueError("Switch-point not found in the first simulation. Try again with higher search-time or lower threshold.")
+        no_switch = False
+
+        if row is None: 
+            #this means that the acidogenic/solventogenic switch never occurs, run only 2 simulations
+            no_switch = True
+            switch_time = total_sim_time
+
+        elif switch_time < inoc_time:
+            switch_time = inoc_time + 1 # assume that the nj4 strain needs a little time to readjust into solventogenic phase from acidogenic inoculum
         
-        switch_time = search_met.iloc[row]["cycle"] * TIME_STEP
+        else:
+            switch_time = search_met.iloc[row]["cycle"] * TIME_STEP
 
 
     # caluclate the time for the third simulation
@@ -290,6 +316,10 @@ def sequential_with_switch(m5, nj4_acido, nj4_solvento, m5_cold = None, init_med
     # run a seqential sim until the switch-point
     first_sim, second_sim = sequental_com(m5=m5, nj4=nj4_acido, m5_cold=m5_cold, init_medium=init_medium, total_sim_time=switch_time, 
                                           inoc_time=inoc_time, kinetic_params=kinetic_params, inoc_ratio=inoc_ratio, initial_pop_m5=initial_pop_m5)
+    
+    # if no acido/solvento switch occured - just return the first 2 simulations
+    if no_switch:
+        return first_sim, second_sim, None
     
     # retrieve biomass and metabolites from the end of the second sim
     biomass_m5 = second_sim.total_biomass["M5"].iloc[-1]
@@ -311,6 +341,10 @@ def sequential_with_switch(m5, nj4_acido, nj4_solvento, m5_cold = None, init_med
 
 def collapse_three_sim(first_sim, second_sim, third_sim):
     """Untested, to be used to collapse three simulation objects"""
+
+    if third_sim is None:
+        # in case no acido/solvento switch occured and the third simulation was not run
+        return collapse_sequential_sim(first_sim, second_sim)
 
     bm, met, fluxes = collapse_sequential_sim(first_sim, second_sim)
 
