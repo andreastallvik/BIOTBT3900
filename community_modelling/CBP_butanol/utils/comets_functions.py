@@ -459,9 +459,9 @@ def plot_metabolites(sim = None, metabolites = None, time_step = 0.1, metabolite
             warnings.simplefilter(action='ignore', category=UserWarning)
             sns.lineplot(data=plot_df[~sugar_mask], x="time", y=y_val, hue="metabolite", ax=ax1, palette=palette)
         if use_molar_amount:
-            ax1.set_ylabel('Metabolites (mmol)')
+            ax1.set_ylabel('Products (mmol)')
         else:
-            ax1.set_ylabel('Metabolites (g/L)')
+            ax1.set_ylabel('Products (g/L)')
         ax1.get_legend().remove()
 
         palette.reverse()
