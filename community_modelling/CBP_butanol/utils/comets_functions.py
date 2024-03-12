@@ -174,7 +174,7 @@ def mult_strain(models: list, medium: dict = {}, initial_pop: float = 1.e-3, sim
 
 
 def sequental_com(m5, nj4, m5_cold = None, init_medium: dict = {}, initial_pop_m5: float = 1.e-3, total_sim_time: float = 192, 
-                  inoc_time: float = 50, kinetic_params: dict = {}, inoc_ratio: float = 1):
+                  inoc_time: float = 50, kinetic_params: dict = {}, kinetic_params_cold: dict = {}, inoc_ratio: float = 1):
     """Run 2 sequential COMETS simulations for the CBP butanol community.
 
     Args:
@@ -215,11 +215,14 @@ def sequental_com(m5, nj4, m5_cold = None, init_medium: dict = {}, initial_pop_m
     metabolites = first_sim.get_metabolite_time_series().iloc[-1, 1:]
     new_medium = {met:mol for met,mol in metabolites.items() if mol > 0.0}
 
+    if not kinetic_params_cold:
+        kinetic_params_cold = kinetic_params
+
     # run a mult-strain simulation for the second strain
     if m5_cold is not None:
-        second_sim = mult_strain([m5_cold, nj4], medium=new_medium, sim_time=second_sim_time, specific_initial_pop={"NJ4":biomass_nj4, "M5": biomass_m5}, kinetic_params=kinetic_params)
+        second_sim = mult_strain([m5_cold, nj4], medium=new_medium, sim_time=second_sim_time, specific_initial_pop={"NJ4":biomass_nj4, "M5": biomass_m5}, kinetic_params=kinetic_params_cold)
     else:
-        second_sim = mult_strain([m5, nj4], medium=new_medium, sim_time=second_sim_time, specific_initial_pop={"NJ4":biomass_nj4, "M5": biomass_m5}, kinetic_params=kinetic_params)
+        second_sim = mult_strain([m5, nj4], medium=new_medium, sim_time=second_sim_time, specific_initial_pop={"NJ4":biomass_nj4, "M5": biomass_m5}, kinetic_params=kinetic_params_cold)
 
     return first_sim, second_sim
 
@@ -260,7 +263,8 @@ def two_phase_sim(model1, model2, medium: dict = {}, initial_pop: float = 1.e-3,
 
 
 def sequential_with_switch(m5, nj4_acido, nj4_solvento, m5_cold = None, init_medium: dict = {}, total_sim_time: float = 192, initial_pop_m5: float = 1.e-3,
-                           inoc_time: float = 50, switch_time: float = 72, kinetic_params: dict = {}, inoc_ratio: float = 1, find_switch_time: bool = False):
+                           inoc_time: float = 50, switch_time: float = 72, kinetic_params: dict = {}, kinetic_params_cold: dict = {}, inoc_ratio: float = 1, 
+                           find_switch_time: bool = False):
     """Sequential community with a switch-point between acidogenic and solventogenic phases. Switch-point can be automatically detected or manually set.
     Allows for switching out M5 model for a different version at inoc_time, when temperature is lowered.
 
@@ -275,6 +279,7 @@ def sequential_with_switch(m5, nj4_acido, nj4_solvento, m5_cold = None, init_med
         inoc_time (float, optional): Time-point to add NJ4 to the simulation (h). Defaults to 50.
         switch_time (float, optional): Time-point for acidogenic / solventogenic switch to occur. Defaults to 72.
         kinetic_params (dict, optional): dict of model_id:{"vmax":{rx:val}, "km":{rx:val}} for setting kinetic parameters for each model. Defaults to {}.
+        kinetic_params_cold (dict, optional): dict of model_id:{"vmax":{rx:val}, "km":{rx:val}} for setting kinetic parameters for each model for the cold phase. If empty,  Defaults to {}.
         inoc_ratio (float, optional): Ratio of NJ4 to M5 biomass at inoculation. Defaults to 1.
         find_switch_time (bool, optional): _description_. Defaults to False.
 
@@ -282,20 +287,21 @@ def sequential_with_switch(m5, nj4_acido, nj4_solvento, m5_cold = None, init_med
         tuple(c.sim, c.sim, c.sim): Simulation object for the first sim (only M5), the second sim (M5 + acidogenic NJ4), and the thirs sim (M5 + solventogenic NJ4).
     """
 
+    no_switch = False
+
     if find_switch_time:
         
         search_time = total_sim_time #TODO: consider setting to lower to decrease the sim-time
         threshold_val = 5 # mmol of butyrate to trigger switch-point
 
         first_search_sim, second_search_sim = sequental_com(m5=m5, nj4=nj4_acido, m5_cold=m5_cold, init_medium=init_medium, total_sim_time=search_time, 
-                                          inoc_time=inoc_time, kinetic_params=kinetic_params, inoc_ratio=inoc_ratio, initial_pop_m5=initial_pop_m5)
+                                          inoc_time=inoc_time, kinetic_params=kinetic_params, kinetic_params_cold=kinetic_params_cold, 
+                                          inoc_ratio=inoc_ratio, initial_pop_m5=initial_pop_m5)
         
         search_bm, search_met, search_fluxes = collapse_sequential_sim(first_search_sim, second_search_sim)
 
         search_met.reset_index(inplace=True)
         row = search_met[search_met['but_e'] > threshold_val].first_valid_index()
-
-        no_switch = False
 
         if row is None: 
             #this means that the acidogenic/solventogenic switch never occurs, run only 2 simulations
@@ -314,11 +320,11 @@ def sequential_with_switch(m5, nj4_acido, nj4_solvento, m5_cold = None, init_med
 
     # run a three-phase model with the switch-point
     # run a seqential sim until the switch-point
-    first_sim, second_sim = sequental_com(m5=m5, nj4=nj4_acido, m5_cold=m5_cold, init_medium=init_medium, total_sim_time=switch_time, 
-                                          inoc_time=inoc_time, kinetic_params=kinetic_params, inoc_ratio=inoc_ratio, initial_pop_m5=initial_pop_m5)
+    first_sim, second_sim = sequental_com(m5=m5, nj4=nj4_acido, m5_cold=m5_cold, init_medium=init_medium, total_sim_time=switch_time, inoc_time=inoc_time, 
+                                          kinetic_params=kinetic_params, kinetic_params_cold=kinetic_params_cold, inoc_ratio=inoc_ratio, initial_pop_m5=initial_pop_m5)
     
     # if no acido/solvento switch occured - just return the first 2 simulations
-    if no_switch:
+    if find_switch_time and no_switch:
         return first_sim, second_sim, None
     
     # retrieve biomass and metabolites from the end of the second sim
@@ -327,13 +333,16 @@ def sequential_with_switch(m5, nj4_acido, nj4_solvento, m5_cold = None, init_med
     metabolites = second_sim.get_metabolite_time_series().iloc[-1, 1:]
     new_medium = {met:mol for met,mol in metabolites.items() if mol > 0.0}
 
+    if not kinetic_params_cold:
+        kinetic_params_cold = kinetic_params
+
     # run a mult-strain from the switch-point to the end
     if m5_cold is not None:
         third_sim = mult_strain([m5_cold, nj4_solvento], medium=new_medium, sim_time=third_sim_time, 
-                            specific_initial_pop={"NJ4":biomass_nj4, "M5": biomass_m5}, kinetic_params=kinetic_params)
+                            specific_initial_pop={"NJ4":biomass_nj4, "M5": biomass_m5}, kinetic_params=kinetic_params_cold)
     else:    
         third_sim = mult_strain([m5, nj4_solvento], medium=new_medium, sim_time=third_sim_time, 
-                            specific_initial_pop={"NJ4":biomass_nj4, "M5": biomass_m5}, kinetic_params=kinetic_params)
+                            specific_initial_pop={"NJ4":biomass_nj4, "M5": biomass_m5}, kinetic_params=kinetic_params_cold)
 
     # return the three simulation objects
     return first_sim, second_sim, third_sim
@@ -570,6 +579,12 @@ def mmol_to_g_per_L(met_name, met_mmol, volume = 0.05):
     
     # divide by 1000 (-> mol), multiply by molar mass (-> g) and divide by volume (-> g/L)
     return (met_mmol / 1000) * MM[met_name] / volume
+
+
+def calculate_pH(medium, volume = 0.05):
+    "Calculate the pH of a medium"
+    
+    pass
 
 
 def plot_reaction_flux(sim = None, reactions: list = None, strain: str = None, time_step=0.1, fluxes = None, inoc_time=None):
