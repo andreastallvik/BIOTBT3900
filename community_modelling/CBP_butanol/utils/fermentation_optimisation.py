@@ -40,13 +40,31 @@ for rx in uptake_KO:
     m5.reactions.get_by_id(rx).bounds = (0, 0)
 
 # restrict rate of xylose uptake
-m5.reactions.XYLt2.bounds = (0, 0.4)
+m5.reactions.XYLt2.bounds = (0, 0.8)
 
 # restrict uptake of butanol
 m5.reactions.BTOHt.bounds = (-1000, 0)
 
 # flux coupling constraint forcing but/ac production to exp. values
 add_ratio_constraint_cobra(m5, "BUTt" , "ACtr",  0.71, r_num_reverse=False, r_den_reverse=False)
+
+reactions = ["ACACT1r", "ECOAH1", "ACOAD1fr", "ACOAD1", "BTCOARx", 
+            "PTAr", "POR_syn", "FNRR","T2ECR", "BNOCA", #ABE pathway
+             ]
+
+reverse_reactions = ["ALCD4", "ACKr", "ACALD",
+                      "HYDA", "HACD1i", "ACOAD1fr", "ACOAD1f", #ABE pathway
+                      ]
+
+for rx in reactions:
+    m5.reactions.get_by_id(rx).bounds = (0, 1000)
+
+for rx in reverse_reactions:
+    m5.reactions.get_by_id(rx).bounds = (-1000, 0)
+
+# adjusted model for decreased temperature
+m5_cold = m5.copy()
+m5_cold.reactions.XYLt2.bounds = (0, 0.2)
 
 # nj4
 # define the Specific Proton Flux (SPF) property
@@ -117,9 +135,10 @@ add_ratio_constraint_cobra(nj4_solvento, "BTOHt" , "ACEt",  2.68, r_num_reverse=
 nj4_solvento.objective = SPF_obj
 
 # update some kinetic params
-KINETIC_PARAMS["M5"]["km"]["EX_xylan8_e"] = 0.7
+KINETIC_PARAMS["M5"]["km"]["EX_xylan8_e"] = 1
+KINETIC_PARAMS["M5"]["vmax"]["EX_xylan8_e"] = 10
 KINETIC_PARAMS["M5"]["km"]["EX_xyl__D_e"] = 10
-KINETIC_PARAMS["NJ4"]["km"]["EX_xyl__D_e"] = 1
+KINETIC_PARAMS["M5"]["vmax"]["EX_xyl__D_e"] = 2
 
 AA_uptake_rx = ["EX_val__L_e", "EX_arg__L_e", "EX_asp__L_e", "EX_dhptd_e", "EX_glu__L_e", "EX_ile__L_e", "EX_ser__L_e", 
                 "EX_thr__L_e", "EX_ala__L_e", "EX_cys__L_e", "EX_gly_e", "EX_his__L_e", "EX_leu__L_e", 

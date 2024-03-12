@@ -292,7 +292,7 @@ def sequential_with_switch(m5, nj4_acido, nj4_solvento, m5_cold = None, init_med
     if find_switch_time:
         
         search_time = total_sim_time #TODO: consider setting to lower to decrease the sim-time
-        threshold_val = 5 # mmol of butyrate to trigger switch-point
+        threshold_val = 6 # mmol of butyrate to trigger switch-point
 
         first_search_sim, second_search_sim = sequental_com(m5=m5, nj4=nj4_acido, m5_cold=m5_cold, init_medium=init_medium, total_sim_time=search_time, 
                                           inoc_time=inoc_time, kinetic_params=kinetic_params, kinetic_params_cold=kinetic_params_cold, 
