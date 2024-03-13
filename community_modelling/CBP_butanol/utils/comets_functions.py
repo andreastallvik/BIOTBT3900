@@ -227,7 +227,8 @@ def sequental_com(m5, nj4, m5_cold = None, init_medium: dict = {}, initial_pop_m
     return first_sim, second_sim
 
 
-def two_phase_sim(model1, model2, medium: dict = {}, initial_pop: float = 1.e-3, sim_time: float = 168, phase_switch_time: float = 96, km_dict: dict = {}, vmax_dict: dict = {}):
+def two_phase_sim(model1, model2, medium: dict = {}, initial_pop: float = 1.e-3, sim_time: float = 168, phase_switch_time: float = 96, 
+                  km_dict: dict = {}, vmax_dict: dict = {}, second_km_dict: dict = {}, second_vmax_dict: dict = {}):
     """Dynamic simulation in which some metabolic switch encoded in the supplied cobrapy model (eg. objective function, constraints) happens at a given swithc point.
 
     Args:
@@ -239,6 +240,8 @@ def two_phase_sim(model1, model2, medium: dict = {}, initial_pop: float = 1.e-3,
         phase_switch_time (float, optional): Time to swich from metabolic state 1 to metabolic state 2. Defaults to 96.
         km_dict (dict, optional): dict of rx:value for km values to set. Defaults to {}.
         vmax_dict (dict, optional): dict of rx:value for vmax values to set. Defaults to {}.
+        second_km_dict (dict, optional): dict of rx:value for km values to use for second phase. If empty, same params as first phase is used. Defaults to {}.
+        second_vmax_dict (dict, optional): dict of rx:value for vmax values to use for second phase. If empty, same params as first phase is used. Defaults to {}.
 
     Returns:
         tuple(c.sim, c.sim): Simulation object for the first sim and second simulation results.
@@ -256,8 +259,14 @@ def two_phase_sim(model1, model2, medium: dict = {}, initial_pop: float = 1.e-3,
     metabolites = first_sim.get_metabolite_time_series().iloc[-1, 1:]
     new_medium = {met:mol for met,mol in metabolites.items() if mol > 0.0}
 
+    if not second_km_dict:
+        second_km_dict = km_dict
+    
+    if not second_vmax_dict:
+        second_vmax_dict = vmax_dict
+
     # run a mult-strain simulation for the second strain
-    second_sim = single_strain(model2, medium=new_medium, initial_pop=biomass, sim_time=second_sim_time, km_dict=km_dict, vmax_dict=vmax_dict)
+    second_sim = single_strain(model2, medium=new_medium, initial_pop=biomass, sim_time=second_sim_time, km_dict=second_km_dict, vmax_dict=second_vmax_dict)
 
     return first_sim, second_sim
 
