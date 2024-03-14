@@ -8,6 +8,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
+REACTION_TRANSLATION = {"EX_but_e": "Butyrate exchange", "EX_ac_e": "Acetate exchange", "EX_etoh_e": "Ethanol exchange", 
+                        "EX_btoh_e": "Butanol exchange", "EX_xyl__D_e": "Xylose exchange", "EX_acetone_e": "Acetone exchange"}
+
 
 def get_productions(model, medium: dict = None, reactions: list = None):
     """Get the pFBA solution and (loopless) FVA solution for specified reactions in a model."""
@@ -88,7 +91,7 @@ def plot_production_stats(solution_df):
     sns.scatterplot(data=plot_df, x="reaction", y="flux", hue="solution type")
 
 
-def plot_flux_envelopes(model, reactions: list = None, medium: dict = None, BM_func: str = "Growth"):
+def plot_flux_envelopes(model, reactions: list = None, medium: dict = None, BM_func: str = "Growth", common_names: bool = False):
     """Plots production envelopes for each of the liste reactions in a single figure.
 
     Args:
@@ -129,7 +132,10 @@ def plot_flux_envelopes(model, reactions: list = None, medium: dict = None, BM_f
             ax.fill_between(prod_env[BM_func], prod_env["flux_minimum"], prod_env["flux_maximum"], alpha=0.2, color=color)
             
             # set title for the subplot
-            ax.set_title(rx)
+            title = REACTION_TRANSLATION[rx] if common_names else rx
+            ax.set_title(title)
+            ax.set_xlabel("Growth rate (gDW/h)")
+            ax.set_ylabel("Flux (mmol/h/gDW)")
 
         # remove empty subplots, if any
         for i in range(num_reactions, num_rows * 3):
@@ -182,5 +188,5 @@ def plot_flux_ranges(model = None, medium: dict=None, reactions: list=None, fva_
     if log_scale:
         plt.xscale('symlog')
         
-    plt.xlabel('Flux (mmol/gDW/h)')
+    plt.xlabel('Flux (mmol/h/gDW)')
     plt.ylabel('Reaction')

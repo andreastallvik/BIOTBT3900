@@ -16,6 +16,8 @@ SPACE_WIDTH = 3.684
 
 TIME_STEP = 0.1
 
+MET_TRANSLATION = {"xyl__D_e": "Xylose", "xylan8_e": "Xylan", "ac_e": "Acetate", "but_e": "Butyrate",  "acetone_e": "Acetone", "btoh_e": "Butanol", "etoh_e": "Ethanol"}
+
 
 def single_strain(model, medium: dict = {}, initial_pop: float = 1.e-3, sim_time: float = 140, km_dict: dict = {}, vmax_dict: dict = {}, hill_dict: dict = {}):
     """Run a comets simulation for a single strain
@@ -301,7 +303,7 @@ def sequential_with_switch(m5, nj4_acido, nj4_solvento, m5_cold = None, init_med
     if find_switch_time:
         
         search_time = total_sim_time #TODO: consider setting to lower to decrease the sim-time
-        threshold_val = 6 # mmol of butyrate to trigger switch-point
+        threshold_val = 5 # mmol of butyrate to trigger switch-point
 
         first_search_sim, second_search_sim = sequental_com(m5=m5, nj4=nj4_acido, m5_cold=m5_cold, init_medium=init_medium, total_sim_time=search_time, 
                                           inoc_time=inoc_time, kinetic_params=kinetic_params, kinetic_params_cold=kinetic_params_cold, 
@@ -465,7 +467,7 @@ def collapse_sequential_sim(sim_1, sim_2, mult_species=True):
     return bm, met, fluxes
 
 
-def plot_metabolites(sim = None, metabolites = None, time_step = 0.1, metabolites_time_series = None, inoc_time = None, use_molar_amount: bool = False):
+def plot_metabolites(sim = None, metabolites = None, time_step = 0.1, metabolites_time_series = None, inoc_time = None, use_molar_amount: bool = False, common_names: bool = False):
     """Plot specific metabolites from comets simulation results."""
 
     if sim is None and metabolites_time_series is None:
@@ -501,11 +503,15 @@ def plot_metabolites(sim = None, metabolites = None, time_step = 0.1, metabolite
 
     plot_df = df.melt(id_vars="time", value_name=y_val)
 
+    if common_names:
+        # replace metabolite identifiers with common names
+        plot_df['metabolite'] = plot_df['metabolite'].map(MET_TRANSLATION)
+
     # make plot
 
     # second axis for sugars if they are present in the metabolite set
     # create a boolean mask for sugars
-    sugar_mask = plot_df["metabolite"].str.contains("xyl")
+    sugar_mask = plot_df["metabolite"].str.contains("xyl", case=False)
 
     if sugar_mask.any():
 
@@ -540,12 +546,19 @@ def plot_metabolites(sim = None, metabolites = None, time_step = 0.1, metabolite
         lines, labels = ax1.get_legend_handles_labels()
         lines2, labels2 = ax2.get_legend_handles_labels()
         ax1.legend(lines + lines2, labels + labels2, loc='center left')
+
+        ax1.set_xlabel('Time (h)')
     
     else:
-        sns.lineplot(data=plot_df, x="time", y=y_val, hue="metabolite")
+        sns.lineplot(data=plot_df, x="time", y=y_val, hue="metabolite").get_legend().set_title(None)
+        plt.xlabel('Time (h)')
+        if use_molar_amount:
+            plt.ylabel('Products (mmol)')
+        else:
+            plt.ylabel('Products (g/L)')
 
     if inoc_time is not None:
-        plt.axvline(x=inoc_time, color='k', linestyle='--')
+        plt.axvline(x=inoc_time, color='k', linestyle='--', linewidth=1.1)
 
 
 def plot_biomass(sim = None, time_step=0.1, total_biomass = None, inoc_time = None):
@@ -563,9 +576,12 @@ def plot_biomass(sim = None, time_step=0.1, total_biomass = None, inoc_time = No
     biomass_time_series["time"] = time
     biomass_time_series.drop(columns = ["cycle"], inplace=True)
     plot_df = biomass_time_series.melt(id_vars="time", var_name="strain", value_name="biomass")
-    sns.lineplot(data=plot_df, x="time", y="biomass", hue="strain")
+    sns.lineplot(data=plot_df, x="time", y="biomass", hue="strain").get_legend().set_title(None)
     if inoc_time is not None:
-        plt.axvline(x=inoc_time, color='k', linestyle='--')
+        plt.axvline(x=inoc_time, color='k', linestyle='--', linewidth=1.1)
+    
+    plt.xlabel('Time (h)')
+    plt.ylabel('Biomass (gDW)')
         
 
 def mmol_to_g_per_L(met_name, met_mmol, volume = 0.05):
@@ -620,10 +636,13 @@ def plot_reaction_flux(sim = None, reactions: list = None, strain: str = None, t
 
     plot_df = df.melt(id_vars="time", value_name="flux", var_name="reaction")
     
-    sns.lineplot(data=plot_df, x="time", y="flux", hue="reaction") 
+    sns.lineplot(data=plot_df, x="time", y="flux", hue="reaction").get_legend().set_title(None)
+
+    plt.xlabel('Time (h)')
+    plt.ylabel('Flux (mmol/h/gDW)')
 
     if inoc_time is not None:
-        plt.axvline(x=inoc_time, color='k', linestyle='--')
+        plt.axvline(x=inoc_time, color='k', linestyle='--', linewidth=1.1)
 
 
 def plot_relative_abundance(sim = None, time_step=0.1, total_biomass = None, inoc_time = None):
@@ -649,7 +668,7 @@ def plot_relative_abundance(sim = None, time_step=0.1, total_biomass = None, ino
     plt.stackplot(biomass_time_series["time"], biomass_time_series["M5_frac"], biomass_time_series["NJ4_frac"], labels=['M5', 'NJ4'], alpha=0.6, edgecolor="face")
     plt.legend()
     plt.xlabel('Time (h)')
-    plt.ylabel('Biomass relative abundance')
+    plt.ylabel('Fraction of total biomass')
 
     if inoc_time is not None:
-        plt.axvline(x=inoc_time, color='k', linestyle='--')
+        plt.axvline(x=inoc_time, color='k', linestyle='--', linewidth=1.1)
