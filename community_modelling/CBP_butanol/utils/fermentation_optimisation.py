@@ -12,6 +12,7 @@ from flux_coupling import add_ratio_constraint_cobra
 from kinetic_params import KINETIC_PARAMS
 import datetime
 from tqdm import tqdm
+from copy import deepcopy
 
 # constants
 VOLUME = 0.05
@@ -20,9 +21,9 @@ timestamp = datetime.datetime.now().strftime("%b_%d_%H%M")
 FILEPATH = f"grid_search_results/grid_search_result_{timestamp}.csv"
 
 # parameter grid
-inoculation_times = [24, 48, 72]
-inoculation_ratios = [0.5, 1, 1.33]
-xylan_concentrations = [40, 60, 80]
+inoculation_times = [40, 50, 60]
+inoculation_ratios = [0.75, 1, 1.25]
+xylan_concentrations = [60, 70, 80]
 
 # ---------------- load models ----------------
 print("loading models...")
@@ -40,7 +41,7 @@ for rx in uptake_KO:
     m5.reactions.get_by_id(rx).bounds = (0, 0)
 
 # restrict rate of xylose uptake
-m5.reactions.XYLt2.bounds = (0, 0.8)
+m5.reactions.XYLt2.bounds = (0, 0.35)
 
 # restrict uptake of butanol
 m5.reactions.BTOHt.bounds = (-1000, 0)
@@ -64,7 +65,7 @@ for rx in reverse_reactions:
 
 # adjusted model for decreased temperature
 m5_cold = m5.copy()
-m5_cold.reactions.XYLt2.bounds = (0, 0.2)
+#m5_cold.reactions.XYLt2.bounds = (0, 0.2)
 
 # nj4
 # define the Specific Proton Flux (SPF) property
@@ -135,18 +136,14 @@ add_ratio_constraint_cobra(nj4_solvento, "BTOHt" , "ACEt",  2.68, r_num_reverse=
 nj4_solvento.objective = SPF_obj
 
 # update some kinetic params
-KINETIC_PARAMS["M5"]["km"]["EX_xylan8_e"] = 1
+KINETIC_PARAMS["M5"]["km"]["EX_xylan8_e"] = 0.9
 KINETIC_PARAMS["M5"]["vmax"]["EX_xylan8_e"] = 10
 KINETIC_PARAMS["M5"]["km"]["EX_xyl__D_e"] = 10
 KINETIC_PARAMS["M5"]["vmax"]["EX_xyl__D_e"] = 2
 
-AA_uptake_rx = ["EX_val__L_e", "EX_arg__L_e", "EX_asp__L_e", "EX_dhptd_e", "EX_glu__L_e", "EX_ile__L_e", "EX_ser__L_e", 
-                "EX_thr__L_e", "EX_ala__L_e", "EX_cys__L_e", "EX_gly_e", "EX_his__L_e", "EX_leu__L_e", 
-                "EX_met__L_e", "EX_phe__L_e", "EX_pro__L_e", "EX_tyr__L_e", "EX_trp__L_e", "EX_lys__L_e"]
-
-for strain in KINETIC_PARAMS.keys():
-    for rx in AA_uptake_rx:
-        KINETIC_PARAMS[strain]["km"][rx] = 1
+kinetic_params_cold = deepcopy(KINETIC_PARAMS)
+kinetic_params_cold["M5"]["km"]["EX_xylan8_e"] = 1.5 # 1.5
+kinetic_params_cold["M5"]["vmax"]["EX_xylan8_e"] = 8
 
 # ---------------- get the base medium dict ----------------
 media_db = pd.read_csv("medium.tsv", sep="\t")
@@ -176,13 +173,14 @@ for inoculation_time in inoculation_times:
             # calculate the xylan amount in mmol
             xylan = (xylan_concentration * VOLUME / MM_XYLAN8) * 1000
             # update the medium
-            medium["xylan_e"] = xylan
+            medium["xylan8_e"] = xylan
 
             try:
                 # run the simulation
                 switch_time = inoculation_time + 24 #trying this
-                first_sim, second_sim, third_sim = sequential_with_switch(m5=m5, nj4_acido=nj4_acido, nj4_solvento=nj4_solvento, init_medium=medium, 
-                                                  kinetic_params=KINETIC_PARAMS, inoc_time=inoculation_time, inoc_ratio=inoculation_ratio, switch_time=switch_time)
+                first_sim, second_sim, third_sim = sequential_with_switch(m5=m5, nj4_acido=nj4_acido, nj4_solvento=nj4_solvento, m5_cold=m5_cold,
+                                                                          init_medium=medium, kinetic_params=KINETIC_PARAMS, inoc_time=inoculation_time, 
+                                                                          inoc_ratio=inoculation_ratio, switch_time=switch_time, kinetic_params_cold=kinetic_params_cold)
                 
                 # collapse the results
                 bm, met, fluxes = collapse_three_sim(first_sim, second_sim, third_sim)
