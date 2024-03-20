@@ -21,8 +21,8 @@ timestamp = datetime.datetime.now().strftime("%b_%d_%H%M")
 FILEPATH = f"grid_search_results/grid_search_result_{timestamp}.csv"
 
 # parameter grid
-inoculation_times = [40, 50, 60]
-inoculation_ratios = [0.75, 1, 1.25]
+inoculation_times = [24, 48, 72]
+inoculation_ratios = [0.5, 1, 1.5]
 xylan_concentrations = [60, 70, 80]
 
 # ---------------- load models ----------------
@@ -177,10 +177,10 @@ for inoculation_time in inoculation_times:
 
             try:
                 # run the simulation
-                switch_time = inoculation_time + 24 #trying this
                 first_sim, second_sim, third_sim = sequential_with_switch(m5=m5, nj4_acido=nj4_acido, nj4_solvento=nj4_solvento, m5_cold=m5_cold,
                                                                           init_medium=medium, kinetic_params=KINETIC_PARAMS, inoc_time=inoculation_time, 
-                                                                          inoc_ratio=inoculation_ratio, switch_time=switch_time, kinetic_params_cold=kinetic_params_cold)
+                                                                          inoc_ratio=inoculation_ratio, kinetic_params_cold=kinetic_params_cold,
+                                                                          find_switch_time=True)
                 
                 # collapse the results
                 bm, met, fluxes = collapse_three_sim(first_sim, second_sim, third_sim)
