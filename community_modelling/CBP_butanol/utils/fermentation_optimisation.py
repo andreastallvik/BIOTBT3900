@@ -21,8 +21,8 @@ timestamp = datetime.datetime.now().strftime("%b_%d_%H%M")
 FILEPATH = f"grid_search_results/grid_search_result_{timestamp}.csv"
 
 # parameter grid
-inoculation_times = [24, 48, 72]
-inoculation_ratios = [0.5, 1, 1.5]
+inoculation_times = [24, 36, 48, 60, 72]
+inoculation_ratios = [2]
 xylan_concentrations = [60, 70, 80]
 
 # ---------------- load models ----------------
