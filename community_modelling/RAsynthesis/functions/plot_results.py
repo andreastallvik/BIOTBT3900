@@ -477,14 +477,14 @@ def plot_inoculum_3D(results_df):
     df.rename(columns={"CA_concentration": "CA", "SAA_concentration": "SAA", "RA_concentration": "RA"}, inplace=True)
 
     # melt df on CA, SAA, RA
-    plot_df = df.melt(id_vars="inoculation_ratio", value_vars=["CA","SAA", "RA"], value_name="concentration", var_name="product")
+    plot_df = df.melt(id_vars="inoculation_ratio", value_vars=["CA","SAA", "RA"], value_name="concentration", var_name="Product")
 
     fig, ax = plt.subplots(figsize=(10, 5))
 
-    sns.barplot(data=plot_df, x="inoculation_ratio", y="concentration", hue="product")
+    sns.barplot(data=plot_df, x="inoculation_ratio", y="concentration", hue="Product")
 
-    ax.set_ylabel('product concentration (mg/L)')
-    ax.set_xlabel("inoculation ratio")
+    ax.set_ylabel('Product concentration (mg/L)')
+    ax.set_xlabel("Inoculation ratio (RAD2:RAU4)")
     plt.tight_layout()
     #plt.show()  
 
