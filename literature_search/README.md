@@ -1,9 +1,18 @@
 # Literature search
 
-Dataset of publications collected by ... (#TODO: explain), manually curated.
-Dataset is stored in the files [all_articles](all_articles.csv) and [defined_articles](defined_articles.csv).
+This folder contains scripts and notebooks for the analysis of a dataset of publications where a microbial community was used to produce a target compound.
 
-Python scrips include utility functions for plotting, [plot_generator](plot_generator.ipynb) used to generate plots.
-[co-occurence_metrics](co-occurence_metrics.ipynb) used for network analysis.
+## Folder content overview
 
-Archive and data exploration notebooks contain old attempts and code which should be ignored.
+Python functions to make all plots included in the thesis are found in [plotting.py](plotting.py).
+
+| Folder / file | Description |
+|-----------|-------------|
+| [all_articles.csv](all_articles.csv) | Annotated dataset of publications |
+| [co-occurence_metrics.ipynb](co-occurence_metrics.ipynb) | Notebook for network analysis |
+| [data_exploration/](data_exploration) | Notebooks that were used in the initial data exploration |
+| [defined_articles.csv](defined_articles.csv) | Subset of litearture dataset for defined consortia |
+| [maps.py](maps.py) | Dictionaries mapping from compounds to compound groups |
+| [plot_generator.ipynb](plot_generator.ipynb) | Notebook used to generate plots for thesis |
+| [plotting.py](plotting.py)| Python functions for plotting|
+| [plots/](plots) | A folder of graphs and plots |
