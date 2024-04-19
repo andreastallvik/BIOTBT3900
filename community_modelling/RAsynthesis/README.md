@@ -5,16 +5,18 @@ The notebooks and scripts in this directory were used to replicate results from 
 ## Content overview
 
 All genome-scale metabolic models generated for the strains in the case study can be found in the [GEMs/](../RAsynthesis/GEMs/) folder.
-
-Code for attempts that were abandonned are located in the [archive/](../RAsynthesis/archive/) folder -- should be ignored.
+GEMs for the BiGG universal model, and the iHK1487 and iML1515 models are located in the [../GEMs/](../GEMs/).
 
 Scripts and functions that are used in the final analysis can be found in the [functions](../RAsynthesis/functions/) folder.
-Most central are [create_GEMS.py](create_GEMS.py), [dfba_comets.py](functions/dfba_comets.py) and [plot_results.py](functions/plot_results.py).
+Most relevant are [create_GEMS.py](create_GEMS.py), [dfba_comets.py](functions/dfba_comets.py) and [plot_results.py](functions/plot_results.py).
+
+The [archive/](../RAsynthesis/archive/) folder contains old code that should please be ignored.
 
 ### Functions overview
 
 | File                          | Description             |
 |-------------------------------|-------------------------|
+| [GEM_eval.py](GEM_eval.py) | Functions used to test validity of GEMs |
 | [create_GEMS.py](create_GEMS.py) | Functions to create all GEMs for the case study |
 | [functions/all_exp_pairwise.py](functions/all_exp_pairwise.py) | Script for running 36 experiments with all inoculation and glucose-to-xylose -ratio combinations for CAL11, SAL11, and MAM3 tri-culture |
 | [functions/data_analysis.py](functions/data_analysis.py) | Functions to processing the experimental data retreievd from case study publication|
@@ -28,8 +30,11 @@ Most central are [create_GEMS.py](create_GEMS.py), [dfba_comets.py](functions/df
 
 ### Results overview
 
+Consortia simulations are conducted in the following notebooks:
+
 | Notebook                                 | Description                                |
 |------------------------------------------|--------------------------------------------|
-| [results_coculture.ipynb](../RAsynthesis/results_coculture.ipynb)                 | RAD2 and RAU4 coculture simulation             |
-| [results_glc_tri.ipynb](../RAsynthesis/results_glc_tri.ipynb)                       | CAL2, SAL9, and MAM2 triculture simulation       |
-| [results_mixed_sub_tri.ipynb](../RAsynthesis/results_mixed_sub_tri.ipynb) | CAL11, SAL11, and MAM3 triculture simulation     |
+| [experimental_data.ipynb](experimental_data.ipynb) | Calculations on experimental data | 
+| [results_coculture.ipynb](../RAsynthesis/results_coculture.ipynb)                 | RAD2 and RAU4 co-culture simulations             |
+| [results_glc_tri.ipynb](../RAsynthesis/results_glc_tri.ipynb)                       | CAL2, SAL9, and MAM2 tri-culture simulations       |
+| [results_mixed_sub_tri.ipynb](../RAsynthesis/results_mixed_sub_tri.ipynb) | CAL11, SAL11, and MAM3 tri-culture simulations     |
