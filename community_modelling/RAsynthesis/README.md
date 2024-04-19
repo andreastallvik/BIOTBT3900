@@ -4,13 +4,15 @@ The notebooks and scripts in this directory were used to replicate results from 
 
 ## Content overview
 
-All genome-scale metabolic models generated for the strains in the case study can be found in the [GEMs/](../RAsynthesis/GEMs/) folder.
-GEMs for the BiGG universal model, and the iHK1487 and iML1515 models are located in the [../GEMs/](../GEMs/).
+GEMs for the BiGG universal model, and the iHK1487 and iML1515 models are located in the [../GEMs/](../GEMs/) folder.
 
-Scripts and functions that are used in the final analysis can be found in the [functions](../RAsynthesis/functions/) folder.
-Most relevant are [create_GEMS.py](create_GEMS.py), [dfba_comets.py](functions/dfba_comets.py) and [plot_results.py](functions/plot_results.py).
-
-The [archive/](../RAsynthesis/archive/) folder contains old code that should please be ignored.
+| Folder                        | Description             |
+|-------------------------------|-------------------------|
+|[GEMs/](../RAsynthesis/GEMs/)  | All genome-scale metabolic models generated for the strains in the case study |
+| [archive/](../RAsynthesis/archive/) | Old code that should please be ignored |
+| [exp_data/](../RAsynthesis/exp_data/) | Experimental retrieved from the case study |
+| [functions/](../RAsynthesis/functions/) | Scripts and functions that are used in the analysis |
+| [results/](../RAsynthesis/results/) | All generated plots in the thesis |
 
 ### Functions overview
 
@@ -38,3 +40,5 @@ Consortia simulations are conducted in the following notebooks:
 | [results_coculture.ipynb](../RAsynthesis/results_coculture.ipynb)                 | RAD2 and RAU4 co-culture simulations             |
 | [results_glc_tri.ipynb](../RAsynthesis/results_glc_tri.ipynb)                       | CAL2, SAL9, and MAM2 tri-culture simulations       |
 | [results_mixed_sub_tri.ipynb](../RAsynthesis/results_mixed_sub_tri.ipynb) | CAL11, SAL11, and MAM3 tri-culture simulations     |
+
+The most relevant functions used to generate reults are found in [create_GEMS.py](create_GEMS.py), [dfba_comets.py](functions/dfba_comets.py) and [plot_results.py](functions/plot_results.py).
