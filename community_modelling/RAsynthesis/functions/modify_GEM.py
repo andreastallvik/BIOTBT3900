@@ -1,3 +1,5 @@
+"""Adapted from reframed to cobrapy"""
+
 from cobra import Metabolite
 
 
