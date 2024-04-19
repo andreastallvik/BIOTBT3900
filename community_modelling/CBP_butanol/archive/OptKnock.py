@@ -1,3 +1,7 @@
+"""
+From the course materials in TBT4165: System Biology and Biological Networks at NTNU spring 2022.
+"""
+
 import cobra
 import numpy as np
 import pandas as pd

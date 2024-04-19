@@ -1,9 +1,7 @@
 """
-NB! This scriopt is not written by me!
-from repo at: https://github.com/opencobra/m_model_collection/blob/master/read_excel.py
-#TODO: if going to use - cite correctly
+Adapted from: https://github.com/opencobra/m_model_collection/blob/master/read_excel.py
 
-some small changes to get the script running for my specific model, note that I only did necessary troubleshooting for my case:
+Some small changes were made to get the script running for my specific model, note that I only did necessary troubleshooting for my case:
 - updated pd.DataFrame.ix to pd.DataFrame.iloc
 - edited the function extract to stop bit encoding (I'm not sure why this was beeing done)
 - change the add.reactions([rxn]) function for updated cobra
