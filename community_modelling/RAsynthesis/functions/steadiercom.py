@@ -125,7 +125,7 @@ def simulate(community, objective=None, growth=0.1, abundance=None, allocation=F
 
 
 def SteadierComFVA(community, objective=None, growth=0.1, abundance=None, allocation=False, constraints=None,
-             w_e=0.001, w_r=0.5, solver=None, obj_frac = 1.0):
+             w_e=0.001, w_r=0.5, solver=None, obj_frac = 1.0, return_community_growth=None):
 
     if abundance:
         norm = sum(abundance.values())
@@ -156,7 +156,10 @@ def SteadierComFVA(community, objective=None, growth=0.1, abundance=None, alloca
         sol2 = solver.solve({f"x_{org_id}": 1}, minimize=False, get_values=False, constraints=constraints)
         variability[org_id][1] = sol2.fobj
 
-    return variability
+    if return_community_growth:
+        return variability, sol.values[community.merged_model.biomass_reaction]
+    else:
+        return variability
 
 
 def sample(community, n=100, growth=0.1, abundance=None, allocation=False, constraints=None,
