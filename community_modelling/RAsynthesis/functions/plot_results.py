@@ -85,6 +85,7 @@ def plot_relative_abundance_RA_prod_glc_xyl(results_df, cal11_ra, sal11_ra, mam3
     plt.axhline(y=mam3_ra, linestyle='--', color='green')
 
     plt.xlabel("Percentage of maximal RA production")
+    plt.ylabel("Relative abundance")
     plt.gca().invert_xaxis()
     #plt.gca().invert_yaxis()
 
@@ -170,8 +171,8 @@ def plot_biomass_time_course(sim_results, exp_data, growth_curves = None):
         sns.lineplot(x='time', y='biomass', hue="strain", data=growth_curves, linestyle ="-.", hue_order=["CAL11", "SAL11", "MAM3"], legend=False)
 
     plt.legend()
-    plt.xlabel("time (h)")
-    plt.ylabel("biomass (gDW)")
+    plt.xlabel("Time (h)")
+    plt.ylabel("Biomass (gDW)")
 
 
 def plot_biomass_time_course_glc(sim_results, exp_data, growth_curves = None):
@@ -199,8 +200,8 @@ def plot_biomass_time_course_glc(sim_results, exp_data, growth_curves = None):
         sns.lineplot(x='time', y='biomass', hue="strain", data=growth_curves, linestyle ="-.", hue_order=["CAL2", "SAL9", "MAM2"], legend=False)
 
     plt.legend()
-    plt.xlabel("time (h)")
-    plt.ylabel("biomass (gDW)")
+    plt.xlabel("Time (h)")
+    plt.ylabel("Biomass (gDW)")
 
 
 def plot_biomass_time_course_coculture(sim_results):
@@ -224,8 +225,8 @@ def plot_biomass_time_course_coculture(sim_results):
     sns.lineplot(data=plot_df, x="time", y="biomass", hue="variable")
 
     plt.legend()
-    plt.xlabel("time (h)")
-    plt.ylabel("biomass (gDW)")
+    plt.xlabel("Time (h)")
+    plt.ylabel("Biomass (gDW)")
 
 
 def plot_relative_abundance_time_course(sim_results, exp_data):
